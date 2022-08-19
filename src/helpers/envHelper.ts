@@ -1,3 +1,7 @@
+
+
+require('better-logging')(console);
+
 export enum ENVS {
     BOT_TOKEN = 'BOT_TOKEN',
     GUILD_ID = 'GUILD_ID'
@@ -23,8 +27,7 @@ export function loadEnv(env: string): string {
 }
 
 export function setupEnvs(): void {
-    console.log('\nLoading envs...')
+    console.info('Loading envs...')
     loadEnv(ENVS.BOT_TOKEN)
     loadEnv(ENVS.GUILD_ID)
-    console.log('Envs loaded...\n')
 }
