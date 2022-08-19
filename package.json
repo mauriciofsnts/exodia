@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/glob": "^7.2.0",
     "@types/node": "^18.7.7",
     "nodemon": "^2.0.19",
     "rimraf": "^3.0.2",
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "discord.js": "^14.2.0",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "glob": "^8.0.3"
   }
 }
