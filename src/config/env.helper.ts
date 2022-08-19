@@ -1,3 +1,8 @@
+export enum ENVS {
+    BOT_TOKEN = 'BOT_TOKEN',
+    GUILD_ID = 'GUILD_ID'
+}
+
 function logError(msg: string, env: string): void {
     console.error('=========================');
     console.error('=========================');
@@ -6,7 +11,7 @@ function logError(msg: string, env: string): void {
     console.error('=========================');
 }
 
-export function mustLoadEnv(env: string): string {
+export function loadEnv(env: string): string {
     const value = process.env[env];
 
     if (!value) {
@@ -17,9 +22,9 @@ export function mustLoadEnv(env: string): string {
     return value;
 }
 
-export function loadEnvs(): void {
+export function setupEnvs(): void {
     console.log('\nLoading envs...')
-    mustLoadEnv('BOT_TOKEN')
-    mustLoadEnv('GUILD_ID')
+    loadEnv(ENVS.BOT_TOKEN)
+    loadEnv(ENVS.GUILD_ID)
     console.log('Envs loaded...\n')
 }
