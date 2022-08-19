@@ -1,6 +1,6 @@
 import { ApplicationCommandDataResolvable } from 'discord.js';
 import { ClientEvents } from 'discord.js'
-import { Events } from './../types/event'
+import { Events } from './event'
 import { Client, Collection, GatewayIntentBits } from 'discord.js'
 import { ENVS, loadEnv, setupEnvs } from '../config/env.helper'
 import { RegisterCommandsOptions } from '../types/client'

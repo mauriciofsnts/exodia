@@ -1,7 +1,7 @@
 import { CommandInteractionOptionResolver } from './../../node_modules/discord.js/typings/index.d';
 import { client } from "..";
 import { ExtendedInteraction } from "../types/command";
-import { Events } from "../types/event";
+import { Events } from "../core/event";
 
 
 export default new Events('interactionCreate', async (interaction) => {
