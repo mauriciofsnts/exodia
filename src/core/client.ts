@@ -1,11 +1,15 @@
 import { Client } from "discord.js";
-import { loadEnvs } from "../config/env.helper";
+import { ENVS, loadEnv, setupEnvs } from "../config/env.helper";
 
-export class ExodiaClient {
+export class ExodiaClient extends Client {
 
+    constructor() {
+        super({ intents: 32767 })
+    }
 
     start() {
-        loadEnvs()
+        setupEnvs()
+        this.login(loadEnv(ENVS.BOT_TOKEN))
     }
 
 }
