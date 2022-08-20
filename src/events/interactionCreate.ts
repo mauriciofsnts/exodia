@@ -17,6 +17,6 @@ export default new Events('interactionCreate', async (interaction) => {
         args: interaction.options as CommandInteractionOptionResolver,
         client,
         interaction: interaction as ExtendedInteraction
-    })
+    }, 'INTERACTION')
 
 })

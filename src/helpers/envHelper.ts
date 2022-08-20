@@ -4,7 +4,8 @@ require('better-logging')(console);
 
 export enum ENVS {
     BOT_TOKEN = 'BOT_TOKEN',
-    GUILD_ID = 'GUILD_ID'
+    GUILD_ID = 'GUILD_ID',
+    PREFIX = 'PREFIX'
 }
 
 function logError(msg: string, env: string): void {
@@ -30,4 +31,5 @@ export function setupEnvs(): void {
     console.info('Loading envs...')
     loadEnv(ENVS.BOT_TOKEN)
     loadEnv(ENVS.GUILD_ID)
+    loadEnv(ENVS.PREFIX)
 }

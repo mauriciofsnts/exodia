@@ -1,5 +1,5 @@
+import { ChatInputApplicationCommandData, CommandInteraction, CommandInteractionOptionResolver, GuildMember, PermissionResolvable } from 'discord.js';
 import { ExodiaClient } from '../core/client';
-import { PermissionResolvable, ChatInputApplicationCommandData, CommandInteraction, GuildMember, CommandInteractionOptionResolver } from './../../node_modules/discord.js/typings/index.d';
 
 export interface ExtendedInteraction extends CommandInteraction {
     member: GuildMember
@@ -8,10 +8,10 @@ export interface ExtendedInteraction extends CommandInteraction {
 interface RunOptions {
     client: ExodiaClient,
     interaction: ExtendedInteraction
-    args: CommandInteractionOptionResolver | string[]
+    args: CommandInteractionOptionResolver
 }
 
-type RunFunction = (options: RunOptions) => any;
+type RunFunction = (options: RunOptions, type: "INTERACTION" | "MESSAGE") => any;
 
 export type CommandType = {
     userPermissions?: PermissionResolvable[],

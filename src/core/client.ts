@@ -15,7 +15,7 @@ export class ExodiaClient extends Client {
     commands: Collection<string, CommandType> = new Collection()
 
     constructor() {
-        super({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildIntegrations, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildWebhooks] })
+        super({ intents: ['Guilds', 'GuildIntegrations', 'MessageContent', 'GuildWebhooks', 'DirectMessages', 'GuildMessageTyping', 'GuildMessages'] })
     }
 
     start() {
@@ -64,7 +64,6 @@ export class ExodiaClient extends Client {
 
         // register events
         const eventFiles = await globPromise(`${__dirname}/../events/*{.ts,.js}`)
-
 
         eventFiles.forEach(async (filePath) => {
             const event: Events<keyof ClientEvents> = await importFile(filePath)
