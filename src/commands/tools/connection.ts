@@ -1,17 +1,17 @@
-import { ApplicationCommandType } from 'discord.js'
+import { ApplicationCommandType, EmbedBuilder } from 'discord.js'
 import { Command } from '../../core/command'
+import { Embed, Reply } from '../reply'
 
 export default new Command({
   name: 'connection',
   description: 'returns websocket ping',
   type: ApplicationCommandType.ChatInput,
   run: async ({ client, interaction }, type) => {
-    console.log('type: ', type)
 
-    // if (interaction.isChatInputCommand()) {
-    //   interaction.reply(`${client.ws.ping}ms!`)
-    // } else {
-    //   interaction.followUp(`${client.ws.ping}ms!`)
-    // }
+    const embed = Embed({
+      title: 'Connection', description: `${client.ws.ping}ms!`, type: 'info'
+    })
+
+    Reply(embed, interaction, type)
   },
 })
