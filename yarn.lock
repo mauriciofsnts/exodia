@@ -985,7 +985,7 @@ mimic-response@^3.1.0:
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-3.1.0.tgz#2d1d59af9c1b129815accc2c46a022a5ce1fa3c9"
   integrity sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==
 
-miniget@^4.0.0, miniget@^4.2.2:
+miniget@^4.2.2:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/miniget/-/miniget-4.2.2.tgz#db20320f265efdc4c1826a0be431d56753074475"
   integrity sha512-a7voNL1N5lDMxvTMExOkg+Fq89jM2vY8pAi9ZEWzZtfNmdfP6RXkvUtFnCAXoCv2T9k1v/fUJVaAEuepGcvLYA==
@@ -1152,6 +1152,18 @@ picomatch@^2.0.4, picomatch@^2.2.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
+
+play-audio@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/play-audio/-/play-audio-0.5.2.tgz#191dd45b95ff64ae20bbd718671da4e987d4edd1"
+  integrity sha512-ZAqHUKkQLix2Iga7pPbsf1LpUoBjcpwU93F1l3qBIfxYddQLhxS6GKmS0d3jV8kSVaUbr6NnOEcEMFvuX93SWQ==
+
+play-dl@^1.9.5:
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/play-dl/-/play-dl-1.9.5.tgz#d9d1bb11d3c0e4754341a4ce22b1794a23843662"
+  integrity sha512-tfjBgpU6AD63snK6sXiSuAOi+3iLsqVvsFcvCritOetF/zIo2OcB4BURX+WaQLUmEX3sUJhzP/vqG8SSl7WEpA==
+  dependencies:
+    play-audio "^0.5.2"
 
 prism-media@^1.3.4:
   version "1.3.4"
@@ -1514,15 +1526,6 @@ youtube-sr@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/youtube-sr/-/youtube-sr-4.3.0.tgz#6c3ab661b0c2572946d1098451ed7699d7ad4be5"
   integrity sha512-cRMOeJZi/DYIRqru0R9UsBLwkj4tQvekldnCj4MZOT+ijlfesrllbUDXqKuA2RbYA4ByJlFf9wxZ1ndvuCJ5Ow==
-
-ytdl-core@4.10.0:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-4.10.0.tgz#0835cb411677684539fac2bcc10553f6f58db3e1"
-  integrity sha512-RCCoSVTmMeBPH5NFR1fh3nkDU9okvWM0ZdN6plw6I5+vBBZVUEpOt8vjbSgprLRMmGUsmrQZJhvG1CHOat4mLA==
-  dependencies:
-    m3u8stream "^0.8.4"
-    miniget "^4.0.0"
-    sax "^1.1.3"
 
 ytdl-core@^4.11.0:
   version "4.11.0"

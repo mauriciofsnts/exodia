@@ -4,8 +4,8 @@ import {
   StreamType,
 } from '@discordjs/voice'
 import ytdl from 'ytdl-core'
-import * as yt from 'youtube-search-without-api-key';
-
+import play from 'play-dl'
+import * as yt from 'youtube-search-without-api-key'
 
 export interface Track {
   url: string
@@ -19,13 +19,10 @@ export class Song {
   public readonly title: string
   public readonly duration: number
 
-  private readonly streaming?: string
-
-  public constructor({ url, title, duration, streaming }: Track) {
+  public constructor({ url, title, duration }: Track) {
     this.url = url
     this.title = title
     this.duration = duration
-    this.streaming = streaming ?? 'search'
   }
 
   public static async from(search: string = '') {
@@ -37,17 +34,16 @@ export class Song {
         /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi
       )
     ) {
-      songInfo = await ytdl.getInfo(search)
+      songInfo = await play.video_info(search)
 
       if (!songInfo) {
         throw new Error('Looks like i was unable to find the song on YouTube')
       }
 
       song = {
-        title: songInfo.videoDetails.title,
-        url: songInfo.videoDetails.video_url,
-        duration: parseInt(songInfo.videoDetails.lengthSeconds),
-        streaming: 'youtube',
+        title: songInfo.video_details.title ?? '',
+        url: songInfo.video_details.url,
+        duration: songInfo.video_details.durationInSec,
       }
     } else {
       const searched = await yt.search(search)
@@ -62,7 +58,6 @@ export class Song {
         title: songInfo.title,
         url: songInfo.url,
         duration: songInfo.duration_raw.toString(),
-        streaming: 'search',
       }
     }
 
@@ -77,14 +72,9 @@ export class Song {
   public async makeResource(): Promise<AudioResource<Song> | void> {
     let stream
 
-    if (this.streaming === 'youtube') {
-      stream = await ytdl(this.url, {
-        quality: 'highestaudio',
-        highWaterMark: 1 << 25,
-      })
-    } else {
-      stream = await ytdl(this.url, { filter: 'audioonly' })
-    }
+    stream = await (
+      await play.stream(this.url, { discordPlayerCompatibility: true })
+    ).stream
 
     if (!stream) throw new Error('Failed to get resource')
 

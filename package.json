@@ -30,9 +30,9 @@
     "ffmpeg-static": "^4.4.1",
     "glob": "^7.2.0",
     "libsodium-wrappers": "^0.7.10",
+    "play-dl": "^1.9.5",
     "soundcloud-downloader": "^1.0.0",
-    "youtube-search-without-api-key": "^1.0.7",
-    "ytdl-core": "4.10.0"
+    "youtube-search-without-api-key": "^1.0.7"
   },
   "optionalDependencies": {
     "@discordjs/opus": "^0.8.0",
