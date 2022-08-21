@@ -86,6 +86,8 @@ export class Song {
       stream = await ytdl(this.url, { filter: 'audioonly' })
     }
 
+    if (!stream) throw new Error('Failed to get resource')
+
     return createAudioResource(stream, {
       metadata: this,
       inlineVolume: true,
