@@ -22,17 +22,20 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
     "axios": "^0.27.2",
     "discord-player": "^5.3.1",
     "discord.js": "^14.2.0",
     "dotenv": "^16.0.1",
-    "ffmpeg-static": "^5.0.2",
+    "ffmpeg-static": "^4.4.1",
     "glob": "^7.2.0",
     "libsodium-wrappers": "^0.7.10",
     "soundcloud-downloader": "^1.0.0",
-    "yt-search": "^2.10.3",
-    "ytdl-core": "4.9.1"
+    "yt-search": "^2.2.4",
+    "ytdl-core": "4.10.0"
+  },
+  "optionalDependencies": {
+    "@discordjs/opus": "^0.8.0",
+    "opusscript": "^0.0.8"
   }
 }

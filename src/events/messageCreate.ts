@@ -22,7 +22,8 @@ export default new Events('messageCreate', async (message) => {
       args: args as any,
       client,
       interaction: message as any,
-    }, 'MESSAGE')
+      type: 'MESSAGE'
+    })
   } catch (error) {
     console.error(`Error on execute command ${cmd.toLowerCase()}: `, error)
   }

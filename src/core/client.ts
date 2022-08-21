@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable } from 'discord.js'
+import { ApplicationCommandDataResolvable, Snowflake } from 'discord.js'
 import { ClientEvents } from 'discord.js'
 import { Events } from './event'
 import { Client, Collection } from 'discord.js'
@@ -8,12 +8,13 @@ import { CommandType } from '../types/command'
 import { promisify } from 'util'
 import glob from 'glob'
 import importFile from '../helpers/importFile'
+import { MusicQueue } from './Player'
 
 const globPromise = promisify(glob)
 
 export class ExodiaClient extends Client {
     commands: Collection<string, CommandType> = new Collection()
-    queue = new Map()
+    queues = new Collection<Snowflake, MusicQueue>();
 
     constructor() {
         super({ intents: 32767 })
