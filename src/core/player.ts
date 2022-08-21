@@ -5,18 +5,19 @@ import {
   AudioPlayerStatus,
   AudioResource,
   createAudioPlayer,
+  entersState,
   NoSubscriberBehavior,
   VoiceConnection,
+  VoiceConnectionDisconnectReason,
+  VoiceConnectionState,
   VoiceConnectionStatus,
 } from '@discordjs/voice'
 import { Song } from './song'
 import { client } from '..'
+import { promisify } from 'util'
+import { QueueOptions } from '../types/queue'
 
-interface QueueOptions {
-  connection: VoiceConnection
-  interaction: ExtendedInteraction
-}
-
+const wait = promisify(setTimeout)
 export class MusicQueue {
   public readonly interaction!: ExtendedInteraction
   public readonly player!: AudioPlayer
@@ -27,6 +28,8 @@ export class MusicQueue {
   public songs: Song[] = []
   public volume = 100
 
+  public readyLock = false
+
   public constructor(options: QueueOptions) {
     Object.assign(this, options)
 
@@ -35,6 +38,56 @@ export class MusicQueue {
       behaviors: { noSubscriber: NoSubscriberBehavior.Play },
     })
     this.connection.subscribe(this.player)
+
+    this.connection.on(
+      'stateChange' as any,
+      async (
+        oldState: VoiceConnectionState,
+        newState: VoiceConnectionState
+      ) => {
+        if (newState.status === VoiceConnectionStatus.Disconnected) {
+          if (
+            newState.reason ===
+            VoiceConnectionDisconnectReason.WebSocketClose &&
+            newState.closeCode === 4014
+          ) {
+            try {
+              this.stop()
+            } catch (e) {
+              console.log(e)
+              this.stop()
+            }
+          } else if (this.connection.rejoinAttempts < 5) {
+            await wait((this.connection.rejoinAttempts + 1) * 5_000)
+            this.connection.rejoin()
+          } else {
+            this.connection.destroy()
+          }
+        } else if (newState.status === VoiceConnectionStatus.Destroyed) {
+          // this.stop();
+        } else if (
+          !this.readyLock &&
+          (newState.status === VoiceConnectionStatus.Connecting ||
+            newState.status === VoiceConnectionStatus.Signalling)
+        ) {
+          this.readyLock = true
+          try {
+            await entersState(
+              this.connection,
+              VoiceConnectionStatus.Ready,
+              20_000
+            )
+          } catch {
+            if (
+              this.connection.state.status !== VoiceConnectionStatus.Destroyed
+            )
+              this.connection.destroy()
+          } finally {
+            this.readyLock = false
+          }
+        }
+      }
+    )
 
     this.player.on(
       'stateChange',
