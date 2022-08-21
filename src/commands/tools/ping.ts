@@ -3,7 +3,7 @@ import { Command } from '../../core/command'
 import { Embed, Reply } from '../reply'
 
 export default new Command({
-  name: 'connection',
+  name: 'ping',
   description: 'returns websocket ping',
   type: ApplicationCommandType.ChatInput,
   run: async ({ client, interaction, type }) => {
