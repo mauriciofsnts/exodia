@@ -50,8 +50,7 @@ export class MusicQueue {
           oldState.status === AudioPlayerStatus.Buffering &&
           newState.status === AudioPlayerStatus.Playing
         ) {
-          // this.sendPlayingMessage(newState);
-          console.log('now playing... ')
+          // TODO: now playing msg
         }
       }
     )
@@ -72,7 +71,7 @@ export class MusicQueue {
 
     client.queues.delete(this.interaction.guild!.id)
 
-    // !config.PRUNING && this.textChannel.send(i18n.__("play.queueEnded")).catch(console.error);
+    // TODO: queue end msg return
 
     setTimeout(() => {
       if (
@@ -86,7 +85,7 @@ export class MusicQueue {
       this.player.stop()
       client.queues.delete(this.interaction.guild!.id)
 
-      // !config.PRUNING && this.textChannel.send(i18n.__("play.leaveChannel"));
+      // TODO: leaving channel msg
     }, 100)
   }
 
@@ -103,8 +102,6 @@ export class MusicQueue {
 
     try {
       const resource = await nextSong.makeResource()
-
-      console.log('resource: ', resource)
 
       this.resource = resource!
       this.player.play(this.resource)
