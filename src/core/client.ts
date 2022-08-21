@@ -14,7 +14,7 @@ const globPromise = promisify(glob)
 
 export class ExodiaClient extends Client {
     commands: Collection<string, CommandType> = new Collection()
-    queues = new Collection<Snowflake, MusicQueue>();
+    queues = new Collection<Snowflake, MusicQueue>()
 
     constructor() {
         super({ intents: 32767 })
@@ -26,14 +26,8 @@ export class ExodiaClient extends Client {
         this.registerModules()
     }
 
-    async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
-        if (guildId) {
-            console.debug(`Registering commands to guild: ${guildId}`)
-            this.guilds.cache.get(guildId)?.commands.set(commands)
-        } else {
-            console.debug('Registering global commands')
-            this.application?.commands.set(commands)
-        }
+    async registerCommands({ commands }: RegisterCommandsOptions) {
+        this.application?.commands.set(commands)
     }
 
     async registerModules() {
@@ -57,7 +51,6 @@ export class ExodiaClient extends Client {
         this.on('ready', () => {
             this.registerCommands({
                 commands: slashCommands,
-                guildId: loadEnv(ENVS.GUILD_ID),
             })
         })
 
