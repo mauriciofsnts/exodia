@@ -34,7 +34,7 @@ export default new Command({
             return Reply(
                 Embed({
                     title: 'Error',
-                    description: 'There is nothing playing that I could skip for you',
+                    description: 'There is nothing playing that I could resume for you',
                     type: 'error',
                 }),
                 interaction,
