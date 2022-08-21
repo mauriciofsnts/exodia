@@ -1,21 +1,22 @@
-import { ApplicationCommandDataResolvable } from 'discord.js';
+import { ApplicationCommandDataResolvable } from 'discord.js'
 import { ClientEvents } from 'discord.js'
 import { Events } from './event'
-import { Client, Collection, GatewayIntentBits } from 'discord.js'
+import { Client, Collection } from 'discord.js'
 import { ENVS, loadEnv, setupEnvs } from '../helpers/envHelper'
 import { RegisterCommandsOptions } from '../types/client'
 import { CommandType } from '../types/command'
 import { promisify } from 'util'
 import glob from 'glob'
-import importFile from '../helpers/importFile';
+import importFile from '../helpers/importFile'
 
 const globPromise = promisify(glob)
 
 export class ExodiaClient extends Client {
     commands: Collection<string, CommandType> = new Collection()
+    queue = new Map()
 
     constructor() {
-        super({ intents: ['Guilds', 'GuildIntegrations', 'MessageContent', 'GuildWebhooks', 'DirectMessages', 'GuildMessageTyping', 'GuildMessages'] })
+        super({ intents: 32767 })
     }
 
     start() {
@@ -23,8 +24,6 @@ export class ExodiaClient extends Client {
         this.login(loadEnv(ENVS.BOT_TOKEN))
         this.registerModules()
     }
-
-
 
     async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
         if (guildId) {
@@ -42,7 +41,6 @@ export class ExodiaClient extends Client {
         const commandFiles = await globPromise(
             `${__dirname}/../commands/*/*{.ts,.js}`
         )
-
 
         //  get each command on folder and set as bot command
         commandFiles.forEach(async (filePath: string) => {

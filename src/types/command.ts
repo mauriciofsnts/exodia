@@ -5,15 +5,16 @@ export interface ExtendedInteraction extends CommandInteraction {
     member: GuildMember
 }
 
+export type InteractionType = "INTERACTION" | "MESSAGE"
 interface RunOptions {
     client: ExodiaClient,
     interaction: ExtendedInteraction
     args: CommandInteractionOptionResolver
+    type: InteractionType
+
 }
 
-export type InteractionType =  "INTERACTION" | "MESSAGE"
-
-type RunFunction = (options: RunOptions, type: InteractionType) => any;
+type RunFunction = (options: RunOptions) => any;
 
 export type CommandType = {
     userPermissions?: PermissionResolvable[],
