@@ -4,8 +4,8 @@ import {
   StreamType,
 } from '@discordjs/voice'
 import ytdl from 'ytdl-core'
+import * as yt from 'youtube-search-without-api-key';
 
-const yts = require('yt-search')
 
 export interface Track {
   url: string
@@ -50,18 +50,18 @@ export class Song {
         streaming: 'youtube',
       }
     } else {
-      const searched = await yts.search(search)
+      const searched = await yt.search(search)
 
       if (!searched) {
         throw new Error('Looks like i was unable to find the song on YouTube')
       }
 
-      songInfo = searched.videos[0]
+      songInfo = searched[0]
 
       song = {
         title: songInfo.title,
         url: songInfo.url,
-        duration: songInfo.duration.toString(),
+        duration: songInfo.duration_raw.toString(),
         streaming: 'search',
       }
     }
