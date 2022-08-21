@@ -1,18 +1,11 @@
+import { Track } from './../types/track'
 import {
   AudioResource,
   createAudioResource,
   StreamType,
 } from '@discordjs/voice'
-import ytdl from 'ytdl-core'
 import play from 'play-dl'
 import * as yt from 'youtube-search-without-api-key'
-
-export interface Track {
-  url: string
-  title: string
-  duration: number
-  streaming?: 'youtube' | 'soundcloud' | 'search'
-}
 
 export class Song {
   public readonly url: string
