@@ -76,7 +76,7 @@ export default new Command({
       Reply(
         Embed({
           title: `Ok`,
-          description: `${song.title} adicionado a playlist`,
+          description: `${song.title} added to playlist`,
           type: 'success',
         }),
         interaction,

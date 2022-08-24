@@ -7,9 +7,10 @@ export default new Command({
   description: 'returns websocket ping',
   type: ApplicationCommandType.ChatInput,
   run: async ({ client, interaction, type }) => {
-
     const embed = Embed({
-      title: 'Connection', description: `${client.ws.ping}ms!`, type: 'info'
+      title: 'Connection',
+      description: `${client.ws.ping}ms!`,
+      type: 'info',
     })
 
     Reply(embed, interaction, type)
