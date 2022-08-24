@@ -5,6 +5,7 @@ import { Embed, Reply } from '../reply'
 export default new Command({
     name: 'pause',
     description: 'Pause the music',
+    aliases: ['ps', 'pause'],
     run: async ({ interaction, type }) => {
         if (!interaction.member.voice.channel)
             return Reply(

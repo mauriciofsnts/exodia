@@ -12,6 +12,7 @@ import { Embed, Reply } from '../reply'
 export default new Command({
   name: 'play',
   description: 'play a song',
+  aliases: ['p', 'play'],
   options: [
     {
       name: 'songtitle',

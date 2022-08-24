@@ -6,6 +6,7 @@ export default new Command({
     name: 'uptime',
     description: 'Check the uptime',
     type: ApplicationCommandType.ChatInput,
+    aliases: ['uptime'],
     run: async ({ client, interaction, type }) => {
         let seconds = Math.floor(client.uptime! / 1000)
         let minutes = Math.floor(seconds / 60)

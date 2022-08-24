@@ -11,7 +11,7 @@ export default new Events('messageCreate', async (message) => {
 
   const [cmd, ...args] = message.content.slice(prefix.length).trim().split(' ')
 
-  const command = client.commands.get(cmd.toLowerCase())
+  const command = client.commands.find(c => c.aliases.includes(cmd))
 
   if (!command) {
     return

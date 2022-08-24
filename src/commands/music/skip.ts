@@ -5,6 +5,7 @@ import { Embed, Reply } from '../reply'
 export default new Command({
     name: 'skip',
     description: 'Skip the music',
+    aliases: ['s', 'skip'],
     run: async ({ interaction, type }) => {
         if (!interaction.member.voice.channel)
             return Reply(
