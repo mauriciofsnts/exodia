@@ -3,9 +3,10 @@ import { Events } from '../core/event'
 import { ENVS, loadEnv } from '../helpers/envHelper'
 
 export default new Events('messageCreate', async (message) => {
-  if (message.author.bot) return
+  if (message.author.bot || !message.guild) return;
 
   const prefix = loadEnv(ENVS.PREFIX)
+
   if (!message.content.startsWith(prefix)) return
 
   const [cmd, ...args] = message.content.slice(prefix.length).trim().split(' ')
@@ -13,7 +14,6 @@ export default new Events('messageCreate', async (message) => {
   const command = client.commands.get(cmd.toLowerCase())
 
   if (!command) {
-    console.error(`command ${cmd.toLowerCase()} not found`)
     return
   }
 
