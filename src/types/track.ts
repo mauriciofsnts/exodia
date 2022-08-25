@@ -1,6 +1,7 @@
 export interface Track {
-    url: string
-    title: string
-    duration: number
-    streaming?: 'youtube' | 'soundcloud' | 'search'
+  url: string
+  title: string
+  duration: number
+  thumbnail: string
+  streaming?: 'youtube' | 'soundcloud' | 'search'
 }

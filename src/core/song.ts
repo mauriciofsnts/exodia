@@ -11,11 +11,13 @@ export class Song {
   public readonly url: string
   public readonly title: string
   public readonly duration: number
+  public readonly thumbnail: string
 
-  public constructor({ url, title, duration }: Track) {
+  public constructor({ url, title, duration, thumbnail }: Track) {
     this.url = url
     this.title = title
     this.duration = duration
+    this.thumbnail = thumbnail
   }
 
   public static async from(search: string = '') {
@@ -37,6 +39,7 @@ export class Song {
         title: songInfo.video_details.title ?? '',
         url: songInfo.video_details.url,
         duration: songInfo.video_details.durationInSec,
+        thumbnail: songInfo.video_details.thumbnails[0].url,
       }
     } else {
       const searched = await yt.search(search)
@@ -51,6 +54,7 @@ export class Song {
         title: songInfo.title,
         url: songInfo.url,
         duration: songInfo.duration_raw.toString(),
+        thumbnail: songInfo.snippet.thumbnails.url,
       }
     }
 
@@ -59,6 +63,7 @@ export class Song {
       title: song.title,
       url: song.url,
       streaming: song.streaming,
+      thumbnail: song.thumbnail,
     })
   }
 

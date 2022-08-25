@@ -7,7 +7,7 @@ import { client } from '../..'
 import { Command } from '../../core/command'
 import { MusicQueue } from '../../core/Player'
 import { Song } from '../../core/song'
-import { Embed, Reply } from '../reply'
+import { Embed, Reply, ReplyMusicEmbed } from '../reply'
 
 export default new Command({
   name: 'play',
@@ -102,10 +102,12 @@ export default new Command({
     newQueue.enqueue(song)
 
     Reply(
-      Embed({
-        title: `Ok`,
-        description: `${song.title} adicionado a playlist`,
-        type: 'success',
+      ReplyMusicEmbed({
+        duration: song.duration,
+        member: interaction.user?.username ?? '-',
+        title: song.title,
+        thumbnail: song.thumbnail,
+        query: songTitle,
       }),
       interaction,
       type
