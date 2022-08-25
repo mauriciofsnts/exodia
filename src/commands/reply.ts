@@ -11,7 +11,7 @@ type EmbedProps = {
   type: 'info' | 'error' | 'success'
 }
 
-enum Color {
+export enum Color {
   success = 0x40ff00,
   error = 0xa71e1e,
   info = 0x34d7ae,
