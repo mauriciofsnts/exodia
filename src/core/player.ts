@@ -48,7 +48,7 @@ export class MusicQueue {
         if (newState.status === VoiceConnectionStatus.Disconnected) {
           if (
             newState.reason ===
-            VoiceConnectionDisconnectReason.WebSocketClose &&
+              VoiceConnectionDisconnectReason.WebSocketClose &&
             newState.closeCode === 4014
           ) {
             try {
