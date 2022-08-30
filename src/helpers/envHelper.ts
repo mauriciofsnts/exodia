@@ -1,6 +1,12 @@
 export enum ENVS {
   BOT_TOKEN = 'BOT_TOKEN',
   PREFIX = 'PREFIX',
+  DB_NAME = 'DB_NAME',
+  DB_USER = 'DB_USER',
+  DB_PASSWORD = 'DB_PASSWORD',
+  DB_HOST = 'DB_HOST',
+  DB_PORT = 'DB_PORT',
+  DB_LOGGIN = 'DB_LOGGIN'
 }
 
 function logError(msg: string, env: string): void {
@@ -26,4 +32,10 @@ export function setupEnvs(): void {
   console.info('Loading envs...')
   loadEnv(ENVS.BOT_TOKEN)
   loadEnv(ENVS.PREFIX)
+  loadEnv(ENVS.DB_NAME)
+  loadEnv(ENVS.DB_PASSWORD)
+  loadEnv(ENVS.DB_USER)
+  loadEnv(ENVS.DB_HOST)
+  loadEnv(ENVS.DB_PORT)
+  loadEnv(ENVS.DB_LOGGIN)
 }
