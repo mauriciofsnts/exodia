@@ -30,8 +30,11 @@
     "ffmpeg-static": "^4.4.1",
     "glob": "^7.2.0",
     "libsodium-wrappers": "^0.7.10",
+    "pg": "^8.8.0",
     "play-dl": "^1.9.5",
+    "reflect-metadata": "^0.1.13",
     "soundcloud-downloader": "^1.0.0",
+    "typeorm": "^0.3.7",
     "youtube-search-without-api-key": "^1.0.7"
   },
   "optionalDependencies": {
