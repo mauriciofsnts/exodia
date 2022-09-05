@@ -11,7 +11,7 @@ export class AppDataSource extends DataSource {
     const password = loadEnv(ENVS.DB_PASSWORD)
     const username = loadEnv(ENVS.DB_USER)
     const port = Number(loadEnv(ENVS.DB_PORT))
-    const logging = !!loadEnv(ENVS.DB_LOGGIN)
+    const logging = JSON.parse(loadEnv(ENVS.DB_LOGGIN))
 
     super({
       type: 'postgres',
