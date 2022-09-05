@@ -58,7 +58,7 @@ export default new Command({
     const radioName =
       interaction.type === InteractionType.ApplicationCommand
         ? String(interaction.options.get('option')?.value)
-        : Array.isArray(args) && (args.join(' ') as string)
+        : Array.isArray(args) && args.join(' ')
 
     if (!radioName)
       return Reply(
@@ -76,15 +76,34 @@ export default new Command({
     console.log('radioName: ', radioName)
 
     try {
-      const type = radioName as keyof typeof Radios
-      if (!type) throw new Error(`The option ${type} is not configured`)
+      const option = radioName as keyof typeof Radios
+      console.log('option: ', option)
 
-      console.log('Type: ', Radios[type])
+      if (!(option in Radios)) {
+        console.log('not in radios', !(option in Radios))
 
-      song = await Song.from(Radios[type])
+        return Reply(
+          Embed({
+            title: 'Error',
+            description: `The option ${option} is not configured`,
+            type: 'error',
+          }),
+          interaction,
+          type
+        )
+      }
+
+      song = await Song.from(Radios[option])
     } catch (error) {
-      console.error('Error on execute', error)
-      return
+      return Reply(
+        Embed({
+          title: 'Error',
+          description: 'Ocorreu um erro ao reproduzir a rádio',
+          type: 'error',
+        }),
+        interaction,
+        type
+      )
     }
 
     const queue = client.queues.get(interaction.guild.id)
