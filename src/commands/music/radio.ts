@@ -73,15 +73,10 @@ export default new Command({
 
     let song
 
-    console.log('radioName: ', radioName)
-
     try {
       const option = radioName as keyof typeof Radios
-      console.log('option: ', option)
 
       if (!(option in Radios)) {
-        console.log('not in radios', !(option in Radios))
-
         return Reply(
           Embed({
             title: 'Error',
@@ -98,7 +93,7 @@ export default new Command({
       return Reply(
         Embed({
           title: 'Error',
-          description: 'Ocorreu um erro ao reproduzir a rádio',
+          description: 'An error occurred when reproducing the radio',
           type: 'error',
         }),
         interaction,
