@@ -1,5 +1,25 @@
-version: "3.7"
+version: '3.7'
 services:
+  app:
+    build: .
+    command: yarn start
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    environment:
+      - BOT_TOKEN=
+      - PREFIX=,
+      - DB_PORT=5432
+      - DB_NAME=exodia
+      - DB_HOST=localhost
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_LOGGIN=false
+
   postgres:
     container_name: postgres_container
     image: postgres:10.5
@@ -10,8 +30,8 @@ services:
     logging:
       options:
         max-size: 10m
-        max-file: "3"
+        max-file: '3'
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - /var/lib/docker
