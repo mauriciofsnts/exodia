@@ -9,7 +9,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN yarn
-RUN yarn build
 
 # Bundle app source
 COPY . .
