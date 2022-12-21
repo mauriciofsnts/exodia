@@ -1,6 +1,6 @@
 import { ApplicationCommandType, EmbedBuilder } from 'discord.js'
 import { Command } from '../../core/command'
-import { cnpj } from '../../helpers/documents'
+import { cnpj } from '../../utils/documents'
 import { Color, Reply } from '../reply'
 
 export default new Command({

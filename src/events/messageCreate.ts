@@ -1,6 +1,6 @@
 import { client } from '..'
 import { Events } from '../core/event'
-import { ENVS, loadEnv } from '../helpers/envHelper'
+import { ENVS, loadEnv } from '../utils/envHelper'
 
 export default new Events('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return

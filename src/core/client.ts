@@ -6,13 +6,13 @@ import {
 import { ClientEvents } from 'discord.js'
 import { Events } from './event'
 import { Client, Collection } from 'discord.js'
-import { ENVS, loadEnv, setupEnvs } from '../helpers/envHelper'
+import { ENVS, loadEnv, setupEnvs } from '../utils/envHelper'
 import { RegisterCommandsOptions } from '../types/client'
 import { CommandType } from '../types/command'
 import { promisify } from 'util'
 import { MusicQueue } from './player'
 import glob from 'glob'
-import importFile from '../helpers/importFile'
+import importFile from '../utils/importFile'
 
 const globPromise = promisify(glob)
 

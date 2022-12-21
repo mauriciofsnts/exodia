@@ -1,0 +1,6 @@
+{
+  "ping": {
+    "description": "Mostra o ping médio do bot.",
+    "result": "📈 Ping médio da API: {ping} ms"
+  }
+}

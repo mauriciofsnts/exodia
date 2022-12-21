@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
-import { ENVS, loadEnv } from '../helpers/envHelper'
+import { ENVS, loadEnv } from '../utils/envHelper'
 
 import Guild from '../entities/guild'
 
