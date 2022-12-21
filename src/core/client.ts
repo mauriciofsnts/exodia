@@ -10,7 +10,7 @@ import { ENVS, loadEnv, setupEnvs } from '../helpers/envHelper'
 import { RegisterCommandsOptions } from '../types/client'
 import { CommandType } from '../types/command'
 import { promisify } from 'util'
-import { MusicQueue } from './Player'
+import { MusicQueue } from './player'
 import glob from 'glob'
 import importFile from '../helpers/importFile'
 

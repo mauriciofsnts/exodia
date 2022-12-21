@@ -5,7 +5,7 @@ import {
 import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
 import { client } from '../..'
 import { Command } from '../../core/command'
-import { MusicQueue } from '../../core/Player'
+import { MusicQueue } from '../../core/player'
 import { Song } from '../../core/song'
 import { Embed, Reply, ReplyMusicEmbed } from '../reply'
 

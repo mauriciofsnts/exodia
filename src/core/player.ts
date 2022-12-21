@@ -104,6 +104,7 @@ export class MusicQueue {
           newState.status === AudioPlayerStatus.Playing
         ) {
           // TODO: now playing msg
+          // console.log('now playing...', oldState, newState)
         }
       }
     )
