@@ -1,28 +1,18 @@
 import { client } from '../..'
 import { Command } from '../../core/command'
+import { i18n } from '../../utils/i18n'
 import { Embed, Reply } from '../reply'
 
 export default new Command({
   name: 'resume',
-  description: 'Resume the music',
+  description: i18n.__('resume.description'),
   aliases: ['resume', 'r'],
   run: async ({ interaction, type }) => {
-    if (!interaction.member.voice.channel)
+    if (!interaction.member.voice.channel || !interaction.guild)
       return Reply(
         Embed({
           title: 'Error',
-          description: 'You need it is on a voice channel',
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
-
-    if (!interaction.guild)
-      return Reply(
-        Embed({
-          title: 'Error',
-          description: 'You need it is on a server to execute this command',
+          description: i18n.__('common.errorNotChannel'),
           type: 'error',
         }),
         interaction,
@@ -35,7 +25,7 @@ export default new Command({
       return Reply(
         Embed({
           title: 'Error',
-          description: 'There is nothing playing that I could resume for you',
+          description: i18n.__('resume.errorNotQueue'),
           type: 'error',
         }),
         interaction,
@@ -48,7 +38,9 @@ export default new Command({
       return Reply(
         Embed({
           title: 'Ok',
-          description: 'Resuming',
+          description: i18n.__mf('resume.resultNotPlaying', {
+            author: interaction.member.nickname,
+          }),
           type: 'success',
         }),
         interaction,
@@ -59,7 +51,7 @@ export default new Command({
     return Reply(
       Embed({
         title: 'Error',
-        description: 'Something is wrong',
+        description: i18n.__('common.errorCommand'),
         type: 'error',
       }),
       interaction,

@@ -8,10 +8,11 @@ import { Command } from '../../core/command'
 import { MusicQueue } from '../../core/player'
 import { Song } from '../../core/song'
 import { Embed, Reply, ReplyMusicEmbed } from '../reply'
+import { i18n } from '../../utils/i18n'
 
 export default new Command({
   name: 'play',
-  description: 'play a song',
+  description: i18n.__('play.description'),
   aliases: ['p', 'play'],
   options: [
     {
@@ -22,22 +23,11 @@ export default new Command({
     },
   ],
   run: async ({ interaction, args, type }) => {
-    if (!interaction.member.voice.channel)
+    if (!interaction.member.voice.channel || !interaction.guild)
       return Reply(
         Embed({
           title: 'Error',
-          description: 'You need it is on a voice channel',
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
-
-    if (!interaction.guild)
-      return Reply(
-        Embed({
-          title: 'Error',
-          description: 'You need it is on a server to execute this command',
+          description: i18n.__('play.errorNotChannel'),
           type: 'error',
         }),
         interaction,
@@ -53,7 +43,7 @@ export default new Command({
       return Reply(
         Embed({
           title: 'Error',
-          description: 'You need to inform the song title',
+          description: i18n.__('play.errorNotChannel'),
           type: 'error',
         }),
         interaction,
@@ -77,7 +67,10 @@ export default new Command({
       Reply(
         Embed({
           title: `Ok`,
-          description: `${song.title} added to playlist`,
+          description: i18n.__mf('play.queueAdded', {
+            author: interaction.member.nickname,
+            title: song.title,
+          }),
           type: 'success',
         }),
         interaction,

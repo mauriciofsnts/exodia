@@ -1,28 +1,18 @@
 import { client } from '../..'
 import { Command } from '../../core/command'
 import { Embed, Reply } from '../reply'
+import { i18n } from '../../utils/i18n'
 
 export default new Command({
   name: 'stop',
-  description: 'Stops the music',
+  description: i18n.__('stop.description'),
   aliases: ['stop'],
   run: async ({ interaction, type }) => {
-    if (!interaction.member.voice.channel)
+    if (!interaction.member.voice.channel || !interaction.guild)
       return Reply(
         Embed({
           title: 'Error',
-          description: 'You need it is on a voice channel',
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
-
-    if (!interaction.guild)
-      return Reply(
-        Embed({
-          title: 'Error',
-          description: 'You need it is on a server to execute this command',
+          description: i18n.__('common.errorNotChannel'),
           type: 'error',
         }),
         interaction,
@@ -35,7 +25,7 @@ export default new Command({
       return Reply(
         Embed({
           title: 'Error',
-          description: 'There is nothing playing that I could skip for you',
+          description: i18n.__('skip.errorNotQueue'),
           type: 'error',
         }),
         interaction,
@@ -47,7 +37,9 @@ export default new Command({
     return Reply(
       Embed({
         title: 'Ok',
-        description: 'Stopping',
+        description: i18n.__mf('stop.result', {
+          author: interaction.member.nickname,
+        }),
         type: 'success',
       }),
       interaction,

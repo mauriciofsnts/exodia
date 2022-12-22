@@ -1,10 +1,11 @@
-import { ApplicationCommandType, EmbedBuilder } from 'discord.js'
+import { ApplicationCommandType } from 'discord.js'
 import { Command } from '../../core/command'
 import { Embed, Reply } from '../reply'
+import { i18n } from '../../utils/i18n'
 
 export default new Command({
   name: 'uptime',
-  description: 'Check the uptime',
+  description: i18n.__('uptime.description'),
   type: ApplicationCommandType.ChatInput,
   aliases: ['uptime'],
   run: async ({ client, interaction, type }) => {
@@ -17,11 +18,14 @@ export default new Command({
     minutes %= 60
     hours %= 24
 
-    const msg = `Uptime: ${days} day(s), ${hours} hours, ${minutes} minutes, ${seconds} seconds`
-
     const embed = Embed({
       title: 'Uptime',
-      description: msg,
+      description: i18n.__mf('uptime.result', {
+        days: days,
+        hours: hours,
+        minutes: minutes,
+        seconds: seconds,
+      }),
       type: 'info',
     })
 
