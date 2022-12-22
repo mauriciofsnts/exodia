@@ -27,9 +27,7 @@ export default new Command({
       description: 'music style',
       type: ApplicationCommandOptionType.String,
       required: true,
-      choices: [
-        { name: 'rap', value: 'rap' },
-      ] as ApplicationCommandOptionChoiceData[],
+      choices: [{ name: 'rap', value: 'rap' }],
     },
   ],
   run: async ({ interaction, args, type }) => {
