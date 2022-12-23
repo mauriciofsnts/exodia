@@ -39,8 +39,6 @@ export default new Command({
         ? String(interaction.options.get('songtitle')?.value)
         : Array.isArray(args) && args.join(' ')
 
-        console.log("🚀 ~ file: play.ts:38 ~ run: ~ songTitle", songTitle)
-        
     if (!songTitle)
       return Reply(
         Embed({
@@ -68,7 +66,6 @@ export default new Command({
 
       Reply(
         Embed({
-          title: `Ok`,
           description: i18n.__mf('play.queueAdded', {
             author: interaction.member.nickname,
             title: song.title,
@@ -97,12 +94,12 @@ export default new Command({
     newQueue.enqueue(song)
 
     Reply(
-      ReplyMusicEmbed({
-        duration: song.duration,
-        member: interaction.user?.username ?? '-',
-        title: song.title,
-        thumbnail: song.thumbnail,
-        query: songTitle,
+      Embed({
+        description: i18n.__mf('play.queueAdded', {
+          author: interaction.member.nickname,
+          title: song.title,
+        }),
+        type: 'success',
       }),
       interaction,
       type

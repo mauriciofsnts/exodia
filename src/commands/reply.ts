@@ -3,7 +3,7 @@ import { EmbedBuilder } from 'discord.js'
 import { InteractionType } from '../types/command'
 
 type EmbedProps = {
-  title: string
+  title?: string
   thumbnail?: string
   footer?: string
   timestamp?: boolean
@@ -25,7 +25,9 @@ export function Embed({
   thumbnail,
   timestamp,
 }: EmbedProps): EmbedBuilder {
-  const embed = new EmbedBuilder().setColor(Color[type]).setTitle(title)
+  const embed = new EmbedBuilder().setColor(Color[type])
+
+  if (title) embed.setTitle(title)
 
   if (description) embed.setDescription(description)
 
