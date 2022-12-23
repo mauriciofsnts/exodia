@@ -2,11 +2,7 @@ import {
   DiscordGatewayAdapterCreator,
   joinVoiceChannel,
 } from '@discordjs/voice'
-import {
-  ApplicationCommandOptionChoiceData,
-  ApplicationCommandOptionType,
-  InteractionType,
-} from 'discord.js'
+import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
 import { client } from '../..'
 import { Command } from '../../core/command'
 import { MusicQueue } from '../../core/player'

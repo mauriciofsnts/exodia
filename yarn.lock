@@ -96,17 +96,6 @@
     tslib "^2.4.0"
     ws "^8.8.1"
 
-"@discordjs/voice@^0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@discordjs/voice/-/voice-0.14.0.tgz#8e5be1a76bb6c1e6e75236237f00241c763b2833"
-  integrity sha512-/LV8LSFuJ1c4OEW1ubPg3al2QNpUpwX8ZL+KL+LORmnUFVCtehSaEh+38uDfWg1O/TgiGI5vOLj4ZKql43drcw==
-  dependencies:
-    "@types/ws" "^8.5.3"
-    discord-api-types "^0.37.20"
-    prism-media "^1.3.4"
-    tslib "^2.4.1"
-    ws "^8.11.0"
-
 "@jridgewell/resolve-uri@^3.0.3":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@jridgewell/resolve-uri/-/resolve-uri-3.1.0.tgz#2203b118c157721addfe69d47b70465463066d78"
@@ -266,7 +255,7 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-5.1.2.tgz#07508b45797cb81ec3f273011b054cd0755eddca"
   integrity sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==
 
-"@types/node@*", "@types/node@^18.7.7":
+"@types/node@*", "@types/node@^18.11.17":
   version "18.11.17"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.17.tgz#5c009e1d9c38f4a2a9d45c0b0c493fe6cdb4bcb5"
   integrity sha512-HJSUJmni4BeDHhfzn6nF0sVmd1SMezP7/4F0Lq+aXzmp2xm9O7WXrUtHW/CHlYVtZUbByEvWidHqRtcJXGF2Ng==
@@ -658,16 +647,6 @@ discord-api-types@^0.37.20, discord-api-types@^0.37.23:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.37.24.tgz#f3ee0ad6b2b70925b5225f9beac6e24bc4de6e46"
   integrity sha512-1+Fb4huJCihdbkJLcq2p7nBmtlmAryNwjefT8wwJnL8c7bc7WA87Oaa5mbLe96QvZyfwnwRCDX40H0HhcVV50g==
 
-discord-player@^5.3.1:
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/discord-player/-/discord-player-5.3.2.tgz#66c1c07f97de5def70263c7f89a4810638522456"
-  integrity sha512-MVIL6VNBD9JWA0QIaqx6y7/e9a5uDjStp9zOaXvDgY291J+z7k14NU886+fYbczMPaIJYjHkVvy4TtbNdOxWFQ==
-  dependencies:
-    "@discordjs/voice" "^0.11.0"
-    libsodium-wrappers "^0.7.10"
-    tiny-typed-emitter "^2.1.0"
-    tslib "^2.4.0"
-
 discord.js@^14.2.0:
   version "14.7.1"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-14.7.1.tgz#26079d0ff4d27daf02480a403c456121f0682bd9"
@@ -1020,7 +999,7 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-m3u8stream@^0.8.0:
+m3u8stream@^0.8.0, m3u8stream@^0.8.6:
   version "0.8.6"
   resolved "https://registry.yarnpkg.com/m3u8stream/-/m3u8stream-0.8.6.tgz#0d6de4ce8ee69731734e6b616e7b05dd9d9a55b1"
   integrity sha512-LZj8kIVf9KCphiHmH7sbFQTVe4tOemb202fWwvJwR9W5ENW/1hxJN6ksAWGhQgSBSa3jyWhnjKU1Fw1GaOdbyA==
@@ -1446,7 +1425,7 @@ safe-identifier@^0.4.1:
   resolved "https://registry.yarnpkg.com/safe-identifier/-/safe-identifier-0.4.2.tgz#cf6bfca31c2897c588092d1750d30ef501d59fcb"
   integrity sha512-6pNbSMW6OhAi9j+N8V+U715yBQsaWJ7eyEUaOrawX+isg5ZxhUlV1NipNtgaKHmFGiABwt+ZF04Ii+3Xjkg+8w==
 
-sax@>=0.6.0, sax@^1.2.4:
+sax@>=0.6.0, sax@^1.1.3, sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
@@ -1594,11 +1573,6 @@ thenify-all@^1.0.0:
   integrity sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==
   dependencies:
     any-promise "^1.0.0"
-
-tiny-typed-emitter@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/tiny-typed-emitter/-/tiny-typed-emitter-2.1.0.tgz#b3b027fdd389ff81a152c8e847ee2f5be9fad7b5"
-  integrity sha512-qVtvMxeXbVej0cQWKqVSSAHmKZEHAvxdF8HEUBFWts8h+xEo5m/lEiPakuyZ3BnCBjOD8i24kzNOiOLLgsSxhA==
 
 to-regex-range@^5.0.1:
   version "5.0.1"
@@ -1830,3 +1804,17 @@ youtube-search-without-api-key@^1.0.7:
   integrity sha512-1SaOviXU5CZ9wU1YlMQx7NBysIr5IDRNe+mD/8ml6IAiiDlEOgZ8a01Hs+OhmpQAb+UuY1cOsfca8pcs/CGLUA==
   dependencies:
     got "^11.8.3"
+
+youtube-sr@^4.2.0:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/youtube-sr/-/youtube-sr-4.3.4.tgz#cbd2d446de2b0c43f5dd3ea5333222a327eddaf0"
+  integrity sha512-olSYcR80XigutCrePEXBX3/RJJrWfonJQj7+/ggBiWU0CzTDLE1q8+lpWTWCG0JpzhzILp/IB/Bq/glGqqr1TQ==
+
+ytdl-core@^4.11.0:
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-4.11.2.tgz#c2341916b9757171741a2fa118b6ffbb4ffd92f7"
+  integrity sha512-D939t9b4ZzP3v0zDvehR2q+KgG97UTgrTKju3pOPGQcXtl4W6W5z0EpznzcJFu+OOpl7S7Ge8hv8zU65QnxYug==
+  dependencies:
+    m3u8stream "^0.8.6"
+    miniget "^4.2.2"
+    sax "^1.1.3"

@@ -39,6 +39,8 @@ export default new Command({
         ? String(interaction.options.get('songtitle')?.value)
         : Array.isArray(args) && args.join(' ')
 
+        console.log("🚀 ~ file: play.ts:38 ~ run: ~ songTitle", songTitle)
+        
     if (!songTitle)
       return Reply(
         Embed({

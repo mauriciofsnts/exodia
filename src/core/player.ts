@@ -110,7 +110,7 @@ export class MusicQueue {
     )
 
     this.player.on('error', (e) => {
-      console.error('Error on playing: ', e.message, ' ', e.cause, ' ', e.name)
+      console.error('Error on playing: ', e.message, ' ', e.name)
     })
   }
 
