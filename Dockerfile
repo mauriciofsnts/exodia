@@ -17,4 +17,3 @@ EXPOSE 8080
 
 # Define o comando padrão para iniciar o aplicativo
 CMD ["yarn", "start"]
-w
