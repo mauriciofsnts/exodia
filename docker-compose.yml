@@ -1,37 +1,32 @@
-version: '3.7'
+version: '3'
 services:
   app:
     build: .
-    command: yarn start
-    volumes:
-      - .:/usr/app/
-      - /usr/app/node_modules
     ports:
-      - '3000:3000'
-    depends_on:
-      - postgres
+      - '8080:8080'
     environment:
       - BOT_TOKEN=
       - PREFIX=,
       - DB_PORT=5432
       - DB_NAME=exodia
-      - DB_HOST=localhost
+      - DB_HOST=postgres
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_LOGGIN=false
-
   postgres:
-    container_name: postgres_container
-    image: postgres:10.5
+    image: postgres:latest
     restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=meu-banco
+      - POSTGRES_USER=meu-usuario
+      - POSTGRES_PASSWORD=minha-senha
+    ports:
+      - '5432:5432'
     logging:
       options:
         max-size: 10m
         max-file: '3'
-    ports:
-      - '5432:5432'
-    volumes:
-      - /var/lib/docker
+volumes:
+  postgres-data:
