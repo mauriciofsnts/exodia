@@ -2,9 +2,9 @@ import i18n from 'i18n'
 import { join } from 'path'
 
 i18n.configure({
-  locales: ['pt_br'],
+  locales: ['pt_br', 'en'],
   directory: join(__dirname, '..', 'locales'),
-  defaultLocale: 'pt_br',
+  defaultLocale: 'en',
   retryInDefaultLocale: true,
   objectNotation: true,
 
