@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./build && tsc",
     "start": "yarn build && node build/index.js",
     "start:dev": "nodemon --watch"
@@ -14,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/glob": "^7.2.0",
-    "@types/i18n": "^0.13.6",
+    "@types/i18n": "^0.13.2",
     "@types/node": "^18.11.17",
     "better-logging": "^5.0.0",
     "nodemon": "^2.0.19",
@@ -29,7 +28,7 @@
     "dotenv": "^16.0.1",
     "ffmpeg-static": "^4.4.1",
     "glob": "^7.2.0",
-    "i18n": "^0.15.1",
+    "i18n": "^0.14.2",
     "libsodium-wrappers": "^0.7.10",
     "pg": "^8.8.0",
     "play-dl": "^1.9.6",
