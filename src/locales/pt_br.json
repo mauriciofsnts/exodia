@@ -56,5 +56,25 @@
   "uptime": {
     "description": "Verifica o tempo ativo",
     "result": "Tempo online: `{days} dia(s),{hours} hora(s), {minutes} minuto(s), {seconds} segundo(s)`"
+  },
+  "nowplaying": {
+    "description": "Mostra música em reprodução.",
+    "errorNotQueue": "Não há nada reproduzindo.",
+    "embedTitle": "Reproduzindo",
+    "live": " ◉ AO VIVO",
+    "timeRemaining": "Tempo restante: {time}"
+  },
+  "playlist": {
+    "description": "Reproduz uma playlist do youtube",
+    "usagesReply": "Uso: {prefix}playlist <URL da Playlist do Youtube | Nome da Playlist>",
+    "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
+    "errorNotInSameChannel": "Você precisa está no mesmo canal que {user}",
+    "missingPermissionConnect": "Não posso conectar a canais de voz, falta permissão!",
+    "missingPermissionSpeak": "Não posso tocar neste canal de voz, falta permissão!",
+    "errorNotFoundPlaylist": "Playlist não encontrada :(",
+    "fetchingPlaylist": "⌛ importando playlist...",
+    "playlistCharLimit": "\nPlaylist maior que o permitido...",
+    "startedPlaylist": "<@{author}> reproduzindo uma playlist.",
+    "cantJoinChannel": "Não pude entrar no canal: {error}"
   }
 }

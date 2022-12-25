@@ -56,5 +56,25 @@
   "uptime": {
     "description": "Check the uptime",
     "result": "Uptime: `{days} day(s),{hours} hours, {minutes} minutes, {seconds} seconds`"
+  },
+  "nowplaying": {
+    "description": "Show now playing song",
+    "errorNotQueue": "There is nothing playing.",
+    "embedTitle": "Now playing",
+    "live": " ◉ LIVE",
+    "timeRemaining": "Time Remaining: {time}"
+  },
+  "playlist": {
+    "description": "Play a playlist from youtube",
+    "usagesReply": "Usage: {prefix}playlist <YouTube Playlist URL | Playlist Name>",
+    "errorNotChannel": "You need to join a voice channel first!",
+    "errorNotInSameChannel": "You must be in the same channel as {user}",
+    "missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
+    "missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
+    "errorNotFoundPlaylist": "Playlist not found :(",
+    "fetchingPlaylist": "⌛ fetching the playlist...",
+    "playlistCharLimit": "\nPlaylist larger than character limit...",
+    "startedPlaylist": "<@{author}> Started a playlist",
+    "cantJoinChannel": "Could not join the channel: {error}"
   }
 }

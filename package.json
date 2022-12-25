@@ -34,10 +34,11 @@
     "play-dl": "^1.9.6",
     "reflect-metadata": "^0.1.13",
     "soundcloud-downloader": "^1.0.0",
+    "string-progressbar": "^1.0.4",
     "typeorm": "^0.3.7",
-    "ytdl-core": "^4.11.0",
+    "youtube-search-without-api-key": "^1.0.7",
     "youtube-sr": "^4.2.0",
-    "youtube-search-without-api-key": "^1.0.7"
+    "ytdl-core": "^4.11.0"
   },
   "optionalDependencies": {
     "@discordjs/opus": "^0.8.0",
