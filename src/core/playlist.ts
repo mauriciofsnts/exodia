@@ -1,5 +1,5 @@
 import youtube, { Playlist as YoutubePlaylist } from 'youtube-sr'
-import { Song } from './Song'
+import { Song } from './song'
 
 const pattern = /^.*(youtu.be\/|list=)([^#\&\?]*).*/i
 
