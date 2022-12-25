@@ -25,7 +25,7 @@ export default new Command({
       return Reply(
         Embed({
           title: 'Error',
-          description: i18n.__('skip.errorNotQueue'),
+          description: i18n.__('stop.errorNotQueue'),
           type: 'error',
         }),
         interaction,

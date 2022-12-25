@@ -82,5 +82,10 @@
     "errorNotQueue": "There is nothing playing.",
     "lyricsNotFound": "No lyrics found for {title}.",
     "embedTitle": "{title} - Lyrics"
+  },
+  "help": {
+    "description": "Display all commands and descriptions",
+    "embedTitle": "{botname} Help",
+    "embedDescription": "List of all commands"
   }
 }

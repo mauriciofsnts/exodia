@@ -82,5 +82,10 @@
     "errorNotQueue": "Não há nada reproduzindo.",
     "lyricsNotFound": "Nenhuma letra encontrada para {title}.",
     "embedTitle": "{title} - Letra"
+  },
+  "help": {
+    "description": "Mostra todos os comandos e descrições.",
+    "embedTitle": "{botname} Ajuda",
+    "embedDescription": "Lista de todos os comandos."
   }
 }
