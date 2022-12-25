@@ -76,5 +76,11 @@
     "playlistCharLimit": "\nPlaylist larger than character limit...",
     "startedPlaylist": "<@{author}> Started a playlist",
     "cantJoinChannel": "Could not join the channel: {error}"
+  },
+  "lyrics": {
+    "description": "Get lyrics for the currently playing song",
+    "errorNotQueue": "There is nothing playing.",
+    "lyricsNotFound": "No lyrics found for {title}.",
+    "embedTitle": "{title} - Lyrics"
   }
 }

@@ -26,7 +26,7 @@ export default new Command({
     const seek = queue.resource.playbackDuration / 1000
     const left = song.duration - seek
 
-    const embed = Embed({
+    let embed = Embed({
       title: i18n.__('nowplaying.embedTitle'),
       description: `${song.title}\n${song.url}`,
       type: 'info',

@@ -76,5 +76,11 @@
     "playlistCharLimit": "\nPlaylist maior que o permitido...",
     "startedPlaylist": "<@{author}> reproduzindo uma playlist.",
     "cantJoinChannel": "Não pude entrar no canal: {error}"
+  },
+  "lyrics": {
+    "description": "Mostra a letra da música que está reproduzindo.",
+    "errorNotQueue": "Não há nada reproduzindo.",
+    "lyricsNotFound": "Nenhuma letra encontrada para {title}.",
+    "embedTitle": "{title} - Letra"
   }
 }
