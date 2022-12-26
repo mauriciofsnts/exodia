@@ -1,6 +1,5 @@
 import youtube, { Playlist as YoutubePlaylist } from 'youtube-sr'
-import { Song } from './song'
-
+import { Song } from './Song'
 const pattern = /^.*(youtu.be\/|list=)([^#\&\?]*).*/i
 
 export class Playlist {
@@ -26,14 +25,14 @@ export class Playlist {
       })
   }
 
-  public static async from(url: string = '', search: string = '') {
-    const urlValid = pattern.test(url)
+  public static async from(query: string = '') {
+    const urlValid = pattern.test(query)
     let playlist
 
     if (urlValid) {
-      playlist = await youtube.getPlaylist(url)
+      playlist = await youtube.getPlaylist(query)
     } else {
-      const result = await youtube.searchOne(search, 'playlist')
+      const result = await youtube.searchOne(query, 'playlist')
       playlist = await youtube.getPlaylist(result.url!)
     }
 

@@ -31,7 +31,6 @@ export default new Command({
       lyrics = await lyricsFinder(queue.songs[0].title, '')
       if (!lyrics) lyrics = i18n.__mf('lyrics.lyricsNotFound', { title: title })
     } catch (error) {
-      console.log('🚀 ~ file: lyrics.ts:34 ~ run: ~ error', error)
       lyrics = i18n.__mf('lyrics.lyricsNotFound', { title: title })
     }
 
