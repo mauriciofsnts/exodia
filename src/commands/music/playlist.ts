@@ -39,7 +39,7 @@ export default new Command({
 
     const query =
       interaction.type === InteractionType.ApplicationCommand
-        ? String(interaction.options.get('songtitle')?.value)
+        ? String(interaction.options.get('query')?.value)
         : Array.isArray(args) && args.join(' ')
 
     if (!query)
