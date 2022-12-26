@@ -1,7 +1,7 @@
-import { client } from '../..'
-import { Command } from '../../core/command'
-import { i18n } from '../../utils/i18n'
-import { Embed, Reply } from '../reply'
+import { Embed, Reply } from 'commands/reply'
+import { Command } from 'core/command'
+import { client } from 'index'
+import { i18n } from 'utils/i18n'
 
 export default new Command({
   name: 'pause',

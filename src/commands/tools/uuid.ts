@@ -1,11 +1,12 @@
 import { ApplicationCommandType } from 'discord.js'
-import { Command } from '../../core/command'
-import { uuid } from '../../utils/uuid'
-import { Embed, Reply } from '../reply'
+import { Embed, Reply } from 'commands/reply'
+import { Command } from 'core/command'
+import { i18n } from 'utils/i18n'
+import { uuid } from 'utils/uuid'
 
 export default new Command({
   name: 'uuid',
-  description: 'returns random uuid',
+  description: i18n.__('uuid.description'),
   type: ApplicationCommandType.ChatInput,
   aliases: ['uuid'],
   run: async ({ interaction, type }) => {

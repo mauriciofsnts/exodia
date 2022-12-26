@@ -1,10 +1,10 @@
-import { Track } from './../types/track'
 import {
   AudioResource,
   createAudioResource,
   StreamType,
 } from '@discordjs/voice'
 import play from 'play-dl'
+import { Track } from 'types/track'
 import youtube from 'youtube-sr'
 import { getInfo } from 'ytdl-core'
 

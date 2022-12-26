@@ -7,7 +7,7 @@ import { client } from '../..'
 import { Command } from '../../core/command'
 import { MusicQueue } from '../../core/player'
 import { Song } from '../../core/song'
-import { Embed, Reply, ReplyMusicEmbed } from '../reply'
+import { Embed, Reply } from '../reply'
 import { i18n } from '../../utils/i18n'
 
 export default new Command({

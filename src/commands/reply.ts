@@ -1,6 +1,5 @@
-import { ExtendedInteraction } from './../types/command'
 import { EmbedBuilder } from 'discord.js'
-import { InteractionType } from '../types/command'
+import { ExtendedInteraction, InteractionType } from 'types/command'
 
 type EmbedProps = {
   title?: string

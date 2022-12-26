@@ -1,4 +1,3 @@
-import { ExtendedInteraction } from './../types/command'
 import {
   AudioPlayer,
   AudioPlayerState,
@@ -13,9 +12,10 @@ import {
   VoiceConnectionStatus,
 } from '@discordjs/voice'
 import { Song } from './song'
-import { client } from '..'
+import { client } from 'index'
 import { promisify } from 'util'
-import { QueueOptions } from '../types/queue'
+import { ExtendedInteraction } from 'types/command'
+import { QueueOptions } from 'types/queue'
 
 const wait = promisify(setTimeout)
 export class MusicQueue {

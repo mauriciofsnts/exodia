@@ -2,17 +2,20 @@ import {
   ApplicationCommandDataResolvable,
   GatewayIntentBits,
   Snowflake,
+  Client,
+  Collection,
+  ClientEvents,
 } from 'discord.js'
-import { ClientEvents } from 'discord.js'
-import { Events } from './event'
-import { Client, Collection } from 'discord.js'
-import { ENVS, loadEnv, setupEnvs } from '../utils/envHelper'
-import { RegisterCommandsOptions } from '../types/client'
-import { CommandType } from '../types/command'
-import { promisify } from 'util'
+
 import { MusicQueue } from './player'
+import { CommandType } from 'types/command'
+import { Events } from './event'
+import { RegisterCommandsOptions } from 'types/client'
+import { ENVS, loadEnv, setupEnvs } from 'utils/envHelper'
+
+import { promisify } from 'util'
 import glob from 'glob'
-import importFile from '../utils/importFile'
+import importFile from 'utils/importFile'
 
 const globPromise = promisify(glob)
 

@@ -1,8 +1,8 @@
-import { client } from '../..'
-import { i18n } from '../../utils/i18n'
-import { Command } from '../../core/command'
-import { Embed, Reply } from '../reply'
-import { loadEnv } from '../../utils/envHelper'
+import { Embed, Reply } from 'commands/reply'
+import { Command } from 'core/command'
+import { client } from 'index'
+import { i18n } from 'utils/i18n'
+import { ENVS, loadEnv } from 'utils/envHelper'
 
 export default new Command({
   name: 'help',
@@ -12,13 +12,15 @@ export default new Command({
     let commands = client.commands
 
     let embed = Embed({
-      title: i18n.__('help.embedTitle', { botname: 'exodia' }),
+      title: i18n.__mf('help.embedTitle', { botname: 'Exodia' }),
       description: i18n.__('help.embedDescription'),
       type: 'info',
     })
 
+    const botPrefix = loadEnv(ENVS.PREFIX)
+
     commands.forEach((cmd) => {
-      const name = `**${loadEnv('PREFIX')}${cmd.name} ${
+      const name = `**${botPrefix}${cmd.name} ${
         cmd.aliases ? `(${cmd.aliases})` : ''
       }**`
 

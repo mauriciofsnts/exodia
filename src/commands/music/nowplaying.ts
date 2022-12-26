@@ -1,8 +1,8 @@
-import { client } from '../..'
-import { Command } from '../../core/command'
-import { i18n } from '../../utils/i18n'
-import { Embed, Reply } from '../reply'
+import { client } from 'index'
+import { Command } from 'core/command'
+import { i18n } from 'utils/i18n'
 import { splitBar } from 'string-progressbar'
+import { Embed, Reply } from 'commands/reply'
 
 export default new Command({
   name: 'nowplaying',

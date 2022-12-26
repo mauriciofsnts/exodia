@@ -1,7 +1,7 @@
-import { client } from '../..'
-import { i18n } from '../../utils/i18n'
-import { Command } from '../../core/command'
-import { Embed, Reply } from '../reply'
+import { Embed, Reply } from 'commands/reply'
+import { Command } from 'core/command'
+import { client } from 'index'
+import { i18n } from 'utils/i18n'
 
 // @ts-ignore
 import lyricsFinder from 'lyrics-finder'

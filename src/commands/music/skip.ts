@@ -1,7 +1,7 @@
-import { client } from '../..'
-import { i18n } from '../../utils/i18n'
-import { Command } from '../../core/command'
-import { Embed, Reply } from '../reply'
+import { client } from 'index'
+import { Embed, Reply } from 'commands/reply'
+import { Command } from 'core/command'
+import { i18n } from 'utils/i18n'
 
 export default new Command({
   name: 'skip',

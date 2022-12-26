@@ -1,8 +1,8 @@
 import { ApplicationCommandType } from 'discord.js'
-import { Command } from '../../core/command'
-import { Embed, Reply } from '../reply'
-import Guild from '../../entities/guild'
-import { datasource } from '../..'
+import { Embed, Reply } from 'commands/reply'
+import { Command } from 'core/command'
+import { datasource } from 'index'
+import Guild from 'entities/guild'
 
 export default new Command({
   name: 'guild-registration',

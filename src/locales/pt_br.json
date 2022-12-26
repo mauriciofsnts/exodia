@@ -87,5 +87,18 @@
     "description": "Mostra todos os comandos e descrições.",
     "embedTitle": "{botname} Ajuda",
     "embedDescription": "Lista de todos os comandos."
+  },
+  "cnpj": {
+    "description": "Retorna um cnpj válido aleatório",
+    "withMask": "Com máscara",
+    "withoutMask": "Sem máscara"
+  },
+  "cpf": {
+    "description": "Retorna um cpf válido aleatório",
+    "withMask": "Com máscara",
+    "withoutMask": "Sem máscara"
+  },
+  "uuid": {
+    "description": "Retorna um uuid aleatório"
   }
 }

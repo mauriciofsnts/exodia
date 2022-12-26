@@ -1,21 +1,22 @@
 import { ApplicationCommandType, EmbedBuilder } from 'discord.js'
-import { Command } from '../../core/command'
-import { cpf } from '../../utils/documents'
-import { Color, Reply } from '../reply'
+import { Color, Reply } from 'commands/reply'
+import { Command } from 'core/command'
+import { i18n } from 'utils/i18n'
+import { cpf } from 'utils/documents'
 
 export default new Command({
   name: 'cpf',
-  description: 'returns random cpf',
+  description: i18n.__('cpf.description'),
   type: ApplicationCommandType.ChatInput,
   aliases: ['cpf'],
   run: async ({ interaction, type }) => {
     const { mask, output } = cpf()
 
     const embed = new EmbedBuilder()
-      .setColor(Color.success)
+      .setColor(Color.info)
       .setTitle('CPF')
-      .addFields({ name: 'With mask', value: mask })
-      .addFields({ name: 'Without mask', value: output })
+      .addFields({ name: i18n.__('cpf.withMask'), value: mask })
+      .addFields({ name: i18n.__('cpf.withoutMask'), value: output })
 
     Reply(embed, interaction, type)
   },

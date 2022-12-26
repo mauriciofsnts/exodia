@@ -1,8 +1,7 @@
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
-import { ENVS, loadEnv } from '../utils/envHelper'
-
-import Guild from '../entities/guild'
+import { ENVS, loadEnv } from 'utils/envHelper'
+import { Guild } from 'discord.js'
 
 export class AppDataSource extends DataSource {
   constructor() {

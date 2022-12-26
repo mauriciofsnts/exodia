@@ -1,3 +1,4 @@
+import { ExodiaClient } from 'core/client'
 import {
   ChatInputApplicationCommandData,
   CommandInteraction,
@@ -5,7 +6,6 @@ import {
   GuildMember,
   PermissionResolvable,
 } from 'discord.js'
-import { ExodiaClient } from '../core/client'
 
 export interface ExtendedInteraction extends CommandInteraction {
   member: GuildMember
