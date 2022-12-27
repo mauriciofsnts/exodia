@@ -100,5 +100,14 @@
   },
   "uuid": {
     "description": "Retorna um uuid aleatório"
+  },
+  "volume": {
+    "description": "Muda o volume da música atual.",
+    "errorNotQueue": "Não há nada reproduzindo.",
+    "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
+    "currentVolume": "🔊 O volume atual é: **{volume}%**",
+    "errorNotNumber": "Por-favor utilize números para mudar o volume.",
+    "errorNotValid": "Por-favor utilize números entre 0 - 100.",
+    "result": "Volume alterado para: **{arg}%**"
   }
 }

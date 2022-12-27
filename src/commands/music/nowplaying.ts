@@ -49,8 +49,6 @@ export default new Command({
           : new Date(song.duration * 1000).toISOString().substr(11, 8))
       false
 
-      console.log('🚀 ~ file: nowplaying.ts:43 ~ run: ~ fieldValue', fieldValue)
-
       embed.addFields({ name: '\u200b', value: `${fieldValue}` })
     }
 

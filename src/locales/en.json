@@ -100,5 +100,14 @@
   },
   "uuid": {
     "description": "Return a random uuid"
+  },
+  "volume": {
+    "description": "Change volume of currently playing music",
+    "errorNotQueue": "There is nothing playing.",
+    "errorNotChannel": "You need to join a voice channel first!",
+    "currentVolume": "🔊 The current volume is: **{volume}%**",
+    "errorNotNumber": "Please use a number to set volume.",
+    "errorNotValid": "Please use a number between 0 - 100.",
+    "result": "Volume set to: **{arg}%**"
   }
 }
