@@ -6,7 +6,8 @@ export enum ENVS {
   DB_PASSWORD = 'DB_PASSWORD',
   DB_HOST = 'DB_HOST',
   DB_PORT = 'DB_PORT',
-  DB_LOGGIN = 'DB_LOGGIN'
+  DB_LOGGIN = 'DB_LOGGIN',
+  NEWSAPI_API_KEY = 'NEWSAPI_API_KEY'
 }
 
 function logError(msg: string, env: string): void {

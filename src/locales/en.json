@@ -6,7 +6,7 @@
   "skip": {
     "description": "Skip the currently playing song",
     "errorNotQueue": "There is nothing playing that I could skip for you.",
-    "result": "<@{author}> ⏭ skipped the song"
+    "result": "@{author} ⏭ skipped the song"
   },
   "common": {
     "errorNotChannel": "You need to join a voice channel first!",
@@ -15,12 +15,12 @@
   "stop": {
     "description": "Stops the music",
     "errorNotQueue": "There is nothing playing.",
-    "result": "<@{author}> ⏹ stopped the music!"
+    "result": "@{author} ⏹ stopped the music!"
   },
   "pause": {
     "description": "Pause the currently playing music",
     "errorNotQueue": "There is nothing playing.",
-    "result": "<@{author}> ⏸ paused the music."
+    "result": "@{author} ⏸ paused the music."
   },
   "play": {
     "description": "Plays audio from YouTube or Soundcloud",
@@ -29,20 +29,20 @@
     "usageReply": "Usage: {prefix}play <YouTube URL | Video Name | Soundcloud URL>",
     "missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
     "missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
-    "queueAdded": "✅ **{title}** has been added to the queue by <@{author}>",
+    "queueAdded": "✅ **{title}** has been added to the queue by @{author}",
     "cantJoinChannel": "Could not join the channel: {error}",
     "queueEnded": "❌ Music queue ended.",
     "queueError": "Error: {error}",
     "startedPlaying": "🎶 Started playing: **{title}** {url}",
-    "skipSong": "<@{author}> ⏩ skipped the song",
-    "pauseSong": "<@{author}> ⏸ paused the music.",
-    "resumeSong": "<@{author}> ▶ resumed the music!",
-    "unmutedSong": "<@{author}> 🔊 unmuted the music!",
-    "mutedSong": "<@{author}> 🔇 muted the music!",
-    "decreasedVolume": "<@{author}> 🔉 decreased the volume, the volume is now {volume}%",
-    "increasedVolume": "<@{author}> 🔊 increased the volume, the volume is now {volume}%",
-    "loopSong": "<@{author}> Loop is now {loop}",
-    "stopSong": "<@{author}> ⏹ stopped the music!",
+    "skipSong": "@{author} ⏩ skipped the song",
+    "pauseSong": "@{author} ⏸ paused the music.",
+    "resumeSong": "@{author} ▶ resumed the music!",
+    "unmutedSong": "@{author} 🔊 unmuted the music!",
+    "mutedSong": "@{author} 🔇 muted the music!",
+    "decreasedVolume": "@{author} 🔉 decreased the volume, the volume is now {volume}%",
+    "increasedVolume": "@{author} 🔊 increased the volume, the volume is now {volume}%",
+    "loopSong": "@{author} Loop is now {loop}",
+    "stopSong": "@{author} ⏹ stopped the music!",
     "leaveChannel": "Leaving voice channel...",
     "songNotFound": "Audio Not Found",
     "songAccessErr": "Video is age restricted, private or unavailable"
@@ -50,7 +50,7 @@
   "resume": {
     "description": "Resume currently playing music",
     "errorNotQueue": "There is nothing playing.",
-    "resultNotPlaying": "<@{author}> ▶ resumed the music!",
+    "resultNotPlaying": "@{author} ▶ resumed the music!",
     "errorPlaying": "The queue is not paused."
   },
   "uptime": {
@@ -74,7 +74,7 @@
     "errorNotFoundPlaylist": "Playlist not found :(",
     "fetchingPlaylist": "⌛ fetching the playlist...",
     "playlistCharLimit": "\nPlaylist larger than character limit...",
-    "startedPlaylist": "<@{author}> Started a playlist",
+    "startedPlaylist": "@{author} Started a playlist",
     "cantJoinChannel": "Could not join the channel: {error}"
   },
   "lyrics": {
@@ -109,5 +109,10 @@
     "errorNotNumber": "Please use a number to set volume.",
     "errorNotValid": "Please use a number between 0 - 100.",
     "result": "Volume set to: **{arg}%**"
+  },
+  "news": {
+    "description": "News and headlines from Brazil",
+    "result": "News and headlines from Brazil",
+    "error": "An error occurred when seeking the news"
   }
 }

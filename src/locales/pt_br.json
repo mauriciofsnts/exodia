@@ -6,7 +6,7 @@
   "skip": {
     "description": "Pula a música atual.",
     "errorNotQueue": "Não há nada tocando que eu possa pular.",
-    "result": "<@{author}> ⏭ pulou a música"
+    "result": "@{author} ⏭ pulou a música"
   },
   "common": {
     "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
@@ -15,12 +15,12 @@
   "stop": {
     "description": "Para a música.",
     "errorNotQueue": "Não há nada reproduzindo.",
-    "result": "<@{author}> ⏹ parou a música!"
+    "result": "@{author} ⏹ parou a música!"
   },
   "pause": {
     "description": "Pausa a música reproduzindo.",
     "errorNotQueue": "Não há nada reproduzindo.",
-    "result": "<@{author}> ⏸ pausou a música."
+    "result": "@{author} ⏸ pausou a música."
   },
   "play": {
     "description": "Reproduz áudio do Youtube ou Soundcloud",
@@ -29,20 +29,20 @@
     "usageReply": "Uso: {prefix}play <URL do Youtube | Nome do Vídeo | URL do Soundcloud>",
     "missingPermissionConnect": "Não posso conectar a canais de voz, falta permissão!",
     "missingPermissionSpeak": "Não posso tocar neste canal de voz, falta permissão!",
-    "queueAdded": "✅ **{title}** foi adicionado na playlist por <@{author}>",
+    "queueAdded": "✅ **{title}** foi adicionado na playlist por @{author}",
     "cantJoinChannel": "Não pude entrar no canal: {error}",
     "queueEnded": "❌ Fim da playlist.",
     "queueError": "Erro: {error}",
     "startedPlaying": "🎶 Tocando: **{title}** {url}",
-    "skipSong": "<@{author}> ⏩ pulou a música.",
-    "pauseSong": "<@{author}> ⏸ pausou a música.",
-    "resumeSong": "<@{author}> ▶ resumiu a música!",
-    "unmutedSong": "<@{author}> 🔊 desmutou a música!",
-    "mutedSong": "<@{author}> 🔇 mutou a música!",
-    "decreasedVolume": "<@{author}> 🔉 baixou o volume, o volume agora é {volume}%",
-    "increasedVolume": "<@{author}> 🔊 aumentou o volume, o volume agora é {volume}%",
-    "loopSong": "<@{author}> Repetir está {loop}",
-    "stopSong": "<@{author}> ⏹ parou a música!",
+    "skipSong": "@{author} ⏩ pulou a música.",
+    "pauseSong": "@{author} ⏸ pausou a música.",
+    "resumeSong": "@{author} ▶ resumiu a música!",
+    "unmutedSong": "@{author} 🔊 desmutou a música!",
+    "mutedSong": "@{author} 🔇 mutou a música!",
+    "decreasedVolume": "@{author} 🔉 baixou o volume, o volume agora é {volume}%",
+    "increasedVolume": "@{author} 🔊 aumentou o volume, o volume agora é {volume}%",
+    "loopSong": "@{author} Repetir está {loop}",
+    "stopSong": "@{author} ⏹ parou a música!",
     "leaveChannel": "Deixando o canal de voz!",
     "songNotFound": "Audio Not Found",
     "songAccessErr": "Video is age restricted, private or unavailable"
@@ -50,7 +50,7 @@
   "resume": {
     "description": "Reproduz novamente a música pausada.",
     "errorNotQueue": "Não há nada reproduzindo.",
-    "resultNotPlaying": "<@{author}> ▶ resumiu a música!",
+    "resultNotPlaying": "@{author} ▶ resumiu a música!",
     "errorPlaying": "A playlist não está pausada."
   },
   "uptime": {
@@ -74,7 +74,7 @@
     "errorNotFoundPlaylist": "Playlist não encontrada :(",
     "fetchingPlaylist": "⌛ importando playlist...",
     "playlistCharLimit": "\nPlaylist maior que o permitido...",
-    "startedPlaylist": "<@{author}> reproduzindo uma playlist.",
+    "startedPlaylist": "@{author} reproduzindo uma playlist.",
     "cantJoinChannel": "Não pude entrar no canal: {error}"
   },
   "lyrics": {
@@ -109,5 +109,10 @@
     "errorNotNumber": "Por-favor utilize números para mudar o volume.",
     "errorNotValid": "Por-favor utilize números entre 0 - 100.",
     "result": "Volume alterado para: **{arg}%**"
+  },
+  "news": {
+    "description": "Notícias e manchetes do Brasil",
+    "result": "Notícias e manchetes do Brasil",
+    "error": "Ocorreu um erro ao buscar as notícias"
   }
 }
