@@ -22,7 +22,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            cd ~/home/thor/dev/exodia/
+            cd /home/thor/dev/exodia/
             git pull origin master
             git status
             docker-compose down
