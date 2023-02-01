@@ -16,6 +16,7 @@ import { client } from 'index'
 import { promisify } from 'util'
 import { ExtendedInteraction } from 'types/command'
 import { QueueOptions } from 'types/queue'
+import { Message, User } from 'discord.js'
 
 const wait = promisify(setTimeout)
 export class MusicQueue {
@@ -105,6 +106,7 @@ export class MusicQueue {
         ) {
           // TODO: now playing msg
           // console.log('now playing...', oldState, newState)
+          this.sendNowPlaying(newState)
         }
       }
     )
@@ -165,5 +167,73 @@ export class MusicQueue {
 
       return this.processQueue()
     }
+  }
+
+  public async sendNowPlaying(newState: any): Promise<void> {
+    const song = (newState.resource as AudioResource<Song>).metadata
+
+    let msg: Message | undefined
+
+    try {
+      msg = await this.interaction.reply({
+        content: `Now playing: ${song.title}`,
+        fetchReply: true,
+      })
+
+      await msg.react('⏭️')
+      await msg.react('⏹️')
+      await msg.react('⏸️')
+    } catch (error) {
+      console.error('now playing error: ', error)
+      return
+    }
+
+    const filter = (reaction: any, user: User) =>
+      user.id !== this.interaction.client.user!.id
+
+    // if (!msg) return
+    console.log('msg : ', msg)
+
+    const collector = msg?.createReactionCollector({
+      filter,
+      time: song.duration > 0 ? song.duration * 1000 : 600000,
+    })
+
+    collector?.on('collect', async (reaction: any, user: User) => {
+      if (!this.songs) return
+
+      switch (reaction.emoji.name) {
+        case '⏭️':
+          reaction.users.remove(user.id).catch((e: any) => console.error(e))
+          this.player.stop(true)
+          break
+        case '⏹️':
+          reaction.users.remove(user.id).catch((e: any) => console.error(e))
+          this.stop()
+          break
+        case '⏸️':
+          reaction.users.remove(user.id).catch((e: any) => console.error(e))
+          if (this.player.state.status === AudioPlayerStatus.Paused) {
+            this.player.unpause()
+          } else {
+            this.player.pause()
+          }
+          break
+        case '🔉':
+          reaction.users.remove(user.id).catch((e: any) => console.error(e))
+          if (this.volume <= 0.1) return
+          this.resource.volume?.setVolumeLogarithmic(
+            (this.resource.volume.volume - 0.1) * this.volume
+          )
+          break
+        case '🔊':
+          reaction.users.remove(user.id).catch((e: any) => console.error(e))
+          if (this.volume >= 1) return
+          this.resource.volume?.setVolumeLogarithmic(
+            (this.resource.volume.volume + 0.1) * this.volume
+          )
+          break
+      }
+    })
   }
 }

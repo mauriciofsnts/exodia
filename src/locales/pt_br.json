@@ -29,7 +29,7 @@
     "usageReply": "Uso: {prefix}play <URL do Youtube | Nome do Vídeo | URL do Soundcloud>",
     "missingPermissionConnect": "Não posso conectar a canais de voz, falta permissão!",
     "missingPermissionSpeak": "Não posso tocar neste canal de voz, falta permissão!",
-    "queueAdded": "✅ **{title}** foi adicionado na playlist por @{author}",
+    "queueAdded": "✅ **{title}** foi adicionado na playlist",
     "cantJoinChannel": "Não pude entrar no canal: {error}",
     "queueEnded": "❌ Fim da playlist.",
     "queueError": "Erro: {error}",

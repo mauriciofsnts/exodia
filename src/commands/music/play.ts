@@ -95,10 +95,7 @@ export default new Command({
 
     Reply(
       Embed({
-        description: i18n.__mf('play.queueAdded', {
-          author: interaction.member.nickname,
-          title: song.title,
-        }),
+        description: i18n.__mf('play.queueAdded', { title: song.title }),
         type: 'success',
       }),
       interaction,
