@@ -7,7 +7,8 @@ export enum ENVS {
   DB_HOST = 'DB_HOST',
   DB_PORT = 'DB_PORT',
   DB_LOGGIN = 'DB_LOGGIN',
-  NEWSAPI_API_KEY = 'NEWSAPI_API_KEY'
+  NEWSAPI_API_KEY = 'NEWSAPI_API_KEY',
+  DAILY_MAX_REQUESTS = 'DAILY_MAX_REQUESTS'
 }
 
 function logError(msg: string, env: string): void {
@@ -39,4 +40,5 @@ export function setupEnvs(): void {
   loadEnv(ENVS.DB_HOST)
   loadEnv(ENVS.DB_PORT)
   loadEnv(ENVS.DB_LOGGIN)
+  loadEnv(ENVS.DAILY_MAX_REQUESTS)
 }

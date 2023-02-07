@@ -16,12 +16,14 @@ import { ENVS, loadEnv, setupEnvs } from 'utils/envHelper'
 import { promisify } from 'util'
 import glob from 'glob'
 import importFile from 'utils/importFile'
+import { job as newsJob } from 'cron/news'
 
 const globPromise = promisify(glob)
 
 export class ExodiaClient extends Client {
   commands: Collection<string, CommandType> = new Collection()
   queues = new Collection<Snowflake, MusicQueue>()
+  dailyNewsRequest = 0
 
   constructor() {
     super({
@@ -42,6 +44,7 @@ export class ExodiaClient extends Client {
     setupEnvs()
     this.login(loadEnv(ENVS.BOT_TOKEN))
     this.registerModules()
+    this.registerCrons()
   }
 
   async registerCommands({ commands }: RegisterCommandsOptions) {
@@ -57,7 +60,7 @@ export class ExodiaClient extends Client {
 
     //  get each command on folder and set as bot command
     commandFiles.forEach(async (filePath: string) => {
-      const command: CommandType = await importFile(filePath)
+      const command: CommandType = await importFile(filePath, true)
       if (!command.name) return
 
       console.info(`command: ${command.name} registered`)
@@ -76,8 +79,12 @@ export class ExodiaClient extends Client {
     const eventFiles = await globPromise(`${__dirname}/../events/*{.ts,.js}`)
 
     eventFiles.forEach(async (filePath) => {
-      const event: Events<keyof ClientEvents> = await importFile(filePath)
+      const event: Events<keyof ClientEvents> = await importFile(filePath, true)
       this.on(event.event, event.run)
     })
+  }
+
+  async registerCrons() {
+    newsJob.start()
   }
 }

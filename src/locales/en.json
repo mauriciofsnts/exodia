@@ -113,6 +113,7 @@
   "news": {
     "description": "News and headlines from Brazil",
     "result": "News and headlines from Brazil",
-    "error": "An error occurred when seeking the news"
+    "error": "An error occurred when seeking the news",
+    "dailyLimit": "Daily limit reached, try again tomorrow"
   }
 }

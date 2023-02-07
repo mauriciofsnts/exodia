@@ -113,6 +113,7 @@
   "news": {
     "description": "Notícias e manchetes do Brasil",
     "result": "Notícias e manchetes do Brasil",
-    "error": "Ocorreu um erro ao buscar as notícias"
+    "error": "Ocorreu um erro ao buscar as notícias",
+    "dailyLimit": "Você atingiu o limite diário de notícias, tente novamente amanhã."
   }
 }
