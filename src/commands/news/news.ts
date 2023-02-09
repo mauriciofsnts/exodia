@@ -10,7 +10,6 @@ export default new Command({
   description: i18n.__('news.description'),
   aliases: ['news'],
   run: async ({ interaction, type }) => {
-
     if (client.dailyNewsRequest === Number(loadEnv(ENVS.DAILY_MAX_REQUESTS))) {
       Reply(
         Embed({
@@ -37,10 +36,11 @@ export default new Command({
         articles.slice(0, 10).forEach((article) => {
           embed.addFields({
             name: article.title,
-            value: `${article.description}\n${article.url}`,
+            value: article?.description
+              ? `${article.description}\n${article.url}`
+              : article.url,
           })
         })
-
 
         client.dailyNewsRequest += 1
         Reply(embed, interaction, type)
