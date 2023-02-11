@@ -29,7 +29,6 @@ export default new Command({
     if (!interaction.member.voice.channel || !interaction.guild)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('common.errorNotChannel'),
           type: 'error',
         }),
@@ -45,9 +44,8 @@ export default new Command({
     if (!query)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('playlist.usagesReply'),
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type
@@ -62,9 +60,8 @@ export default new Command({
 
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('playlist.errorNotFoundPlaylist'),
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type

@@ -8,7 +8,6 @@ import { Embed, Reply, ReplyMusicEmbed } from 'commands/reply'
 import { Command } from 'core/command'
 import { Song } from 'core/song'
 import { MusicQueue } from 'core/player'
-import { i18n } from 'utils/i18n'
 
 enum Radios {
   rap = 'https://www.youtube.com/watch?v=Qm4r1fyz61Y',
@@ -31,7 +30,6 @@ export default new Command({
     if (!interaction.member.voice.channel)
       return Reply(
         Embed({
-          title: 'Error',
           description: 'You need it is on a voice channel',
           type: 'error',
         }),
@@ -42,7 +40,6 @@ export default new Command({
     if (!interaction.guild)
       return Reply(
         Embed({
-          title: 'Error',
           description: 'You need it is on a server to execute this command',
           type: 'error',
         }),
@@ -58,9 +55,8 @@ export default new Command({
     if (!radioName)
       return Reply(
         Embed({
-          title: 'Error',
           description: 'You need to inform the song title',
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type
@@ -74,9 +70,8 @@ export default new Command({
       if (!(option in Radios)) {
         return Reply(
           Embed({
-            title: 'Error',
             description: `The option ${option} is not configured`,
-            type: 'error',
+            type: 'success',
           }),
           interaction,
           type
@@ -87,7 +82,6 @@ export default new Command({
     } catch (error) {
       return Reply(
         Embed({
-          title: 'Error',
           description: 'An error occurred when reproducing the radio',
           type: 'error',
         }),
@@ -103,7 +97,6 @@ export default new Command({
 
       Reply(
         Embed({
-          title: `Ok`,
           description: `${song.title} added to playlist`,
           type: 'success',
         }),

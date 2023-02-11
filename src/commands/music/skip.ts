@@ -11,7 +11,6 @@ export default new Command({
     if (!interaction.member.voice.channel || !interaction.guild)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('common.errorNotChannel'),
           type: 'error',
         }),
@@ -24,9 +23,8 @@ export default new Command({
     if (!queue)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('skip.errorNotQueue'),
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type
@@ -36,7 +34,6 @@ export default new Command({
 
     return Reply(
       Embed({
-        title: 'Ok',
         description: i18n.__mf('skip.result', {
           author: interaction.member.nickname,
         }),

@@ -20,7 +20,6 @@ export default new Command({
     if (!interaction.member.voice.channel || !interaction.guild)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('common.errorNotChannel'),
           type: 'error',
         }),
@@ -33,9 +32,8 @@ export default new Command({
     if (!queue)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('skip.errorNotQueue'),
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type
@@ -49,9 +47,8 @@ export default new Command({
     if (isNaN(Number(value)))
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('volume.errorNotNumber'),
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type
@@ -60,9 +57,8 @@ export default new Command({
     if (Number(value) > 100 || Number(value) < 0)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('volume.errorNotValid'),
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type

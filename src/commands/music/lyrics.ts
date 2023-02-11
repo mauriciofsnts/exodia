@@ -16,7 +16,6 @@ export default new Command({
     if (!queue)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('lyrics.errorNotQueue'),
           type: 'error',
         }),

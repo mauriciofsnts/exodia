@@ -24,9 +24,9 @@ export default new Command({
     if (!queue)
       return Reply(
         Embed({
-          title: 'Error',
+          title: '',
           description: i18n.__('stop.errorNotQueue'),
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type
@@ -36,7 +36,6 @@ export default new Command({
 
     return Reply(
       Embed({
-        title: 'Ok',
         description: i18n.__mf('stop.result', {
           author: interaction.member.nickname,
         }),

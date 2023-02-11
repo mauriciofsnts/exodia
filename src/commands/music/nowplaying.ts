@@ -14,7 +14,6 @@ export default new Command({
     if (!queue || !queue.songs.length)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('nowplaying.errorNotQueue'),
           type: 'error',
         }),
