@@ -16,7 +16,19 @@ import { client } from 'index'
 import { promisify } from 'util'
 import { ExtendedInteraction } from 'types/command'
 import { QueueOptions } from 'types/queue'
-import { Message, User } from 'discord.js'
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonInteraction,
+  ButtonStyle,
+  ComponentType,
+  EmbedBuilder,
+  Message,
+  User,
+} from 'discord.js'
+import { Color } from 'commands/reply'
+import { convertDurationToTimeString } from 'utils/date-convert'
+import { i18n } from 'utils/i18n'
 
 const wait = promisify(setTimeout)
 export class MusicQueue {
@@ -104,8 +116,6 @@ export class MusicQueue {
           oldState.status === AudioPlayerStatus.Buffering &&
           newState.status === AudioPlayerStatus.Playing
         ) {
-          // TODO: now playing msg
-          // console.log('now playing...', oldState, newState)
           this.sendNowPlaying(newState)
         }
       }
@@ -172,68 +182,115 @@ export class MusicQueue {
   public async sendNowPlaying(newState: any): Promise<void> {
     const song = (newState.resource as AudioResource<Song>).metadata
 
-    let msg: Message | undefined
+    const embed = new EmbedBuilder()
+      .setColor(Color.success)
+      .setTitle(i18n.__('nowplaying.embedTitle'))
+      .addFields(
+        { name: 'Title', value: song.title },
+        { name: 'Duration', value: convertDurationToTimeString(song.duration) }
+      )
+      .setFooter({ text: 'Reproduzindo de youtube' })
 
-    try {
-      msg = await this.interaction.reply({
-        content: `Now playing: ${song.title}`,
-        fetchReply: true,
-      })
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId('pause')
+        .setEmoji('⏸️')
+        .setStyle(ButtonStyle.Secondary),
 
-      await msg.react('⏭️')
-      await msg.react('⏹️')
-      await msg.react('⏸️')
-    } catch (error) {
-      console.error('now playing error: ', error)
-      return
-    }
+      new ButtonBuilder()
+        .setCustomId('next')
+        .setEmoji('⏭️')
+        .setStyle(ButtonStyle.Secondary),
 
-    const filter = (reaction: any, user: User) =>
-      user.id !== this.interaction.client.user!.id
+      new ButtonBuilder()
+        .setCustomId('stop')
+        .setEmoji('⏹️')
+        .setStyle(ButtonStyle.Secondary)
+    )
 
-    // if (!msg) return
-    console.log('msg : ', msg)
+    const msg = await this.interaction.reply({
+      embeds: [embed],
+      components: [row],
+      fetchReply: true,
+    })
 
-    const collector = msg?.createReactionCollector({
+    const filter = (i: any) => i.user.id !== this.interaction.client.user!.id
+
+    const collector = msg.createMessageComponentCollector({
       filter,
       time: song.duration > 0 ? song.duration * 1000 : 600000,
     })
 
-    collector?.on('collect', async (reaction: any, user: User) => {
-      if (!this.songs) return
+    collector.on('collect', async (collection) => {
+      await collection.deferUpdate()
 
-      switch (reaction.emoji.name) {
-        case '⏭️':
-          reaction.users.remove(user.id).catch((e: any) => console.error(e))
-          this.player.stop(true)
-          break
-        case '⏹️':
-          reaction.users.remove(user.id).catch((e: any) => console.error(e))
-          this.stop()
-          break
-        case '⏸️':
-          reaction.users.remove(user.id).catch((e: any) => console.error(e))
+      switch (collection.customId) {
+        case 'pause':
           if (this.player.state.status === AudioPlayerStatus.Paused) {
             this.player.unpause()
+
+            const updatedRow =
+              new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder()
+                  .setCustomId('pause')
+                  .setEmoji('⏸️')
+                  .setStyle(ButtonStyle.Secondary),
+
+                new ButtonBuilder()
+                  .setCustomId('next')
+                  .setEmoji('⏭️')
+                  .setStyle(ButtonStyle.Secondary),
+
+                new ButtonBuilder()
+                  .setCustomId('stop')
+                  .setEmoji('⏹️')
+                  .setStyle(ButtonStyle.Secondary)
+              )
+
+            await collection.editReply({
+              embeds: [embed],
+              components: [updatedRow],
+            })
           } else {
             this.player.pause()
+
+            const updatedRow =
+              new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder()
+                  .setCustomId('pause')
+                  .setEmoji('▶️')
+                  .setStyle(ButtonStyle.Secondary),
+
+                new ButtonBuilder()
+                  .setCustomId('next')
+                  .setEmoji('⏭️')
+                  .setStyle(ButtonStyle.Secondary),
+
+                new ButtonBuilder()
+                  .setCustomId('stop')
+                  .setEmoji('⏹️')
+                  .setStyle(ButtonStyle.Secondary)
+              )
+
+            await collection.editReply({
+              embeds: [embed],
+              components: [updatedRow],
+            })
           }
           break
-        case '🔉':
-          reaction.users.remove(user.id).catch((e: any) => console.error(e))
-          if (this.volume <= 0.1) return
-          this.resource.volume?.setVolumeLogarithmic(
-            (this.resource.volume.volume - 0.1) * this.volume
-          )
+
+        case 'next':
+          this.player.stop(true)
           break
-        case '🔊':
-          reaction.users.remove(user.id).catch((e: any) => console.error(e))
-          if (this.volume >= 1) return
-          this.resource.volume?.setVolumeLogarithmic(
-            (this.resource.volume.volume + 0.1) * this.volume
-          )
+
+        case 'stop':
+          this.stop()
           break
       }
+    })
+
+    collector.on('end', async () => {
+      await msg.delete()
     })
   }
 }
