@@ -9,6 +9,7 @@ import { MusicQueue } from '../../core/player'
 import { Song } from '../../core/song'
 import { Embed, Reply } from '../reply'
 import { i18n } from '../../utils/i18n'
+import { convertDurationToTimeString } from 'utils/date-convert'
 
 export default new Command({
   name: 'play',
@@ -26,7 +27,6 @@ export default new Command({
     if (!interaction.member.voice.channel || !interaction.guild)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('play.errorNotChannel'),
           type: 'error',
         }),
@@ -42,9 +42,8 @@ export default new Command({
     if (!songTitle)
       return Reply(
         Embed({
-          title: 'Error',
           description: i18n.__('play.errorNotChannel'),
-          type: 'error',
+          type: 'success',
         }),
         interaction,
         type
@@ -69,6 +68,7 @@ export default new Command({
           description: i18n.__mf('play.queueAdded', {
             author: interaction.member.nickname,
             title: song.title,
+            duration: convertDurationToTimeString(song.duration),
           }),
           type: 'success',
         }),
@@ -95,7 +95,10 @@ export default new Command({
 
     Reply(
       Embed({
-        description: i18n.__mf('play.queueAdded', { title: song.title }),
+        description: i18n.__mf('play.queueAdded', {
+          title: song.title,
+          duration: convertDurationToTimeString(song.duration),
+        }),
         type: 'success',
       }),
       interaction,

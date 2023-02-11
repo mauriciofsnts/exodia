@@ -29,7 +29,7 @@
     "usageReply": "Usage: {prefix}play <YouTube URL | Video Name | Soundcloud URL>",
     "missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
     "missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
-    "queueAdded": "✅ **{title}** has been added to the queue",
+    "queueAdded": "Added **{title}** - **{duration}**",
     "cantJoinChannel": "Could not join the channel: {error}",
     "queueEnded": "❌ Music queue ended.",
     "queueError": "Error: {error}",
@@ -42,7 +42,7 @@
     "decreasedVolume": "@{author} 🔉 decreased the volume, the volume is now {volume}%",
     "increasedVolume": "@{author} 🔊 increased the volume, the volume is now {volume}%",
     "loopSong": "@{author} Loop is now {loop}",
-    "stopSong": "@{author} ⏹ stopped the music!",
+    "stopSong": "The player has been successfully stopped.",
     "leaveChannel": "Leaving voice channel...",
     "songNotFound": "Audio Not Found",
     "songAccessErr": "Video is age restricted, private or unavailable"
