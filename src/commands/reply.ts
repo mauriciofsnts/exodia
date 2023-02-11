@@ -11,9 +11,9 @@ type EmbedProps = {
 }
 
 export enum Color {
-  success = 0x40ff00,
+  success = 0x6875da,
   error = 0xa71e1e,
-  info = 0x34d7ae,
+  info = 0xfdd700,
 }
 
 export function Embed({
