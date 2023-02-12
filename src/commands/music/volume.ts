@@ -6,7 +6,7 @@ import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
 
 export default new Command({
   name: 'volume',
-  description: i18n.__('skip.description'),
+  description: i18n.__('volume.description'),
   categorie: '🎧 Audio',
   aliases: ['volume', 'v'],
   options: [
@@ -33,7 +33,7 @@ export default new Command({
     if (!queue)
       return Reply(
         Embed({
-          description: i18n.__('skip.errorNotQueue'),
+          description: i18n.__('volume.errorNotQueue'),
           type: 'success',
         }),
         interaction,

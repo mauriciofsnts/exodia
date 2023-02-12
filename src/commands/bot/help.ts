@@ -3,6 +3,11 @@ import { Command } from 'core/command'
 import { client } from 'index'
 import { i18n } from 'utils/i18n'
 import { ENVS, loadEnv } from 'utils/envHelper'
+import { CommandType } from 'types/command'
+
+type CommandCategories = {
+  [key: string]: CommandType[]
+}
 
 export default new Command({
   name: 'help',
@@ -14,22 +19,43 @@ export default new Command({
 
     let embed = Embed({
       title: i18n.__mf('help.embedTitle', { botname: 'Exodia' }),
-      description: i18n.__('help.embedDescription'),
       type: 'info',
     })
 
     const botPrefix = loadEnv(ENVS.PREFIX)
 
-    commands.forEach((cmd) => {
-      const name = `**${botPrefix}${cmd.name} ${
-        cmd.aliases ? `(${cmd.aliases})` : ''
-      }**`
+    const commandCategories = commands.reduce((acc: CommandCategories, cmd) => {
+      const categorie = cmd.categorie
 
-      const value = `${cmd.description}`
+      if (!acc[categorie]) {
+        acc[categorie] = []
+      }
 
-      return embed.addFields({ name, value, inline: true })
-    })
+      acc[categorie].push(cmd)
 
+      return acc
+    }, {})
+
+    for (const categorie in commandCategories) {
+      const commands = commandCategories[categorie]
+      let value = ''
+
+      for (let i = 0; i < commands.length; i++) {
+        const cmd = commands[i]
+
+        const name = `**${botPrefix}${cmd.name} ${
+          cmd.aliases ? `(${cmd.aliases})` : ''
+        }**`
+
+        value += `${name} - ${cmd.description}\n`
+
+        if (i === commands.length - 1) {
+          value += '\n\n\n'
+        }
+      }
+
+      embed.addFields({ name: categorie, value })
+    }
     embed.setTimestamp()
 
     return Reply(embed, interaction, type)
