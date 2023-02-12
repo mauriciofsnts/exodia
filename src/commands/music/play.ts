@@ -9,6 +9,7 @@ import { Song } from 'core/song'
 import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
 import { client } from 'index'
 import { convertDurationToTimeString } from 'utils/date-convert'
+import { i18n } from 'utils/i18n'
 
 export default new Command({
   name: 'play',
