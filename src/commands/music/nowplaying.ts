@@ -8,6 +8,7 @@ export default new Command({
   name: 'nowplaying',
   description: i18n.__('nowplaying.description'),
   aliases: ['np'],
+  categorie: '🎧 Audio',
   run: async ({ interaction, type }) => {
     const queue = client.queues.get(interaction.guild!.id)
 

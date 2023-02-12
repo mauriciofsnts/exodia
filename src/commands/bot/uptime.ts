@@ -7,6 +7,7 @@ export default new Command({
   name: 'uptime',
   description: i18n.__('uptime.description'),
   type: ApplicationCommandType.ChatInput,
+  categorie: '🤖 Bot',
   aliases: ['uptime'],
   run: async ({ client, interaction, type }) => {
     let seconds = Math.floor(client.uptime! / 1000)

@@ -6,6 +6,7 @@ import { i18n } from 'utils/i18n'
 export default new Command({
   name: 'resume',
   description: i18n.__('resume.description'),
+  categorie: '🎧 Audio',
   aliases: ['resume', 'r'],
   run: async ({ interaction, type }) => {
     if (!interaction.member.voice.channel || !interaction.guild)

@@ -2,18 +2,18 @@ import {
   DiscordGatewayAdapterCreator,
   joinVoiceChannel,
 } from '@discordjs/voice'
+import { Reply, Embed } from 'commands/reply'
+import { Command } from 'core/command'
+import { MusicQueue } from 'core/player'
+import { Song } from 'core/song'
 import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
-import { client } from '../..'
-import { Command } from '../../core/command'
-import { MusicQueue } from '../../core/player'
-import { Song } from '../../core/song'
-import { Embed, Reply } from '../reply'
-import { i18n } from '../../utils/i18n'
+import { client } from 'index'
 import { convertDurationToTimeString } from 'utils/date-convert'
 
 export default new Command({
   name: 'play',
   description: i18n.__('play.description'),
+  categorie: '🎧 Audio',
   aliases: ['p', 'play'],
   options: [
     {

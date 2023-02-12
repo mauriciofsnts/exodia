@@ -9,6 +9,7 @@ import lyricsFinder from 'lyrics-finder'
 export default new Command({
   name: 'lyrics',
   description: i18n.__('lyrics.description'),
+  categorie: '🎧 Audio',
   aliases: ['ly'],
   run: async ({ interaction, type }) => {
     const queue = client.queues.get(interaction.guild!.id)

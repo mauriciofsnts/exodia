@@ -8,6 +8,7 @@ export default new Command({
   name: 'cnpj',
   description: i18n.__('cnpj.description'),
   type: ApplicationCommandType.ChatInput,
+  categorie: '⚙️ Utility',
   aliases: ['cnpj'],
   run: async ({ interaction, type }) => {
     const { mask, output } = cnpj()

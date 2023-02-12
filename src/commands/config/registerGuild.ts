@@ -9,6 +9,7 @@ export default new Command({
   description: 'Register server information',
   type: ApplicationCommandType.ChatInput,
   aliases: ['guild-registration'],
+  categorie: '⚙️ Utility',
   run: async ({ interaction, type }) => {
     if (!interaction.guildId) return
 

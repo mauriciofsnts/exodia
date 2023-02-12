@@ -14,6 +14,7 @@ import { Song } from 'core/song'
 export default new Command({
   name: 'playlist',
   description: i18n.__('playlist.description'),
+  categorie: '🎧 Audio',
   aliases: ['playlist', 'pl'],
   options: [
     {

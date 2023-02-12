@@ -7,6 +7,7 @@ export default new Command({
   name: 'ping',
   description: i18n.__('ping.description'),
   type: ApplicationCommandType.ChatInput,
+  categorie: '🤖 Bot',
   aliases: ['ping'],
   run: async ({ client, interaction, type }) => {
     const embed = Embed({

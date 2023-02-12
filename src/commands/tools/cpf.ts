@@ -8,6 +8,7 @@ export default new Command({
   name: 'cpf',
   description: i18n.__('cpf.description'),
   type: ApplicationCommandType.ChatInput,
+  categorie: '⚙️ Utility',
   aliases: ['cpf'],
   run: async ({ interaction, type }) => {
     const { mask, output } = cpf()

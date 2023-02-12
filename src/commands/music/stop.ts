@@ -6,6 +6,7 @@ import { i18n } from 'utils/i18n'
 export default new Command({
   name: 'stop',
   description: i18n.__('stop.description'),
+  categorie: '🎧 Audio',
   aliases: ['stop'],
   run: async ({ interaction, type }) => {
     if (!interaction.member.voice.channel || !interaction.guild)

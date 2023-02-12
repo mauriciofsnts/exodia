@@ -8,6 +8,7 @@ import { ENVS, loadEnv } from 'utils/envHelper'
 export default new Command({
   name: 'news',
   description: i18n.__('news.description'),
+  categorie: '📰 News',
   aliases: ['news'],
   run: async ({ interaction, type }) => {
     if (client.dailyNewsRequest === Number(loadEnv(ENVS.DAILY_MAX_REQUESTS))) {

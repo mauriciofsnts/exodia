@@ -7,6 +7,7 @@ import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
 export default new Command({
   name: 'volume',
   description: i18n.__('skip.description'),
+  categorie: '🎧 Audio',
   aliases: ['volume', 'v'],
   options: [
     {

@@ -19,12 +19,8 @@ import { QueueOptions } from 'types/queue'
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonInteraction,
   ButtonStyle,
-  ComponentType,
   EmbedBuilder,
-  Message,
-  User,
 } from 'discord.js'
 import { Color } from 'commands/reply'
 import { convertDurationToTimeString } from 'utils/date-convert'
@@ -285,6 +281,7 @@ export class MusicQueue {
 
         case 'stop':
           this.stop()
+          await msg.delete()
           break
       }
     })

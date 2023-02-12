@@ -16,6 +16,7 @@ enum Radios {
 export default new Command({
   name: 'radio',
   description: 'plays a pre-defined radio',
+  categorie: '🎧 Audio',
   aliases: ['radio'],
   options: [
     {

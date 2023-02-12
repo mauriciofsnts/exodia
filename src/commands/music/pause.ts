@@ -6,6 +6,7 @@ import { i18n } from 'utils/i18n'
 export default new Command({
   name: 'pause',
   description: i18n.__('pause.description'),
+  categorie: '🎧 Audio',
   aliases: ['ps', 'pause'],
   run: async ({ interaction, type }) => {
     if (!interaction.member.voice.channel || !interaction.guild)

@@ -8,6 +8,7 @@ export default new Command({
   name: 'uuid',
   description: i18n.__('uuid.description'),
   type: ApplicationCommandType.ChatInput,
+  categorie: '⚙️ Utility',
   aliases: ['uuid'],
   run: async ({ interaction, type }) => {
     const embed = Embed({

@@ -8,6 +8,7 @@ export default new Command({
   name: 'help',
   description: i18n.__('help.description'),
   aliases: ['help'],
+  categorie: '🤖 Bot',
   run: async ({ interaction, type }) => {
     let commands = client.commands
 

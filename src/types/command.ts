@@ -6,6 +6,7 @@ import {
   GuildMember,
   PermissionResolvable,
 } from 'discord.js'
+import { Categorie } from './categories'
 
 export interface ExtendedInteraction extends CommandInteraction {
   member: GuildMember
@@ -25,4 +26,5 @@ export type CommandType = {
   userPermissions?: PermissionResolvable[]
   run: RunFunction
   aliases: string[]
+  categorie: Categorie
 } & ChatInputApplicationCommandData

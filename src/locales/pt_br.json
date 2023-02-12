@@ -85,7 +85,7 @@
 	},
 	"help": {
 		"description": "Mostra todos os comandos e descrições.",
-		"embedTitle": "{botname} Ajuda",
+		"embedTitle": "💡- Exodia Commands",
 		"embedDescription": "Lista de todos os comandos."
 	},
 	"cnpj": {
