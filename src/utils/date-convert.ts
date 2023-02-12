@@ -9,3 +9,14 @@ export const convertDurationToTimeString = (duration: number): string => {
 
   return timeString
 }
+
+// Convert date to a dd/mm/yyyy format
+export const convertDateToDateString = (date: Date): string => {
+  const day = date.getDate()
+  const month = date.getMonth() + 1
+  const year = date.getFullYear()
+
+  const dateString = `${day}/${month}/${year}`
+
+  return dateString
+}

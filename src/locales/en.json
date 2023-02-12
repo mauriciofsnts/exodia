@@ -10,7 +10,9 @@
   },
   "common": {
     "errorNotChannel": "You need to join a voice channel first!",
-    "errorCommand": "There was an error executing that command."
+    "errorCommand": "There was an error executing that command.",
+    "name": "Name",
+    "email": "Email"
   },
   "stop": {
     "description": "Stops the music",
@@ -115,5 +117,13 @@
     "result": "News and headlines from Brazil",
     "error": "An error occurred when seeking the news",
     "dailyLimit": "Daily limit reached, try again tomorrow"
+  },
+  "people": {
+    "description": "Get a random person",
+    "result": "Random person",
+    "resultDescription": "Fake people generator with various random and valid data: name, CPF, RG, email, password, date of birth, etc.",
+    "password": "Password",
+    "birthdate": "Birthdate",
+    "footerDisclaimer": "This data is not real, it is generated randomly."
   }
 }
