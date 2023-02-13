@@ -31,11 +31,9 @@
     "usageReply": "Usage: {prefix}play <YouTube URL | Video Name | Soundcloud URL>",
     "missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
     "missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
-    "queueAdded": "Added **{title}** - **{duration}**",
     "cantJoinChannel": "Could not join the channel: {error}",
     "queueEnded": "❌ Music queue ended.",
     "queueError": "Error: {error}",
-    "startedPlaying": "🎶 Started playing: **{title}** {url}",
     "skipSong": "@{author} ⏩ skipped the song",
     "pauseSong": "@{author} ⏸ paused the music.",
     "resumeSong": "@{author} ▶ resumed the music!",
@@ -47,7 +45,11 @@
     "stopSong": "The player has been successfully stopped.",
     "leaveChannel": "Leaving voice channel...",
     "songNotFound": "Audio Not Found",
-    "songAccessErr": "Video is age restricted, private or unavailable"
+    "songAccessErr": "Video is age restricted, private or unavailable",
+    "queueAdded": "🎵 Added to queue",
+    "songTitle": "Song Title",
+    "queueTracksInQueue": "Tracks in queue",
+    "queueTotalDuration": "Total duration"
   },
   "resume": {
     "description": "Resume currently playing music",
@@ -60,11 +62,13 @@
     "result": "Uptime: `{days} day(s),{hours} hours, {minutes} minutes, {seconds} seconds`"
   },
   "nowplaying": {
+    "startedPlaying": "🎶 Started playing",
     "description": "Show now playing song",
     "errorNotQueue": "There is nothing playing.",
     "embedTitle": "Now playing",
     "live": " ◉ LIVE",
-    "timeRemaining": "Time Remaining: {time}"
+    "timeRemaining": "Time Remaining: {time}",
+    "engine": "Playing from {engine}"
   },
   "playlist": {
     "description": "Play a playlist from youtube",
