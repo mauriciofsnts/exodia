@@ -122,6 +122,9 @@
     "error": "Ocorreu um erro ao buscar as notícias",
     "dailyLimit": "Você atingiu o limite diário de notícias, tente novamente amanhã."
   },
+  "tabnews": {
+    "description": "TabNews: Conteúdos para quem trabalha com Programação"
+  },
   "people": {
     "description": "Retorna uma pessoa aleatória",
     "result": "Gerador de pessoas",

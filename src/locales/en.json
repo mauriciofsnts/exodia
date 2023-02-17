@@ -122,6 +122,9 @@
     "error": "An error occurred when seeking the news",
     "dailyLimit": "Daily limit reached, try again tomorrow"
   },
+  "tabnews": {
+    "description": "TabNews: Content for those who work with Programming"
+  },
   "people": {
     "description": "Get a random person",
     "result": "Random person",

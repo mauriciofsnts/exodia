@@ -5,7 +5,7 @@ import { getTabNews } from 'core/tabnews'
 
 export default new Command({
   name: 'tabnews',
-  description: i18n.__('news.description'),
+  description: i18n.__('tabnews.description'),
   categorie: '📰 News',
   aliases: ['tabnews'],
   run: async ({ interaction, type }) => {
