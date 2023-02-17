@@ -180,12 +180,14 @@ export class MusicQueue {
 
     const embed = new EmbedBuilder()
       .setColor(Color.success)
-      .setTitle(i18n.__('nowplaying.embedTitle'))
+      .setTitle(i18n.__('nowplaying.startedPlaying'))
       .addFields(
-        { name: 'Title', value: song.title },
-        { name: 'Duration', value: convertDurationToTimeString(song.duration) }
+        { name: i18n.__('play.songTitle'), value: song.title },
+        { name: i18n.__('play.queueTotalDuration'), value: convertDurationToTimeString(song.duration) }
       )
-      .setFooter({ text: 'Reproduzindo de youtube' })
+      .setFooter({
+        text: i18n.__mf('nowplaying.engine', { engine: 'Youtube' }),
+      })
 
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()

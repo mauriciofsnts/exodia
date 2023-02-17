@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Article, INews, NewsApiResponse } from 'types/news'
+import { Article, INews, NewsApiResponse } from 'types/newsapi'
 import { ENVS, loadEnv } from 'utils/envHelper'
 
 const API_ENDPOINT =

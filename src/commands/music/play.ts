@@ -64,19 +64,38 @@ export default new Command({
     if (queue) {
       queue.songs.push(song)
 
-      Reply(
-        Embed({
-          description: i18n.__mf('play.queueAdded', {
-            author: interaction.member.nickname,
-            title: song.title,
-            duration: convertDurationToTimeString(song.duration),
-          }),
-          type: 'success',
-        }),
-        interaction,
-        type
+      // sum of queue duration
+      const totalDuration = queue.songs.reduce(
+        (acc, song) => acc + song.duration,
+        0
       )
 
+      const tracksInQueue = queue.songs.length
+
+      const embed = Embed({
+        title: i18n.__('play.queueAdded'),
+        thumbnail: song.thumbnail,
+        type: 'success',
+      })
+
+      embed.addFields({
+        name: i18n.__('play.songTitle'),
+        value: song.title,
+      })
+
+      embed.addFields({
+        name: i18n.__('play.queueTracksInQueue'),
+        value: String(tracksInQueue),
+        inline: true,
+      })
+
+      embed.addFields({
+        name: i18n.__('play.queueTotalDuration'),
+        value: convertDurationToTimeString(totalDuration),
+        inline: true,
+      })
+
+      Reply(embed, interaction, type)
       return
     }
 
@@ -94,16 +113,36 @@ export default new Command({
 
     newQueue.enqueue(song)
 
-    Reply(
-      Embed({
-        description: i18n.__mf('play.queueAdded', {
-          title: song.title,
-          duration: convertDurationToTimeString(song.duration),
-        }),
-        type: 'success',
-      }),
-      interaction,
-      type
+    const totalDuration = newQueue.songs.reduce(
+      (acc, song) => acc + song.duration,
+      0
     )
+
+    const tracksInQueue = newQueue.songs.length
+
+    const embed = Embed({
+      title: i18n.__('play.queueAdded'),
+      thumbnail: song.thumbnail,
+      type: 'success',
+    })
+
+    embed.addFields({
+      name: i18n.__('play.songTitle'),
+      value: song.title,
+    })
+
+    embed.addFields({
+      name: i18n.__('play.queueTracksInQueue'),
+      value: String(tracksInQueue),
+      inline: true,
+    })
+
+    embed.addFields({
+      name: i18n.__('play.queueTotalDuration'),
+      value: convertDurationToTimeString(totalDuration),
+      inline: true,
+    })
+
+    Reply(embed, interaction, type)
   },
 })

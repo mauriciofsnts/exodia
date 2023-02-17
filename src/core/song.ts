@@ -31,7 +31,6 @@ export class Song {
 
     if (isYoutubeUrl) {
       songInfo = await getInfo(search)
-      console.log('🚀 ~ file: song.ts:86 ~ Song ~ from ~ songInfo', songInfo)
 
       return new this({
         title: songInfo.videoDetails.title,
@@ -49,7 +48,7 @@ export class Song {
         title: songInfo.videoDetails.title,
         url: songInfo.videoDetails.video_url,
         duration: parseInt(songInfo.videoDetails.lengthSeconds),
-        thumbnail: songInfo.thumbnail_url,
+        thumbnail: result.thumbnail?.url ?? '',
         streaming: 'youtube',
       })
     }
