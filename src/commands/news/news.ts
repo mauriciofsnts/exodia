@@ -2,7 +2,7 @@ import { client } from 'index'
 import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
-import { getNews } from 'core/news'
+import { getNews } from 'core/newsapi'
 import { ENVS, loadEnv } from 'utils/envHelper'
 
 export default new Command({
