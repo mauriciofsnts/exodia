@@ -20,7 +20,7 @@ export default new Command({
       articles.forEach((article) => {
         embed.addFields({
           name: article.title,
-          value: `https://www.tabnews.com.br/${article.owner_username}/${article.slug}}`,
+          value: `https://www.tabnews.com.br/${article.owner_username}/${article.slug}`,
         })
       })
 
