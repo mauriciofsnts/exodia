@@ -7,8 +7,6 @@ const hasQueue = (interaction: ExtendedInteraction, type: InteractionType) => {
   const queue = client.queues.get(interaction.guild!.id)
 
   if (!queue || !queue.songs.length) {
-    console.log('not found queue :', queue)
-
     Reply(
       Embed({
         description: i18n.__('nowplaying.errorNotQueue'),
@@ -19,7 +17,7 @@ const hasQueue = (interaction: ExtendedInteraction, type: InteractionType) => {
     )
 
     return false
-  } 
+  }
 
   return true
 }
