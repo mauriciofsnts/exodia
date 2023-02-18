@@ -6,6 +6,7 @@ import {
   GuildMember,
   PermissionResolvable,
 } from 'discord.js'
+import { CommandParams } from 'utils/buildCommandParams'
 import { Categorie } from './categories'
 
 export interface ExtendedInteraction extends CommandInteraction {
@@ -18,6 +19,7 @@ interface RunOptions {
   interaction: ExtendedInteraction
   args: CommandInteractionOptionResolver
   type: InteractionType
+  commandParams: CommandParams
 }
 
 type RunFunction = (options: RunOptions) => any
@@ -27,4 +29,5 @@ export type CommandType = {
   run: RunFunction
   aliases: string[]
   categorie: Categorie
+  validations?: any[]
 } & ChatInputApplicationCommandData

@@ -11,6 +11,7 @@
   "common": {
     "errorNotChannel": "You need to join a voice channel first!",
     "errorCommand": "There was an error executing that command.",
+    "errorNotGuild": "This command can only be used in a server.",
     "name": "Name",
     "email": "Email"
   },

@@ -23,7 +23,7 @@ import {
   EmbedBuilder,
 } from 'discord.js'
 import { Color } from 'commands/reply'
-import { convertDurationToTimeString } from 'utils/date-convert'
+import { convertDurationToTimeString } from 'utils/dateConvert'
 import { i18n } from 'utils/i18n'
 
 const wait = promisify(setTimeout)
@@ -183,7 +183,10 @@ export class MusicQueue {
       .setTitle(i18n.__('nowplaying.startedPlaying'))
       .addFields(
         { name: i18n.__('play.songTitle'), value: song.title },
-        { name: i18n.__('play.queueTotalDuration'), value: convertDurationToTimeString(song.duration) }
+        {
+          name: i18n.__('play.queueTotalDuration'),
+          value: convertDurationToTimeString(song.duration),
+        }
       )
       .setFooter({
         text: i18n.__mf('nowplaying.engine', { engine: 'Youtube' }),
@@ -283,13 +286,13 @@ export class MusicQueue {
 
         case 'stop':
           this.stop()
-          await msg.delete()
+          if (msg) await msg.delete()
           break
       }
     })
 
     collector.on('end', async () => {
-      await msg.delete()
+      if (msg) await msg.delete()
     })
   }
 }
