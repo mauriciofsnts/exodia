@@ -10,7 +10,8 @@ import { Song } from 'core/song'
 import { MusicQueue } from 'core/player'
 
 enum Radios {
-  rap = 'https://www.youtube.com/watch?v=Qm4r1fyz61Y',
+  rap = 'https://www.youtube.com/watch?v=05689ErDUdM',
+  lofi = 'https://www.youtube.com/watch?v=jfKfPfyJRdk',
 }
 
 export default new Command({
@@ -24,7 +25,10 @@ export default new Command({
       description: 'music style',
       type: ApplicationCommandOptionType.String,
       required: true,
-      choices: [{ name: 'rap', value: 'rap' }],
+      choices: [
+        { name: 'rap', value: 'rap' },
+        { name: 'lofi', value: 'lofi' },
+      ],
     },
   ],
   run: async ({ interaction, args, type }) => {
