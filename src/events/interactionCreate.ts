@@ -2,6 +2,7 @@ import { CommandInteractionOptionResolver } from './../../node_modules/discord.j
 import { ExtendedInteraction } from 'types/command'
 import { Events } from 'core/event'
 import { client } from 'index'
+import { buildCommandParams } from 'utils/buildCommandParams'
 
 export default new Events('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return
@@ -9,12 +10,30 @@ export default new Events('interactionCreate', async (interaction) => {
   await interaction.deferReply()
 
   const command = client.commands.get(interaction.commandName)
-  if (!command) return interaction.followUp('Comando inválido')
+  if (!command) return interaction.followUp('Invalid command')
 
-  command.run({
-    args: interaction.options as CommandInteractionOptionResolver,
-    client,
-    interaction: interaction as ExtendedInteraction,
-    type: 'INTERACTION',
-  })
+  if (command.validations) {
+    const valid = command.validations.every((validation) =>
+      validation(interaction, 'INTERACTION')
+    )
+    if (!valid) {
+      return
+    }
+  }
+
+  try {
+    command.run({
+      args: interaction.options as CommandInteractionOptionResolver,
+      client,
+      interaction: interaction as ExtendedInteraction,
+      type: 'INTERACTION',
+      commandParams: buildCommandParams(interaction as ExtendedInteraction),
+    })
+  } catch (error) {
+    console.error(error)
+    await interaction.followUp({
+      content: 'There was an error while executing this command!',
+      ephemeral: true,
+    })
+  }
 })

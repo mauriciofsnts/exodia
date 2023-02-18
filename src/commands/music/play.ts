@@ -8,14 +8,16 @@ import { MusicQueue } from 'core/player'
 import { Song } from 'core/song'
 import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
 import { client } from 'index'
-import { convertDurationToTimeString } from 'utils/date-convert'
+import { convertDurationToTimeString } from 'utils/dateConvert'
 import { i18n } from 'utils/i18n'
+import { isOnServer, isOnVoiceChannel } from 'validations/channel'
 
 export default new Command({
   name: 'play',
   description: i18n.__('play.description'),
   categorie: '🎧 Audio',
   aliases: ['p', 'play'],
+  validations: [isOnVoiceChannel, isOnServer],
   options: [
     {
       name: 'songtitle',
@@ -24,16 +26,8 @@ export default new Command({
       required: true,
     },
   ],
-  run: async ({ interaction, args, type }) => {
-    if (!interaction.member.voice.channel || !interaction.guild)
-      return Reply(
-        Embed({
-          description: i18n.__('play.errorNotChannel'),
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
+  run: async ({ interaction, args, type, commandParams }) => {
+    const { guild, member, queue } = commandParams
 
     const songTitle =
       interaction.type === InteractionType.ApplicationCommand
@@ -58,8 +52,6 @@ export default new Command({
       console.error('Error on execute', error)
       return
     }
-
-    const queue = client.queues.get(interaction.guild.id)
 
     if (queue) {
       queue.songs.push(song)
@@ -102,10 +94,10 @@ export default new Command({
     const newQueue = new MusicQueue({
       interaction,
       connection: joinVoiceChannel({
-        channelId: interaction.member.voice.channel.id,
-        guildId: interaction.guild.id,
-        adapterCreator: interaction.guild
-          .voiceAdapterCreator as DiscordGatewayAdapterCreator,
+        channelId: member.voice?.channelId ?? '',
+        guildId: guild.id,
+        adapterCreator:
+          guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
       }),
     })
 

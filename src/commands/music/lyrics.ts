@@ -1,7 +1,8 @@
 import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
-import { client } from 'index'
 import { i18n } from 'utils/i18n'
+import { hasQueue } from 'validations/audio'
+import { isOnVoiceChannel, isOnServer } from 'validations/channel'
 
 // @ts-ignore
 import lyricsFinder from 'lyrics-finder'
@@ -10,19 +11,10 @@ export default new Command({
   name: 'lyrics',
   description: i18n.__('lyrics.description'),
   categorie: '🎧 Audio',
-  aliases: ['ly'],
-  run: async ({ interaction, type }) => {
-    const queue = client.queues.get(interaction.guild!.id)
-
-    if (!queue)
-      return Reply(
-        Embed({
-          description: i18n.__('lyrics.errorNotQueue'),
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
+  aliases: ['ly', 'lyrics'],
+  validations: [isOnVoiceChannel, isOnServer, hasQueue],
+  run: async ({ interaction, type, commandParams }) => {
+    const { queue } = commandParams
 
     let lyrics = null
     const title = queue.songs[0].title

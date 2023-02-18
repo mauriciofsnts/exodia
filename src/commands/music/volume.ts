@@ -3,12 +3,15 @@ import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
 import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
+import { hasQueue } from 'validations/audio'
+import { isOnVoiceChannel, isOnServer } from 'validations/channel'
 
 export default new Command({
   name: 'volume',
   description: i18n.__('volume.description'),
   categorie: '🎧 Audio',
   aliases: ['volume', 'v'],
+  validations: [isOnVoiceChannel, isOnServer, hasQueue],
   options: [
     {
       name: 'value',
@@ -17,28 +20,8 @@ export default new Command({
       required: true,
     },
   ],
-  run: async ({ interaction, args, type }) => {
-    if (!interaction.member.voice.channel || !interaction.guild)
-      return Reply(
-        Embed({
-          description: i18n.__('common.errorNotChannel'),
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
-
-    const queue = client.queues.get(interaction.guild.id)
-
-    if (!queue)
-      return Reply(
-        Embed({
-          description: i18n.__('volume.errorNotQueue'),
-          type: 'success',
-        }),
-        interaction,
-        type
-      )
+  run: async ({ interaction, args, type, commandParams }) => {
+    const { queue } = commandParams
 
     const value =
       interaction.type === InteractionType.ApplicationCommand

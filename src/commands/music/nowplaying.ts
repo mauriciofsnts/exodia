@@ -1,26 +1,19 @@
-import { client } from 'index'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
 import { splitBar } from 'string-progressbar'
 import { Embed, Reply } from 'commands/reply'
 
+import { hasQueue } from 'validations/audio'
+import { isOnVoiceChannel, isOnServer } from 'validations/channel'
+
 export default new Command({
   name: 'nowplaying',
   description: i18n.__('nowplaying.description'),
-  aliases: ['np'],
   categorie: '🎧 Audio',
-  run: async ({ interaction, type }) => {
-    const queue = client.queues.get(interaction.guild!.id)
-
-    if (!queue || !queue.songs.length)
-      return Reply(
-        Embed({
-          description: i18n.__('nowplaying.errorNotQueue'),
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
+  aliases: ['np'],
+  validations: [isOnVoiceChannel, isOnServer, hasQueue],
+  run: async ({ interaction, type, commandParams }) => {
+    const { queue } = commandParams
 
     const song = queue.songs[0]
     const seek = queue.resource.playbackDuration / 1000

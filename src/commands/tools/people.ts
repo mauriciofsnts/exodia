@@ -3,7 +3,7 @@ import { Color, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
 import { cpf, rg } from 'utils/documents'
-import { convertDateToDateString } from 'utils/date-convert'
+import { convertDateToDateString } from 'utils/dateConvert'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { uuid } from 'utils/uuid'
 

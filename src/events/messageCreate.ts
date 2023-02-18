@@ -1,5 +1,6 @@
 import { Events } from 'core/event'
 import { client } from 'index'
+import { buildCommandParams } from 'utils/buildCommandParams'
 import { ENVS, loadEnv } from 'utils/envHelper'
 
 export default new Events('messageCreate', async (message) => {
@@ -13,8 +14,15 @@ export default new Events('messageCreate', async (message) => {
 
   const command = client.commands.find((c) => c.aliases.includes(cmd))
 
-  if (!command) {
-    return
+  if (!command) return
+
+  if (command.validations) {
+    const valid = command.validations.every((validation) =>
+      validation(message, 'MESSAGE')
+    )
+    if (!valid) {
+      return
+    }
   }
 
   try {
@@ -23,8 +31,13 @@ export default new Events('messageCreate', async (message) => {
       client,
       interaction: message as any,
       type: 'MESSAGE',
+      commandParams: buildCommandParams(message as any),
     })
   } catch (error) {
-    console.error(`Error on execute command ${cmd.toLowerCase()}: `, error)
+    console.error(error)
+
+    await message.reply({
+      content: 'There was an error while executing this command!',
+    })
   }
 })

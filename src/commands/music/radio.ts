@@ -1,16 +1,18 @@
+import { client } from 'index'
 import {
   DiscordGatewayAdapterCreator,
   joinVoiceChannel,
 } from '@discordjs/voice'
 import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
-import { client } from 'index'
 import { Embed, Reply, ReplyMusicEmbed } from 'commands/reply'
 import { Command } from 'core/command'
 import { Song } from 'core/song'
 import { MusicQueue } from 'core/player'
+import { isOnServer, isOnVoiceChannel } from 'validations/channel'
 
 enum Radios {
-  rap = 'https://www.youtube.com/watch?v=Qm4r1fyz61Y',
+  rap = 'https://www.youtube.com/watch?v=05689ErDUdM',
+  lofi = 'https://www.youtube.com/watch?v=jfKfPfyJRdk',
 }
 
 export default new Command({
@@ -24,29 +26,15 @@ export default new Command({
       description: 'music style',
       type: ApplicationCommandOptionType.String,
       required: true,
-      choices: [{ name: 'rap', value: 'rap' }],
+      choices: [
+        { name: 'rap', value: 'rap' },
+        { name: 'lofi', value: 'lofi' },
+      ],
     },
   ],
-  run: async ({ interaction, args, type }) => {
-    if (!interaction.member.voice.channel)
-      return Reply(
-        Embed({
-          description: 'You need it is on a voice channel',
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
-
-    if (!interaction.guild)
-      return Reply(
-        Embed({
-          description: 'You need it is on a server to execute this command',
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
+  validations: [isOnVoiceChannel, isOnServer],
+  run: async ({ interaction, args, type, commandParams }) => {
+    const { guild, member } = commandParams
 
     const radioName =
       interaction.type === InteractionType.ApplicationCommand
@@ -91,7 +79,7 @@ export default new Command({
       )
     }
 
-    const queue = client.queues.get(interaction.guild.id)
+    const queue = client.queues.get(guild.id)
 
     if (queue) {
       queue.songs.push(song)
@@ -111,10 +99,10 @@ export default new Command({
     const newQueue = new MusicQueue({
       interaction,
       connection: joinVoiceChannel({
-        channelId: interaction.member.voice.channel.id,
-        guildId: interaction.guild.id,
-        adapterCreator: interaction.guild
-          .voiceAdapterCreator as DiscordGatewayAdapterCreator,
+        channelId: member.voice?.channelId ?? '',
+        guildId: guild.id,
+        adapterCreator:
+          guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
       }),
     })
 

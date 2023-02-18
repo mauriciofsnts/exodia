@@ -11,6 +11,7 @@
   "common": {
     "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
     "errorCommand": "Houve um erro ao executar este comando.",
+    "errorNotGuild": "Você precisa estar em um servidor para executar este comando.",
     "name": "Nome",
     "email": "Email"
   },

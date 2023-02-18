@@ -1,44 +1,24 @@
-import { client } from 'index'
 import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
+import { isOnServer, isOnVoiceChannel } from 'validations/channel'
+import { hasQueue } from 'validations/audio'
 
 export default new Command({
   name: 'stop',
   description: i18n.__('stop.description'),
   categorie: '🎧 Audio',
   aliases: ['stop'],
-  run: async ({ interaction, type }) => {
-    if (!interaction.member.voice.channel || !interaction.guild)
-      return Reply(
-        Embed({
-          title: 'Error',
-          description: i18n.__('common.errorNotChannel'),
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
-
-    const queue = client.queues.get(interaction.guild.id)
-
-    if (!queue)
-      return Reply(
-        Embed({
-          title: '',
-          description: i18n.__('stop.errorNotQueue'),
-          type: 'success',
-        }),
-        interaction,
-        type
-      )
+  validations: [isOnVoiceChannel, isOnServer, hasQueue],
+  run: async ({ interaction, type, commandParams }) => {
+    const { member, queue } = commandParams
 
     queue.stop()
 
     return Reply(
       Embed({
         description: i18n.__mf('stop.result', {
-          author: interaction.member.nickname,
+          author: member.nickname,
         }),
         type: 'success',
       }),

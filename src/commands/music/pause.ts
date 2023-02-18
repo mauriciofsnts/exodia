@@ -3,33 +3,17 @@ import { Command } from 'core/command'
 import { client } from 'index'
 import { i18n } from 'utils/i18n'
 
+import { hasQueue } from 'validations/audio'
+import { isOnVoiceChannel, isOnServer } from 'validations/channel'
+
 export default new Command({
   name: 'pause',
   description: i18n.__('pause.description'),
   categorie: '🎧 Audio',
   aliases: ['ps', 'pause'],
-  run: async ({ interaction, type }) => {
-    if (!interaction.member.voice.channel || !interaction.guild)
-      return Reply(
-        Embed({
-          description: i18n.__('common.errorNotChannel'),
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
-
-    const queue = client.queues.get(interaction.guild.id)
-
-    if (!queue)
-      return Reply(
-        Embed({
-          description: i18n.__('pause.errorNotQueue'),
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
+  validations: [isOnVoiceChannel, isOnServer, hasQueue],
+  run: async ({ interaction, type, commandParams }) => {
+    const { queue, member } = commandParams
 
     const paused = queue.player.pause()
 
@@ -37,7 +21,7 @@ export default new Command({
       return Reply(
         Embed({
           description: i18n.__mf('pause.result', {
-            author: interaction.member.nickname,
+            author: member.nickname,
           }),
           type: 'success',
         }),
