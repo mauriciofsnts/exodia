@@ -7,8 +7,6 @@ const isOnVoiceChannel = (
   type: InteractionType
 ) => {
   if (!interaction.member?.voice.channel) {
-    console.log('not found channel :', interaction.member?.voice.channel)
-
     Reply(
       Embed({
         description: i18n.__('common.errorNotChannel'),
@@ -29,8 +27,6 @@ const isOnServer = (
   type: InteractionType
 ) => {
   if (!interaction.guild) {
-    console.log('not found server :', interaction.guild)
-
     Reply(
       Embed({
         description: i18n.__('common.errorNotGuild'),
