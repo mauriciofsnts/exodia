@@ -286,13 +286,9 @@ export class MusicQueue {
 
         case 'stop':
           this.stop()
-          if (msg) await msg.delete()
+          msg?.delete()
           break
       }
-    })
-
-    collector.on('end', async () => {
-      if (msg) await msg.delete()
     })
   }
 }
