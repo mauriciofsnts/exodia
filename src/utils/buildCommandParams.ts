@@ -14,8 +14,8 @@ export const buildCommandParams = (
   interaction: ExtendedInteraction
 ): CommandParams => {
   return {
-    guild: interaction!.guild as Guild,
-    channel: interaction!.channel as TextBasedChannel,
+    guild: interaction.guild as Guild,
+    channel: interaction.channel as TextBasedChannel,
     queue: client.queues.get(interaction.guild!.id) as MusicQueue,
     member: interaction.member as GuildMember,
   }
