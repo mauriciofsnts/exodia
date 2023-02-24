@@ -290,7 +290,11 @@ export class MusicQueue {
       }
 
       collector.on('end', async () => {
-        if (msg) await msg.delete()
+        try {
+          if (msg) await msg.delete()
+        } catch (error) {
+          console.error('Error on deleting msg: ', error)
+        }
       })
     })
   }
