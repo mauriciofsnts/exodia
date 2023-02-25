@@ -4,29 +4,18 @@ import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
 import { getNews } from 'core/newsapi'
 import { ENVS, loadEnv } from 'utils/envHelper'
+import { isMaxNewsRequestsReached } from 'validations/news'
 
 export default new Command({
   name: 'news',
   description: i18n.__('news.description'),
   categorie: '📰 News',
   aliases: ['news'],
+  validations: [isMaxNewsRequestsReached],
   run: async ({ interaction, type }) => {
-    if (client.dailyNewsRequest === Number(loadEnv(ENVS.DAILY_MAX_REQUESTS))) {
-      Reply(
-        Embed({
-          title: 'Error',
-          description: i18n.__('news.dailyLimit'),
-          type: 'error',
-        }),
-        interaction,
-        type
-      )
-
-      return
-    }
-
     getNews()
       .then((news) => {
+        client.dailyNewsRequest += 1
         const articles = news.getAll()
 
         const embed = Embed({
@@ -43,7 +32,6 @@ export default new Command({
           })
         })
 
-        client.dailyNewsRequest += 1
         Reply(embed, interaction, type)
       })
       .catch((error) => {
