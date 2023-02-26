@@ -3,8 +3,8 @@ import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
 import { getNews } from 'core/newsapi'
-import { ENVS, loadEnv } from 'utils/envHelper'
 import { isMaxNewsRequestsReached } from 'validations/news'
+import { UrlShortener } from 'core/URLShortener'
 
 export default new Command({
   name: 'news',
@@ -13,8 +13,9 @@ export default new Command({
   aliases: ['news'],
   validations: [isMaxNewsRequestsReached],
   run: async ({ interaction, type }) => {
+
     getNews()
-      .then((news) => {
+      .then(async (news) => {
         client.dailyNewsRequest += 1
         const articles = news.getAll()
 
@@ -23,14 +24,20 @@ export default new Command({
           type: 'success',
         })
 
-        articles.slice(0, 10).forEach((article) => {
+        const shortener = new UrlShortener()
+
+        const slicedArticles = articles.slice(0, 10)
+
+        for (const article of slicedArticles) {
+          const shortUrl = await shortener.shorten(article.url)
+
           embed.addFields({
             name: article.title,
             value: article?.description
-              ? `${article.description}\n${article.url}`
-              : article.url,
+              ? `${article.description}\n${shortUrl}`
+              : shortUrl,
           })
-        })
+        }
 
         Reply(embed, interaction, type)
       })
