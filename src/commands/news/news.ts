@@ -13,7 +13,6 @@ export default new Command({
   aliases: ['news'],
   validations: [isMaxNewsRequestsReached],
   run: async ({ interaction, type }) => {
-
     getNews()
       .then(async (news) => {
         client.dailyNewsRequest += 1
@@ -26,9 +25,7 @@ export default new Command({
 
         const shortener = new UrlShortener()
 
-        const slicedArticles = articles.slice(0, 10)
-
-        for (const article of slicedArticles) {
+        for (const article of articles) {
           const shortUrl = await shortener.shorten(article.url)
 
           embed.addFields({
