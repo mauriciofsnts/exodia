@@ -2,6 +2,7 @@ import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
 import { getTabNews } from 'core/tabnews'
+import { UrlShortener } from 'core/URLShortener'
 
 export default new Command({
   name: 'tabnews',
@@ -9,20 +10,26 @@ export default new Command({
   categorie: '📰 News',
   aliases: ['tabnews'],
   run: async ({ interaction, type }) => {
-    getTabNews().then((news) => {
+    
+    getTabNews().then(async (news) => {
       const articles = news.getAll()
+      const shortener = new UrlShortener()
 
       const embed = Embed({
         title: i18n.__('news.result'),
         type: 'success',
       })
 
-      articles.forEach((article) => {
+      for (const article of articles) {
+        const shortUrl = await shortener.shorten(
+          `https://www.tabnews.com.br/${article.owner_username}/${article.slug}`
+        )
+
         embed.addFields({
           name: article.title,
-          value: `https://www.tabnews.com.br/${article.owner_username}/${article.slug}`,
+          value: shortUrl,
         })
-      })
+      }
 
       Reply(embed, interaction, type)
     })
