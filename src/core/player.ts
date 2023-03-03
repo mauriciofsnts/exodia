@@ -209,18 +209,36 @@ export class MusicQueue {
         .setStyle(ButtonStyle.Secondary)
     )
 
-    const msg = await this.interaction.reply({
-      embeds: [embed],
-      components: [row],
-      fetchReply: true,
-    })
+    const msg = await this.interaction
+      .reply({
+        embeds: [embed],
+        components: [row],
+        fetchReply: true,
+      })
+      .then((m) => {
+        setTimeout(
+          () =>
+            m.delete().catch((e) => {
+              console.error('Error on deleting msg: ', e)
+            }),
+          song.duration > 0 ? song.duration * 1000 : 300000
+        )
 
-    const filter = (i: any) => i.user.id !== this.interaction.client.user!.id
+        return m
+      })
+
+    console.log(
+      'song: ',
+      song.duration,
+      song.duration > 0 ? song.duration * 1000 : 300000
+    )
 
     const collector = msg.createMessageComponentCollector({
-      filter,
-      time: song.duration > 0 ? song.duration * 1000 : 600000,
+      filter: (m) => ['stop', 'pause', 'next'].includes(m.customId),
+      time: song.duration > 0 ? song.duration * 1000 : 300000,
     })
+
+    console.log('collector:', collector)
 
     collector.on('collect', async (collection) => {
       await collection.deferUpdate()
@@ -288,14 +306,6 @@ export class MusicQueue {
           this.stop()
           break
       }
-
-      collector.on('end', async () => {
-        try {
-          if (msg) await msg.delete()
-        } catch (error) {
-          console.error('Error on deleting msg: ', error)
-        }
-      })
     })
   }
 }
