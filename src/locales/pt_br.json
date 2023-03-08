@@ -12,6 +12,7 @@
     "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
     "errorCommand": "Houve um erro ao executar este comando.",
     "errorNotGuild": "Você precisa estar em um servidor para executar este comando.",
+    "errorInvalidParameter": "Parâmetro inválido: {parameter}",
     "name": "Nome",
     "email": "Email"
   },
@@ -133,5 +134,11 @@
     "password": "Senha",
     "birthdate": "Data de nascimento",
     "footerDisclaimer": "Esses dados não são reais, são gerados aleatoriamente"
+  },
+  "hexToRgb": {
+    "description": "Converte um código hexadecimal para RGB",
+    "invalid": "Código hexadecimal inválido",
+    "result": "RGB: {rgb}",
+    "resultDescription": "Convertido para rgb"
   }
 }

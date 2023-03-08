@@ -12,6 +12,7 @@
     "errorNotChannel": "You need to join a voice channel first!",
     "errorCommand": "There was an error executing that command.",
     "errorNotGuild": "This command can only be used in a server.",
+    "errorInvalidParameter": "Invalid parameter: {parameter}",
     "name": "Name",
     "email": "Email"
   },
@@ -133,5 +134,11 @@
     "password": "Password",
     "birthdate": "Birthdate",
     "footerDisclaimer": "This data is not real, it is generated randomly."
+  },
+  "hexToRgb": {
+    "description": "Convert hex to rgb",
+    "invalid": "Invalid hex",
+    "result": "RGB: {rgb}",
+    "resultDescription": "Converted for RGB"
   }
 }
