@@ -1,6 +1,32 @@
 # exodia
 cool bot for cool kids
 
+# 🚀 Getting Started
+
+```
+git clone https://github.com/mauriciofsnts/exodia
+cd exodia
+yarn install
+```
+
+After installation finishes follow configuration instructions then run yarn start to start the bot.
+
+# ⚙️ Configuration
+
+```
+BOT_TOKEN=DISCORD_BOT_TOKEN
+PREFIX=,
+
+DB_PORT=5432
+DB_NAME='exodia'
+DB_HOST='localhost'
+DB_USER='postgres'
+DB_PASSWORD='postgres'
+DB_LOGGIN=false
+
+NEWSAPI_API_KEY='https://newsapi.org/account'
+DAILY_MAX_REQUESTS=5
+```
 
 ## License
 
