@@ -135,10 +135,10 @@
     "birthdate": "Birthdate",
     "footerDisclaimer": "This data is not real, it is generated randomly."
   },
-  "hexToRgb": {
+  "hex": {
     "description": "Convert hex to rgb",
     "invalid": "Invalid hex",
     "result": "RGB: {rgb}",
-    "resultDescription": "Converted for RGB"
+    "resultDescription": "Converted color"
   }
 }

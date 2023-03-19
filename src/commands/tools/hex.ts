@@ -6,16 +6,17 @@ import {
 import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
+import { getColorValuesFormated } from 'utils/colors'
 
 export default new Command({
-  name: 'hextorgb',
-  description: i18n.__('hexToRgb.description'),
+  name: 'hex',
+  description: i18n.__('hex.description'),
   type: ApplicationCommandType.ChatInput,
   categorie: '⚙️ Utility',
   aliases: ['hex'],
   options: [
     {
-      name: 'hexcode',
+      name: 'hexadecimal',
       description: 'hexadecimal color',
       type: ApplicationCommandOptionType.String,
       required: true,
@@ -24,36 +25,25 @@ export default new Command({
   run: async ({ interaction, args, type }) => {
     const input =
       interaction.type === InteractionType.ApplicationCommand
-        ? interaction.options.get('hex')?.value?.toString()
+        ? interaction.options.get('hexadecimal')?.value?.toString()
         : Array.isArray(args) && args.join(' ')
 
     if (!input)
       return Reply(
         Embed({
-          description: i18n.__('hexToRgb.invalid'),
+          description: i18n.__('hex.invalid'),
           type: 'success',
         }),
         interaction,
         type
       )
 
-    function hexToRGB(hex: string) {
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-      return result
-        ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16),
-          }
-        : null
-    }
+    const colorValues = getColorValuesFormated(input)
 
-    const hex = hexToRGB(input ?? '')
-
-    if (!hex)
+    if (!colorValues)
       return Reply(
         Embed({
-          description: i18n.__('hexToRgb.invalid'),
+          description: i18n.__('hex.invalid'),
           type: 'success',
         }),
         interaction,
@@ -61,12 +51,15 @@ export default new Command({
       )
 
     const embed = Embed({
-      title: i18n.__('hexToRgb.resultDescription'),
-      description: i18n.__mf('hexToRgb.result', {
-        rgb: `${hex.r}, ${hex.g}, ${hex.b}`,
-      }),
-      type: 'info',
+      title: i18n.__('hex.resultDescription'),
+      type: 'success',
     })
+
+    embed.addFields({ inline: false, name: 'HEX', value: colorValues.hex })
+    embed.addFields({ inline: false, name: 'RGB', value: colorValues.rgb })
+    embed.addFields({ inline: false, name: 'CMYK', value: colorValues.cmyk })
+    embed.addFields({ inline: false, name: 'HSV', value: colorValues.hsv })
+    // embed.addFields({ inline: false, name: 'HSL', value: colorValues.hsl })
 
     Reply(embed, interaction, type)
   },
