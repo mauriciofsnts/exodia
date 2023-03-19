@@ -4,7 +4,7 @@ import { Embed, Reply } from 'commands/reply'
 import { ExtendedInteraction, InteractionType } from 'types/command'
 
 const hasQueue = (interaction: ExtendedInteraction, type: InteractionType) => {
-  const queue = client.queues.get(interaction.guild!.id)
+  const queue = client.distube.getQueue(interaction!.guild!.id)
 
   if (!queue || !queue.songs.length) {
     Reply(

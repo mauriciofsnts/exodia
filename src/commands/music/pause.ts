@@ -1,7 +1,6 @@
 import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
-
 import { hasQueue } from 'validations/audio'
 import { isOnVoiceChannel, isOnServer } from 'validations/channel'
 
@@ -14,7 +13,7 @@ export default new Command({
   run: async ({ interaction, type, commandParams }) => {
     const { queue, member } = commandParams
 
-    const paused = queue.player.pause()
+    const paused = queue.pause()
 
     if (paused) {
       return Reply(

@@ -13,7 +13,7 @@ export default new Command({
   run: async ({ interaction, type, commandParams }) => {
     const { queue, member } = commandParams
 
-    const unpause = queue.player.unpause()
+    const unpause = queue.resume()
 
     if (unpause) {
       return Reply(

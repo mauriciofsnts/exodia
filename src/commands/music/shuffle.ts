@@ -12,14 +12,7 @@ export default new Command({
   run: async ({ interaction, type, commandParams }) => {
     const { queue } = commandParams
 
-    let songs = queue.songs
-
-    for (let i = songs.length - 1; i > 1; i--) {
-      let j = 1 + Math.floor(Math.random() * i)
-      ;[songs[i], songs[j]] = [songs[j], songs[i]]
-    }
-
-    queue.songs = songs
+    queue.shuffle()
 
     return Reply(
       Embed({
