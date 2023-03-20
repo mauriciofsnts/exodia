@@ -11,12 +11,12 @@ export default new Command({
   aliases: ['queue'],
   validations: [isOnVoiceChannel, isOnServer, hasQueue],
   run: async ({ interaction, type, commandParams }) => {
-    const { queue, member } = commandParams
+    const { queue } = commandParams
 
     const q = queue.songs
       .map(
         (song, i) =>
-          `${i === 0 ? 'Playing:' : `${i}.`} ${song.name} - \`${
+          `${i === 0 ? i18n.__('queue.playing') : `${i}.`} ${song.name} - \`${
             song.formattedDuration
           }\``
       )
@@ -25,12 +25,13 @@ export default new Command({
     const tracks = queue.songs.map(
       (song, i) => `**${i + 1}** - [${song.name}](${song.url}) | ${
         song.formattedDuration
-      } 
-      Requested by : ${song.user}`
+      }       
+      ${i18n.__mf('queue.requestedBy', { user: song.user })}
+      `
     )
 
     const songs = queue.songs.length
-    const nextSongs = `Coming next (**${songs}**)`
+    const nextSongs = i18n.__mf('queue.comingNext', { songs: songs })
 
     Reply(
       Embed({
@@ -38,17 +39,17 @@ export default new Command({
         description: `${tracks.slice(0, 10).join('\n')}\n\n${nextSongs}`,
       })
         .addFields({
-          name: 'Now playing',
+          name: i18n.__('queue.nowPlaying'),
           value: `[${queue.songs[0].name}](${queue.songs[0].url}) - ${queue.songs[0].formattedDuration} | Requested by: ${queue.songs[0].user}`,
           inline: false,
         })
         .addFields({
-          name: 'Will play',
+          name: i18n.__('queue.willPlay'),
           value: queue.formattedDuration,
           inline: true,
         })
         .addFields({
-          name: 'Total songs:',
+          name: i18n.__('queue.totalSongs'),
           value: `${songs}`,
           inline: true,
         }),

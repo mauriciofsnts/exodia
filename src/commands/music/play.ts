@@ -6,8 +6,11 @@ import {
   InteractionType,
 } from 'discord.js'
 import { client } from 'index'
+import { ENVS, loadEnv } from 'utils/envHelper'
 import { i18n } from 'utils/i18n'
 import { isOnServer, isOnVoiceChannel } from 'validations/channel'
+
+const prefix = loadEnv(ENVS.PREFIX)
 
 export default new Command({
   name: 'play',
@@ -17,8 +20,8 @@ export default new Command({
   validations: [isOnVoiceChannel, isOnServer],
   options: [
     {
-      name: 'songtitle',
-      description: 'title of the song',
+      name: 'song',
+      description: i18n.__mf('play.usageReply', { prefix }),
       type: ApplicationCommandOptionType.String,
       required: true,
     },
@@ -26,7 +29,7 @@ export default new Command({
   run: async ({ interaction, args, type }) => {
     const songTitle =
       interaction.type === InteractionType.ApplicationCommand
-        ? String(interaction.options.get('songtitle')?.value)
+        ? String(interaction.options.get('song')?.value)
         : Array.isArray(args) && args.join(' ')
 
     if (!songTitle)

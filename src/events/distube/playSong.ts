@@ -5,17 +5,21 @@ import {
   ButtonStyle,
   EmbedBuilder,
 } from 'discord.js'
+import { i18n } from 'utils/i18n'
 
 export default new DistubeEvents('playSong', async (queue, song) => {
   const embed = new EmbedBuilder()
 
-  embed.setTitle('🎵 Now playing')
+  embed.setTitle(i18n.__('play.nowplaying'))
   embed.setDescription(
     `**[${song.name}](${song.url})** \`[${song.formattedDuration}]\``
   )
+  embed.setColor(0x6875da)
   embed.setThumbnail(song.thumbnail ?? '')
   embed.setTimestamp()
-  embed.setFooter({ text: `Requested by ${song.user?.tag}` })
+  embed.setFooter({
+    text: i18n.__mf('play.requestBy', { user: song.user?.tag }),
+  })
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()
