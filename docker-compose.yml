@@ -19,12 +19,11 @@ services:
       - ffmpeg
 
   ffmpeg:
-    container_name: b2c-ffmpeg
     image: jrottenberg/ffmpeg
-    ports:
-      - '29002:29000'
-    tty: true
-    entrypoint: 'bash'
+    command: ["-i", "/input/file.mp4", "-c:v", "libx264", "-preset", "fast", "-c:a", "aac", "-b:a", "128k", "/output/file.mp4"]
+    volumes:
+      - ./input:/input
+      - ./output:/output
 
 volumes:
   postgres-data:
