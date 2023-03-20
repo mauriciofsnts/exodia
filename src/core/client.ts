@@ -29,7 +29,7 @@ export class ExodiaClient extends Client {
   dailyNewsRequest = 0
 
   distube = new DisTube(this, {
-    leaveOnStop: false,
+    leaveOnStop: true,
     emitNewSongOnly: true,
     emitAddSongWhenCreatingQueue: false,
     emitAddListWhenCreatingQueue: false,
