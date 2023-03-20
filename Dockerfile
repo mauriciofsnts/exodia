@@ -7,10 +7,10 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Instala as dependências do projeto
-RUN npm
+RUN npm install
 
 # Constroi o projeto
-RUN npm build
+RUN npm run build
 
 # Expõe a porta que o aplicativo vai escutar
 EXPOSE 8080
