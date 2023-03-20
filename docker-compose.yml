@@ -21,13 +21,10 @@ services:
   ffmpeg:
     container_name: b2c-ffmpeg
     image: jrottenberg/ffmpeg
-    #tty: true
-    networks:
-      - b2c
     ports:
       - '29002:29000'
     tty: true
     entrypoint: 'bash'
-    
+
 volumes:
   postgres-data:
