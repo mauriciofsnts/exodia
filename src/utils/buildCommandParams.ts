@@ -1,4 +1,4 @@
-import { MusicQueue } from 'core/player'
+import { Queue } from 'distube'
 import { Guild, GuildMember, TextBasedChannel } from 'discord.js'
 import { client } from 'index'
 import { ExtendedInteraction } from 'types/command'
@@ -6,7 +6,7 @@ import { ExtendedInteraction } from 'types/command'
 export type CommandParams = {
   guild: Guild
   channel: TextBasedChannel
-  queue: MusicQueue
+  queue: Queue
   member: GuildMember
 }
 
@@ -16,7 +16,7 @@ export const buildCommandParams = (
   return {
     guild: interaction.guild as Guild,
     channel: interaction.channel as TextBasedChannel,
-    queue: client.queues.get(interaction.guild!.id) as MusicQueue,
+    queue: client.distube.getQueue(interaction!.guild!.id) as any,
     member: interaction.member as GuildMember,
   }
 }

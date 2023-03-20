@@ -1,4 +1,3 @@
-import { client } from 'index'
 import { Embed, Reply } from 'commands/reply'
 import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
@@ -48,8 +47,7 @@ export default new Command({
         type
       )
 
-    queue.volume = Number(value)
-    queue.resource.volume?.setVolumeLogarithmic(Number(value) / 100)
+    queue.setVolume(Number(value) / 100)
 
     return Reply(
       Embed({

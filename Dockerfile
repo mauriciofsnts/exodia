@@ -7,13 +7,13 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Instala as dependências do projeto
-RUN yarn
+RUN npm install
 
 # Constroi o projeto
-RUN yarn build
+RUN npm run build
 
 # Expõe a porta que o aplicativo vai escutar
 EXPOSE 8080
 
 # Define o comando padrão para iniciar o aplicativo
-CMD ["yarn", "start"]
+CMD ["npm", "run", "start"]

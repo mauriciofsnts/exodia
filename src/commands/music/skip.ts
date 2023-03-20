@@ -13,7 +13,7 @@ export default new Command({
   run: async ({ interaction, type, commandParams }) => {
     const { queue, member } = commandParams
 
-    queue.player.stop(true)
+    queue.skip()
 
     return Reply(
       Embed({

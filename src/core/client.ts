@@ -1,15 +1,13 @@
 import {
   ApplicationCommandDataResolvable,
   GatewayIntentBits,
-  Snowflake,
   Client,
   Collection,
   ClientEvents,
 } from 'discord.js'
 
-import { MusicQueue } from './player'
 import { CommandType } from 'types/command'
-import { Events } from './event'
+import { DistubeEvents as ClientDistubeEvents, Events } from './event'
 import { RegisterCommandsOptions } from 'types/client'
 import { ENVS, loadEnv, setupEnvs } from 'utils/envHelper'
 
@@ -18,12 +16,31 @@ import glob from 'glob'
 import importFile from 'utils/importFile'
 import { job as newsJob } from 'cron/news'
 
+import { DisTube, DisTubeEvents } from 'distube'
+import { YtDlpPlugin } from '@distube/yt-dlp'
+import { SoundCloudPlugin } from '@distube/soundcloud'
+import SpotifyPlugin from '@distube/spotify'
+
 const globPromise = promisify(glob)
 
 export class ExodiaClient extends Client {
   commands: Collection<string, CommandType> = new Collection()
-  queues = new Collection<Snowflake, MusicQueue>()
+
   dailyNewsRequest = 0
+
+  distube = new DisTube(this, {
+    leaveOnStop: true,
+    emitNewSongOnly: true,
+    emitAddSongWhenCreatingQueue: false,
+    emitAddListWhenCreatingQueue: false,
+    plugins: [
+      new YtDlpPlugin(),
+      new SoundCloudPlugin(),
+      new SpotifyPlugin({
+        emitEventsAfterFetching: true,
+      }),
+    ],
+  })
 
   constructor() {
     super({
@@ -81,6 +98,19 @@ export class ExodiaClient extends Client {
     eventFiles.forEach(async (filePath) => {
       const event: Events<keyof ClientEvents> = await importFile(filePath, true)
       this.on(event.event, event.run)
+    })
+
+    // register distube events
+    const distubeEventFiles = await globPromise(
+      `${__dirname}/../events/distube/*{.ts,.js}`
+    )
+
+    distubeEventFiles.forEach(async (filePath) => {
+      const event: ClientDistubeEvents<keyof DisTubeEvents> = await importFile(
+        filePath,
+        true
+      )
+      this.distube.on(event.event, event.run)
     })
   }
 

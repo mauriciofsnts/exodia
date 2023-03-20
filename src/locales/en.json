@@ -27,10 +27,10 @@
     "result": "@{author} ⏸ paused the music."
   },
   "play": {
-    "description": "Plays audio from YouTube or Soundcloud",
+    "description": "Plays audio from YouTube, Soundcloud or Spotify",
     "errorNotChannel": "You need to join a voice channel first!",
     "errorNotInSameChannel": "You must be in the same channel as {user}",
-    "usageReply": "Usage: {prefix}play <YouTube URL | Video Name | Soundcloud URL>",
+    "usageReply": "Usage: {prefix}play <YouTube URL | Video Name | Soundcloud URL | Spotify URL>",
     "missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
     "missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
     "cantJoinChannel": "Could not join the channel: {error}",
@@ -51,7 +51,10 @@
     "queueAdded": "🎵 Added to queue",
     "songTitle": "Song Title",
     "queueTracksInQueue": "Tracks in queue",
-    "queueTotalDuration": "Total duration"
+    "queueTotalDuration": "Total duration",
+    "loading": "⌛ Loading...",
+    "nowplaying": "🎶 Playing",
+    "requestBy": "Requested by: {user}"
   },
   "resume": {
     "description": "Resume currently playing music",
@@ -140,5 +143,18 @@
     "invalid": "Invalid hex",
     "result": "RGB: {rgb}",
     "resultDescription": "Converted color"
+  },
+  "queue": {
+    "description": "Returns the list of songs in the queue.",
+    "nowplaying": "🎶 Playing",
+    "willPlay": "🎵 Next",
+    "totalSongs": "Songs in queue",
+    "requestBy": "Requested by: {user}",
+    "playing": "Playing:",
+    "comingNext": "Next: (**{title}**)"
+  },
+  "shuffle": {
+    "description": "Shuffles the list of songs in the queue.",
+    "result": "🔀 Shuffling the queue."
   }
 }

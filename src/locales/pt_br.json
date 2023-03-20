@@ -27,10 +27,10 @@
     "result": "@{author} ⏸ pausou a música."
   },
   "play": {
-    "description": "Reproduz áudio do Youtube ou Soundcloud",
+    "description": "Reproduz áudio do Youtube, Soundcloud ou Spotify.",
     "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
     "errorNotInSameChannel": "Você precisa está no mesmo canal que {user}",
-    "usageReply": "Uso: {prefix}play <URL do Youtube | Nome do Vídeo | URL do Soundcloud>",
+    "usageReply": "Uso: {prefix}play <URL do Youtube | Nome do Vídeo | URL do Soundcloud | URL do Spotify >",
     "missingPermissionConnect": "Não posso conectar a canais de voz, falta permissão!",
     "missingPermissionSpeak": "Não posso tocar neste canal de voz, falta permissão!",
     "cantJoinChannel": "Não pude entrar no canal: {error}",
@@ -51,7 +51,10 @@
     "queueAdded": "🎵 Adicionado à fila",
     "songTitle": "Título",
     "queueTracksInQueue": "Músicas na fila",
-    "queueTotalDuration": "Duração total"
+    "queueTotalDuration": "Duração total",
+    "loading": "⌛ Carregando...",
+    "nowplaying": "🎶 Tocando",
+    "requestBy": "Solicitado por: {user}"
   },
   "resume": {
     "description": "Reproduz novamente a música pausada.",
@@ -140,5 +143,18 @@
     "invalid": "Código hexadecimal inválido",
     "result": "RGB: {rgb}",
     "resultDescription": "Cor Convertida"
+  },
+  "queue": {
+    "description": "Retorna a lista de músicas na fila.",
+    "nowplaying": "🎶 Tocando",
+    "willPlay": "🎵 Próxima",
+    "totalSongs": "Músicas na fila",
+    "requestBy": "Solicitado por: {user}",
+    "playing": "Tocando:",
+    "comingNext": "Próxima: (**{title}**)"
+  },
+  "shuffle": {
+    "description": "Embaralha a lista de músicas na fila.",
+    "result": "🔀 Embaralhando a fila."
   }
 }

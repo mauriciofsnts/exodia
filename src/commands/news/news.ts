@@ -39,8 +39,6 @@ export default new Command({
         Reply(embed, interaction, type)
       })
       .catch((error) => {
-        console.log('🚀 ~ file: news.ts:31 ~ run: ~ error', error)
-
         return Reply(
           Embed({
             title: 'Error',

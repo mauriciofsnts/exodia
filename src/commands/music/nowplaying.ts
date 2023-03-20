@@ -2,7 +2,6 @@ import { Command } from 'core/command'
 import { i18n } from 'utils/i18n'
 import { splitBar } from 'string-progressbar'
 import { Embed, Reply } from 'commands/reply'
-
 import { hasQueue } from 'validations/audio'
 import { isOnVoiceChannel, isOnServer } from 'validations/channel'
 
@@ -16,12 +15,12 @@ export default new Command({
     const { queue } = commandParams
 
     const song = queue.songs[0]
-    const seek = queue.resource.playbackDuration / 1000
+    const seek = queue.currentTime
     const left = song.duration - seek
 
     let embed = Embed({
       title: i18n.__('nowplaying.embedTitle'),
-      description: `${song.title}\n${song.url}`,
+      description: `${song.name}\n${song.url}`,
       type: 'info',
     })
 
@@ -32,6 +31,7 @@ export default new Command({
         }),
       })
 
+      
       const fieldValue =
         new Date(seek * 1000).toISOString().substr(11, 8) +
         ' [' +

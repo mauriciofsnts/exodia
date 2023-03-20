@@ -15,5 +15,19 @@ services:
       - DB_LOGGIN=${DB_LOGGIN}
       - DAILY_MAX_REQUESTS=${DAILY_MAX_REQUESTS}
       - NEWSAPI_API_KEY=${NEWSAPI_API_KEY}
+    depends_on:
+      - ffmpeg
+
+  ffmpeg:
+    container_name: b2c-ffmpeg
+    image: jrottenberg/ffmpeg
+    #tty: true
+    networks:
+      - b2c
+    ports:
+      - '29002:29000'
+    tty: true
+    entrypoint: 'bash'
+    
 volumes:
   postgres-data:

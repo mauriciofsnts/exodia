@@ -1,37 +1,35 @@
-import {
-  DiscordGatewayAdapterCreator,
-  joinVoiceChannel,
-} from '@discordjs/voice'
 import { Reply, Embed } from 'commands/reply'
 import { Command } from 'core/command'
-import { MusicQueue } from 'core/player'
-import { Song } from 'core/song'
-import { ApplicationCommandOptionType, InteractionType } from 'discord.js'
+import {
+  ApplicationCommandOptionType,
+  GuildTextBasedChannel,
+  InteractionType,
+} from 'discord.js'
 import { client } from 'index'
-import { convertDurationToTimeString } from 'utils/dateConvert'
+import { ENVS, loadEnv } from 'utils/envHelper'
 import { i18n } from 'utils/i18n'
 import { isOnServer, isOnVoiceChannel } from 'validations/channel'
+
+const prefix = loadEnv(ENVS.PREFIX)
 
 export default new Command({
   name: 'play',
   description: i18n.__('play.description'),
   categorie: '🎧 Audio',
-  aliases: ['p', 'play'],
+  aliases: ['play', 'p'],
   validations: [isOnVoiceChannel, isOnServer],
   options: [
     {
-      name: 'songtitle',
-      description: 'title of the song',
+      name: 'song',
+      description: i18n.__mf('play.usageReply', { prefix }),
       type: ApplicationCommandOptionType.String,
       required: true,
     },
   ],
-  run: async ({ interaction, args, type, commandParams }) => {
-    const { guild, member, queue } = commandParams
-
+  run: async ({ interaction, args, type }) => {
     const songTitle =
       interaction.type === InteractionType.ApplicationCommand
-        ? String(interaction.options.get('songtitle')?.value)
+        ? String(interaction.options.get('song')?.value)
         : Array.isArray(args) && args.join(' ')
 
     if (!songTitle)
@@ -44,97 +42,25 @@ export default new Command({
         type
       )
 
-    let song
+    const voiceChannel = interaction.member.voice.channel
 
-    try {
-      song = await Song.from(songTitle)
-    } catch (error) {
-      console.error('Error on execute', error)
-      return
+    if (!voiceChannel || !interaction.channel) return
+
+    if (type === 'INTERACTION') {
+      await interaction
+        .followUp({
+          content: i18n.__mf('play.loading'),
+        })
+        .then((msg) => {
+          setTimeout(() => {
+            msg.delete()
+          }, 2000)
+        })
     }
 
-    if (queue) {
-      queue.songs.push(song)
-
-      // sum of queue duration
-      const totalDuration = queue.songs.reduce(
-        (acc, song) => acc + song.duration,
-        0
-      )
-
-      const tracksInQueue = queue.songs.length
-
-      const embed = Embed({
-        title: i18n.__('play.queueAdded'),
-        thumbnail: song.thumbnail,
-        type: 'success',
-      })
-
-      embed.addFields({
-        name: i18n.__('play.songTitle'),
-        value: song.title,
-      })
-
-      embed.addFields({
-        name: i18n.__('play.queueTracksInQueue'),
-        value: String(tracksInQueue),
-        inline: true,
-      })
-
-      embed.addFields({
-        name: i18n.__('play.queueTotalDuration'),
-        value: convertDurationToTimeString(totalDuration),
-        inline: true,
-      })
-
-      Reply(embed, interaction, type)
-      return
-    }
-
-    const newQueue = new MusicQueue({
-      interaction,
-      connection: joinVoiceChannel({
-        channelId: member.voice?.channelId ?? '',
-        guildId: guild.id,
-        adapterCreator:
-          guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
-      }),
+    client.distube.play(voiceChannel, songTitle, {
+      textChannel: interaction.channel as GuildTextBasedChannel,
+      member: interaction.member,
     })
-
-    client.queues.set(interaction.guild!.id, newQueue)
-
-    newQueue.enqueue(song)
-
-    const totalDuration = newQueue.songs.reduce(
-      (acc, song) => acc + song.duration,
-      0
-    )
-
-    const tracksInQueue = newQueue.songs.length
-
-    const embed = Embed({
-      title: i18n.__('play.queueAdded'),
-      thumbnail: song.thumbnail,
-      type: 'success',
-    })
-
-    embed.addFields({
-      name: i18n.__('play.songTitle'),
-      value: song.title,
-    })
-
-    embed.addFields({
-      name: i18n.__('play.queueTracksInQueue'),
-      value: String(tracksInQueue),
-      inline: true,
-    })
-
-    embed.addFields({
-      name: i18n.__('play.queueTotalDuration'),
-      value: convertDurationToTimeString(totalDuration),
-      inline: true,
-    })
-
-    Reply(embed, interaction, type)
   },
 })

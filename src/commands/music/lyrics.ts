@@ -17,10 +17,10 @@ export default new Command({
     const { queue } = commandParams
 
     let lyrics = null
-    const title = queue.songs[0].title
+    const title = queue.songs[0].name
 
     try {
-      lyrics = await lyricsFinder(queue.songs[0].title, '')
+      lyrics = await lyricsFinder(title, '')
       if (!lyrics) lyrics = i18n.__mf('lyrics.lyricsNotFound', { title: title })
     } catch (error) {
       lyrics = i18n.__mf('lyrics.lyricsNotFound', { title: title })
