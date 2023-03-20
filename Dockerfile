@@ -7,7 +7,9 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Instala as dependências do projeto
-RUN npm install
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    npm install
 
 # Constroi o projeto
 RUN npm run build

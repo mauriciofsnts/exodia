@@ -15,15 +15,6 @@ services:
       - DB_LOGGIN=${DB_LOGGIN}
       - DAILY_MAX_REQUESTS=${DAILY_MAX_REQUESTS}
       - NEWSAPI_API_KEY=${NEWSAPI_API_KEY}
-    depends_on:
-      - ffmpeg
-
-  ffmpeg:
-    image: jrottenberg/ffmpeg
-    command: ["-i", "/input/file.mp4", "-c:v", "libx264", "-preset", "fast", "-c:a", "aac", "-b:a", "128k", "/output/file.mp4"]
-    volumes:
-      - ./input:/input
-      - ./output:/output
 
 volumes:
   postgres-data:
