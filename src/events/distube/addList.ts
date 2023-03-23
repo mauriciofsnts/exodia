@@ -1,4 +1,5 @@
 import { DistubeEvents } from 'core/event'
+import { i18n } from 'utils/i18n'
 import { EmbedBuilder } from 'discord.js'
 
 export default new DistubeEvents('addList', async (queue, song) => {
