@@ -47,6 +47,6 @@
     "reflect-metadata": "^0.1.13",
     "soundcloud-downloader": "^1.0.0",
     "string-progressbar": "^1.0.4",
-    "typeorm": "^0.3.7"
+    "typeorm": "^0.3.13"
   }
 }
