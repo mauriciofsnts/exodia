@@ -21,7 +21,7 @@ export default new Command({
 
 			for (const article of articles) {
 				const shortUrl = await shortener.shorten(
-					`https://www.tabnews.com.br/${article.owner_username}/${article.slug}`
+					`https://www.tabnews.com.br/${article.owner_username}/${article.slug}`,
 				);
 
 				embed.addFields({
@@ -31,7 +31,7 @@ export default new Command({
 			}
 
 			embed.setURL('https://www.tabnews.com.br');
-			embed.setTimestamp()
+			embed.setTimestamp();
 			Reply(embed, interaction, type);
 		});
 	},

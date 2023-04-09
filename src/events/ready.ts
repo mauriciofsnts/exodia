@@ -1,5 +1,5 @@
-import { Events } from 'core/event'
+import { Events } from 'core/event';
 
 export default new Events('ready', async () => {
-  console.info('Bot online :)')
-})
+	console.info('Bot online :)');
+});

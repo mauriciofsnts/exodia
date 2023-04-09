@@ -1,6 +1,6 @@
-import { client } from 'index'
+import { client } from 'index';
 
-import cron from 'node-cron'
+import cron from 'node-cron';
 
 //                       # ┌────────────── second (optional)
 //                       # │ ┌──────────── minute
@@ -12,10 +12,10 @@ import cron from 'node-cron'
 //                       # │ │ │ │ │ │
 //                       # * * * * * *
 const job = cron.schedule('0 0 * * *', () => {
-  console.info('Daily news request reset')
-  
-  // reset daily news request
-  client.dailyNewsRequest = 0
-})
+	console.info('Daily news request reset');
 
-export { job }
+	// reset daily news request
+	client.dailyNewsRequest = 0;
+});
+
+export { job };
