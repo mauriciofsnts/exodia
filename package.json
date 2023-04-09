@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "rimraf ./build && tsc && tsc-alias",
     "start": "node build/index.js",
-    "dev": "ts-node-dev -r tsconfig-paths/register ./src/index.ts"
+    "dev": "ts-node-dev -r tsconfig-paths/register ./src/index.ts",
+    "lint": "eslint --fix --ext .js,.ts ."
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,7 @@
     "@types/node": "^18.11.17",
     "@types/node-cron": "^3.0.7",
     "better-logging": "^5.0.0",
+    "eslint": "^8.38.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
