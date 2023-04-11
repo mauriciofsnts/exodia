@@ -52,11 +52,15 @@
 		"songAccessErr": "O vídeo possui restrição de idade, é privado ou está indisponível",
 		"queueAdded": "🎵 Adicionado à fila",
 		"songTitle": "Título",
+		"songInfo": "**[{name}]({url})**",
 		"queueTracksInQueue": "Músicas na fila",
 		"queueTotalDuration": "Duração total",
 		"loading": "⌛ Carregando...",
 		"nowplaying": "🎶 Tocando",
-		"requestBy": "Solicitado por: {user}"
+		"requestBy": "Solicitado por: {user}",
+		"error": "🎵 Error",
+		"duration": "Duração",
+		"source": "Fonte"
 	},
 	"resume": {
 		"description": "Reproduz novamente a música pausada.",

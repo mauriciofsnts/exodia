@@ -55,8 +55,12 @@
 		"queueTracksInQueue": "Tracks in queue",
 		"queueTotalDuration": "Total duration",
 		"loading": "⌛ Loading...",
-		"nowplaying": "🎶 Playing",
-		"requestBy": "Requested by: {user}"
+		"nowplaying": "🎶 Playing",		
+		"songInfo": "**[{name}]({url})**",
+		"requestBy": "Requested by: {user}",
+		"error": "🎵 Error",
+		"duration": "Duration",
+		"source": "Source"
 	},
 	"resume": {
 		"description": "Resume currently playing music",

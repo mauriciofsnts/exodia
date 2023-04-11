@@ -18,6 +18,7 @@ type EmbedOptions = {
 	}[];
 	url?: string;
 	footer?: string;
+	thumbnail?: string;
 };
 
 type ReplaceVars = {
@@ -31,6 +32,7 @@ const createLocalizedEmbed = (
 		fields,
 		url,
 		footer,
+		thumbnail
 	}: EmbedOptions,
 	replaceVars?: ReplaceVars
 ): EmbedBuilder => {
@@ -59,6 +61,10 @@ const createLocalizedEmbed = (
 
 	if (url) {
 		embed.setURL(url);
+	}
+
+	if (thumbnail) {
+		embed.setThumbnail(thumbnail);
 	}
 
 	if (footer) {

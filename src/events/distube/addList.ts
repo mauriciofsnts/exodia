@@ -1,20 +1,16 @@
 import { DistubeEvents } from 'core/event';
-import { i18n } from 'utils/i18n';
-import { EmbedBuilder } from 'discord.js';
+import { createLocalizedEmbed } from 'commands/reply';
 
 export default new DistubeEvents('addList', async (queue, song) => {
-	const embed = new EmbedBuilder();
-
-	embed.setTitle(i18n.__('play.queueAdded'));
-	embed.setColor(0x6875da);
-	embed.setDescription(
-		`**[${song.name}](${song.url})** \`[${song.formattedDuration}]\``,
+	const embed = createLocalizedEmbed(
+		{
+			title: 'play.queueAdded',
+			description: `**[${song.name}](${song.url})** \`[${song.formattedDuration}]\``,
+			footer: 'play.requestBy',
+			thumbnail: song.thumbnail ?? '',
+		},
+		{ user: song.user?.tag ?? '-' }
 	);
-	embed.setThumbnail(song.thumbnail ?? '');
-	embed.setTimestamp();
-	embed.setFooter({
-		text: i18n.__mf('play.requestBy', { user: song.user?.tag }),
-	});
 
 	queue.textChannel?.send({
 		embeds: [embed],
