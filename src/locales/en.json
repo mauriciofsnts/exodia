@@ -15,7 +15,8 @@
 		"errorNotGuild": "This command can only be used in a server.",
 		"errorInvalidParameter": "Invalid parameter: {parameter}",
 		"name": "Name",
-		"email": "Email"
+		"email": "Email",
+		"id": "ID"
 	},
 	"stop": {
 		"description": "Stops the music",
@@ -112,6 +113,7 @@
 		"withoutMask": "Without mask"
 	},
 	"uuid": {
+		"title": "Generated unique identifier",
 		"description": "Return a random uuid"
 	},
 	"volume": {
@@ -139,7 +141,9 @@
 		"resultDescription": "Fake people generator with various random and valid data: name, CPF, RG, email, password, date of birth, etc.",
 		"password": "Password",
 		"birthdate": "Birthdate",
-		"footerDisclaimer": "This data is not real, it is generated randomly."
+		"footerDisclaimer": "This data is not real, it is generated randomly.",
+		"cpf": "CPF",
+		"rg": "RG"
 	},
 	"hex": {
 		"description": "Convert hex to rgb",

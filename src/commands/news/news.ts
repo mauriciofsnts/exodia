@@ -1,11 +1,10 @@
 import { client } from 'index';
-import { replyLocalizedEmbed } from 'commands/reply';
+import { FieldArray, replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { getNews } from 'core/newsapi';
 import { isMaxNewsRequestsReached } from 'validations/news';
 import { UrlShortener } from 'core/URLShortener';
-import { APIEmbedField } from 'discord.js';
 
 export default new Command({
 	name: 'news',
@@ -20,7 +19,7 @@ export default new Command({
 				const articles = news.getAll();
 
 				const shortener = new UrlShortener();
-				const fields: APIEmbedField[] = [];
+				const fields: FieldArray[] = [];
 
 				for (const article of articles) {
 					const shortUrl = await shortener.shorten(article.url);
@@ -30,6 +29,7 @@ export default new Command({
 						value: article?.description
 							? `${article.description}\n${shortUrl}`
 							: shortUrl,
+						rawValue: true,
 					});
 				}
 

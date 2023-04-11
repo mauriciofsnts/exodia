@@ -1,4 +1,4 @@
-import { ApplicationCommandType, EmbedBuilder } from 'discord.js';
+import { ApplicationCommandType } from 'discord.js';
 import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
@@ -43,8 +43,8 @@ export default new Command({
 					name: 'people.birthdate',
 					value: convertDateToDateString(person.birthdate),
 				},
-				{ name: 'cpf.title', value: cpf().mask },
-				{ name: 'rg.title', value: rg().mask },
+				{ name: 'people.cpf', value: cpf().mask },
+				{ name: 'people.rg', value: rg().mask },
 			],
 			footer: 'people.footerDisclaimer',
 		});

@@ -1,9 +1,8 @@
-import { replyLocalizedEmbed } from 'commands/reply';
+import { FieldArray, replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { getTabNews } from 'core/tabnews';
 import { UrlShortener } from 'core/URLShortener';
-import { APIEmbedField } from 'discord.js';
 
 export default new Command({
 	name: 'tabnews',
@@ -16,7 +15,7 @@ export default new Command({
 				const articles = news.getAll();
 
 				const shortener = new UrlShortener();
-				const fields: APIEmbedField[] = [];
+				const fields: FieldArray[] = [];
 
 				for (const article of articles) {
 					const shortUrl = await shortener.shorten(
@@ -26,6 +25,7 @@ export default new Command({
 					fields.push({
 						name: article.title,
 						value: `⭐ ${article.tabcoins} · ${article.owner_username} · ${shortUrl}`,
+						rawValue: true,
 					});
 				}
 

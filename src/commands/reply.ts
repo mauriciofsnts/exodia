@@ -1,11 +1,21 @@
-import { EmbedBuilder } from 'discord.js';
+import { APIEmbedField, EmbedBuilder } from 'discord.js';
 import { ExtendedInteraction, InteractionType } from 'types/command';
 import i18n from 'i18n';
+
+export interface FieldArray extends APIEmbedField {
+	rawValue?: boolean;
+}
+[];
 
 type EmbedOptions = {
 	title?: string;
 	description?: string;
-	fields?: { name: string; value: string; inline?: boolean }[];
+	fields?: {
+		name: string;
+		value: string;
+		inline?: boolean;
+		rawValue?: boolean;
+	}[];
 	url?: string;
 	footer?: string;
 };
@@ -39,9 +49,9 @@ const createLocalizedEmbed = (
 	}
 
 	if (fields) {
-		fields.forEach(({ name, value, inline }) => {
+		fields.forEach(({ name, value, inline, rawValue }) => {
 			const nameString = i18n.__mf(name, replaceVars);
-			const valueString = i18n.__mf(value, replaceVars);
+			const valueString = rawValue ? value : i18n.__mf(value, replaceVars);
 
 			embed.addFields({ name: nameString, value: valueString, inline: inline });
 		});
