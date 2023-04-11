@@ -10,7 +10,7 @@ i18n.configure({
 	defaultLocale: 'en',
 	retryInDefaultLocale: true,
 	objectNotation: true,
-	updateFiles: true,
+	updateFiles: false,
 
 	logWarnFn: function (msg: string) {
 		console.log(msg);
