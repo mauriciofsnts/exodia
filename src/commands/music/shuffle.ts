@@ -16,7 +16,6 @@ export default new Command({
 		queue.shuffle();
 
 		replyLocalizedEmbed(interaction, type, {
-			title: 'shuffle.title',
 			description: 'shuffle.result',
 		});
 	},

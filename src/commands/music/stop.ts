@@ -18,7 +18,7 @@ export default new Command({
 		replyLocalizedEmbed(
 			interaction,
 			type,
-			{ title: 'stop.title', description: 'stop.result' },
+			{ description: 'stop.result' },
 			{ author: member.nickname ?? '-' }
 		);
 	},

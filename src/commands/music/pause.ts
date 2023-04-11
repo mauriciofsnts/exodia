@@ -19,7 +19,7 @@ export default new Command({
 			replyLocalizedEmbed(
 				interaction,
 				type,
-				{ title: 'pause.title', description: 'pause.result' },
+				{ description: 'pause.result' },
 				{ author: member.nickname ?? '-' }
 			);
 

@@ -13,19 +13,10 @@ export default new Command({
 	run: async ({ interaction, type }) => {
 		const { mask, output } = cnpj();
 
-		// const embed = new EmbedBuilder()
-		// 	.setColor(Color.info)
-		// 	.setTitle('CNPJ')
-		// 	.addFields({ name: i18n.__('cnpj.withMask'), value: mask })
-		// 	.addFields({ name: i18n.__('cnpj.withoutMask'), value: output });
-
-		// Reply(embed, interaction, type);
-
 		replyLocalizedEmbed(
 			interaction,
 			type,
 			{
-				title: 'cnpj.title',
 				description: 'cnpj.result',
 				fields: [
 					{ name: 'cnpj.withMask', value: mask },

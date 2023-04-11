@@ -29,7 +29,6 @@ export default new Command({
 
 		if (isNaN(Number(value))) {
 			replyLocalizedEmbed(interaction, type, {
-				title: 'volume.title',
 				description: 'volume.errorNotNumber',
 			});
 
@@ -38,7 +37,6 @@ export default new Command({
 
 		if (Number(value) > 100 || Number(value) < 0) {
 			replyLocalizedEmbed(interaction, type, {
-				title: 'volume.title',
 				description: 'volume.errorNotValid',
 			});
 
@@ -51,7 +49,6 @@ export default new Command({
 			interaction,
 			type,
 			{
-				title: 'volume.title',
 				description: 'volume.result',
 			},
 			{ arg: value ? value : '-' }

@@ -13,19 +13,10 @@ export default new Command({
 	run: async ({ interaction, type }) => {
 		const { mask, output } = cpf();
 
-		// const embed = new EmbedBuilder()
-		// 	.setColor(Color.info)
-		// 	.setTitle('CPF')
-		// 	.addFields({ name: i18n.__('cpf.withMask'), value: mask })
-		// 	.addFields({ name: i18n.__('cpf.withoutMask'), value: output });
-
-		// Reply(embed, interaction, type);
-
 		replyLocalizedEmbed(
 			interaction,
 			type,
 			{
-				title: 'cpf.title',
 				description: 'cpf.result',
 				fields: [
 					{ name: 'cpf.withMask', value: mask },
