@@ -46,19 +46,6 @@ export default new Command({
 			return;
 		}
 
-		// const embed = Embed({
-		// 	title: i18n.__('hex.resultDescription'),
-		// 	type: 'success',
-		// });
-
-		// embed.addFields({ inline: false, name: 'HEX', value: colorValues.hex });
-		// embed.addFields({ inline: false, name: 'RGB', value: colorValues.rgb });
-		// embed.addFields({ inline: false, name: 'CMYK', value: colorValues.cmyk });
-		// embed.addFields({ inline: false, name: 'HSV', value: colorValues.hsv });
-		// // embed.addFields({ inline: false, name: 'HSL', value: colorValues.hsl })
-
-		// Reply(embed, interaction, type);
-
 		replyLocalizedEmbed(
 			interaction,
 			type,

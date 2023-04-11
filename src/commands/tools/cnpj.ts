@@ -1,4 +1,4 @@
-import { ApplicationCommandType, EmbedBuilder } from 'discord.js';
+import { ApplicationCommandType } from 'discord.js';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { cnpj } from 'utils/documents';

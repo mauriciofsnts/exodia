@@ -82,17 +82,4 @@ const replyLocalizedEmbed = (
 		: interaction.followUp({ embeds: [embed] });
 };
 
-// ! Example usage:
-// replyLocalizedEmbed(interaction, type, {
-// 	title: 'ping.title',
-// 	description: 'ping.result',
-// 	fields: [
-// 		{
-// 			name: 'ping.field.name',
-// 			value: 'ping.field.value',
-// 			inline: true,
-// 		},
-// 	],
-// });
-
 export { createLocalizedEmbed, replyLocalizedEmbed };
