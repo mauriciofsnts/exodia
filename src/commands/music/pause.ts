@@ -1,4 +1,4 @@
-import { Embed, Reply } from 'commands/reply';
+import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { hasQueue } from 'validations/audio';
@@ -16,25 +16,19 @@ export default new Command({
 		const paused = queue.pause();
 
 		if (paused) {
-			return Reply(
-				Embed({
-					description: i18n.__mf('pause.result', {
-						author: member.nickname,
-					}),
-					type: 'success',
-				}),
+			replyLocalizedEmbed(
 				interaction,
 				type,
+				{ title: 'pause.title', description: 'pause.result' },
+				{ author: member.nickname ?? '-' }
 			);
+
+			return;
 		}
 
-		return Reply(
-			Embed({
-				description: i18n.__('common.errorCommand'),
-				type: 'error',
-			}),
-			interaction,
-			type,
-		);
+		replyLocalizedEmbed(interaction, type, {
+			title: 'common.errorCommand',
+			description: 'common.errorCommand',
+		});
 	},
 });

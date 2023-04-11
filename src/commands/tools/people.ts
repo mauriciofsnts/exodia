@@ -1,5 +1,5 @@
 import { ApplicationCommandType, EmbedBuilder } from 'discord.js';
-import { Color, Reply } from 'commands/reply';
+import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { cpf, rg } from 'utils/documents';
@@ -31,40 +31,22 @@ export default new Command({
 	run: async ({ interaction, type }) => {
 		const person = createRandomUser();
 
-		const embed = new EmbedBuilder()
-			.setColor(Color.success)
-			.setTitle(i18n.__('people.result'))
-			.setDescription(i18n.__('people.resultDescription'))
-			.setThumbnail(
-				'https://api.dicebear.com/5.x/bottts-neutral/png?seed=Socks',
-			)
-			.addFields({ name: '\u200B', value: '\u200B' })
-			.addFields({
-				name: 'ID',
-				value: uuid(),
-			})
-			.addFields({
-				name: i18n.__('common.name'),
-				value: person.name,
-			})
-			.addFields({
-				name: i18n.__('common.email'),
-				value: person.email,
-			})
-			.addFields({
-				name: i18n.__('people.password'),
-				value: person.password,
-			})
-			.addFields({
-				name: i18n.__('people.birthdate'),
-				value: convertDateToDateString(person.birthdate),
-				inline: true,
-			})
-			.addFields({ name: 'CPF', value: cpf().mask, inline: true })
-			.addFields({ name: 'RG', value: rg().mask, inline: true })
-			.addFields({ name: '\u200B', value: '\u200B' })
-			.setFooter({ text: i18n.__('people.footerDisclaimer') });
-
-		Reply(embed, interaction, type);
+		replyLocalizedEmbed(interaction, type, {
+			title: 'people.result',
+			description: 'people.resultDescription',
+			fields: [
+				{ name: 'common.id', value: uuid() },
+				{ name: 'common.name', value: person.name },
+				{ name: 'common.email', value: person.email },
+				{ name: 'people.password', value: person.password },
+				{
+					name: 'people.birthdate',
+					value: convertDateToDateString(person.birthdate),
+				},
+				{ name: 'cpf.title', value: cpf().mask },
+				{ name: 'rg.title', value: rg().mask },
+			],
+			footer: 'people.footerDisclaimer',
+		});
 	},
 });

@@ -1,4 +1,4 @@
-import { Embed, Reply } from 'commands/reply';
+import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { hasQueue } from 'validations/audio';
@@ -18,7 +18,7 @@ export default new Command({
 				(song, i) =>
 					`${i === 0 ? i18n.__('queue.playing') : `${i}.`} ${song.name} - \`${
 						song.formattedDuration
-					}\``,
+					}\``
 			)
 			.join('\n');
 
@@ -27,34 +27,32 @@ export default new Command({
 				song.formattedDuration
 			}       
       ${i18n.__mf('queue.requestedBy', { user: song.user })}
-      `,
+      `
 		);
 
 		const songs = queue.songs.length;
 		const nextSongs = i18n.__mf('queue.comingNext', { songs: songs });
 
-		Reply(
-			Embed({
-				type: 'success',
-				description: `${tracks.slice(0, 10).join('\n')}\n\n${nextSongs}`,
-			})
-				.addFields({
+		replyLocalizedEmbed(interaction, type, {
+			title: 'queue.embedTitle',
+			description: `${tracks.slice(0, 10).join('\n')}\n\n${nextSongs}`,
+			fields: [
+				{
 					name: i18n.__('queue.nowPlaying'),
 					value: `[${queue.songs[0].name}](${queue.songs[0].url}) - ${queue.songs[0].formattedDuration} | Requested by: ${queue.songs[0].user}`,
 					inline: false,
-				})
-				.addFields({
+				},
+				{
 					name: i18n.__('queue.willPlay'),
 					value: queue.formattedDuration,
 					inline: true,
-				})
-				.addFields({
+				},
+				{
 					name: i18n.__('queue.totalSongs'),
 					value: `${songs}`,
 					inline: true,
-				}),
-			interaction,
-			type,
-		);
+				},
+			],
+		});
 	},
 });

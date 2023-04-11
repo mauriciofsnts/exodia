@@ -1,4 +1,4 @@
-import { Embed, Reply } from 'commands/reply';
+import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { hasQueue } from 'validations/audio';
 import { i18n } from 'utils/i18n';
@@ -15,13 +15,9 @@ export default new Command({
 
 		queue.shuffle();
 
-		return Reply(
-			Embed({
-				description: i18n.__('shuffle.result'),
-				type: 'success',
-			}),
-			interaction,
-			type,
-		);
+		replyLocalizedEmbed(interaction, type, {
+			title: 'shuffle.title',
+			description: 'shuffle.result',
+		});
 	},
 });

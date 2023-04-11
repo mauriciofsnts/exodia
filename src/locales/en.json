@@ -1,160 +1,193 @@
 {
-  "ping": {
-    "description": "Show the bot's average ping",
-    "result": "📈 Average ping to API: {ping} ms"
-  },
-  "skip": {
-    "description": "Skip the currently playing song",
-    "errorNotQueue": "There is nothing playing that I could skip for you.",
-    "result": "@{author} ⏭ skipped the song"
-  },
-  "common": {
-    "errorNotChannel": "You need to join a voice channel first!",
-    "errorCommand": "There was an error executing that command.",
-    "errorNotGuild": "This command can only be used in a server.",
-    "errorInvalidParameter": "Invalid parameter: {parameter}",
-    "name": "Name",
-    "email": "Email"
-  },
-  "stop": {
-    "description": "Stops the music",
-    "errorNotQueue": "There is nothing playing.",
-    "result": "@{author} ⏹ stopped the music!"
-  },
-  "pause": {
-    "description": "Pause the currently playing music",
-    "errorNotQueue": "There is nothing playing.",
-    "result": "@{author} ⏸ paused the music."
-  },
-  "play": {
-    "description": "Plays audio from YouTube, Soundcloud or Spotify",
-    "errorNotChannel": "You need to join a voice channel first!",
-    "errorNotInSameChannel": "You must be in the same channel as {user}",
-    "usageReply": "Usage: {prefix}play <YouTube URL | Video Name | Soundcloud URL | Spotify URL>",
-    "missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
-    "missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
-    "cantJoinChannel": "Could not join the channel: {error}",
-    "queueEnded": "❌ Music queue ended.",
-    "queueError": "Error: {error}",
-    "skipSong": "@{author} ⏩ skipped the song",
-    "pauseSong": "@{author} ⏸ paused the music.",
-    "resumeSong": "@{author} ▶ resumed the music!",
-    "unmutedSong": "@{author} 🔊 unmuted the music!",
-    "mutedSong": "@{author} 🔇 muted the music!",
-    "decreasedVolume": "@{author} 🔉 decreased the volume, the volume is now {volume}%",
-    "increasedVolume": "@{author} 🔊 increased the volume, the volume is now {volume}%",
-    "loopSong": "@{author} Loop is now {loop}",
-    "stopSong": "The player has been successfully stopped.",
-    "leaveChannel": "Leaving voice channel...",
-    "songNotFound": "Audio Not Found",
-    "songAccessErr": "Video is age restricted, private or unavailable",
-    "queueAdded": "🎵 Added to queue",
-    "songTitle": "Song Title",
-    "queueTracksInQueue": "Tracks in queue",
-    "queueTotalDuration": "Total duration",
-    "loading": "⌛ Loading...",
-    "nowplaying": "🎶 Playing",
-    "requestBy": "Requested by: {user}"
-  },
-  "resume": {
-    "description": "Resume currently playing music",
-    "errorNotQueue": "There is nothing playing.",
-    "resultNotPlaying": "@{author} ▶ resumed the music!",
-    "errorPlaying": "The queue is not paused."
-  },
-  "uptime": {
-    "description": "Check the uptime",
-    "result": "Uptime: `{days} day(s),{hours} hours, {minutes} minutes, {seconds} seconds`"
-  },
-  "nowplaying": {
-    "startedPlaying": "🎶 Started playing",
-    "description": "Show now playing song",
-    "errorNotQueue": "There is nothing playing.",
-    "embedTitle": "Now playing",
-    "live": " ◉ LIVE",
-    "timeRemaining": "Time Remaining: {time}",
-    "engine": "Playing from {engine}"
-  },
-  "playlist": {
-    "description": "Play a playlist from youtube",
-    "usagesReply": "Usage: {prefix}playlist <YouTube Playlist URL | Playlist Name>",
-    "errorNotChannel": "You need to join a voice channel first!",
-    "errorNotInSameChannel": "You must be in the same channel as {user}",
-    "missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
-    "missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
-    "errorNotFoundPlaylist": "Playlist not found :(",
-    "fetchingPlaylist": "⌛ fetching the playlist...",
-    "playlistCharLimit": "\nPlaylist larger than character limit...",
-    "startedPlaylist": "@{author} Started a playlist",
-    "cantJoinChannel": "Could not join the channel: {error}"
-  },
-  "lyrics": {
-    "description": "Get lyrics for the currently playing song",
-    "errorNotQueue": "There is nothing playing.",
-    "lyricsNotFound": "No lyrics found for {title}.",
-    "embedTitle": "{title} - Lyrics"
-  },
-  "help": {
-    "description": "Display all commands and descriptions",
-    "embedTitle": "🌟 - Exodia Commands",
-    "embedDescription": "List of all commands"
-  },
-  "cnpj": {
-    "description": "Return a random valid CNPJ",
-    "withMask": "With Mask",
-    "withoutMask": "Without mask"
-  },
-  "cpf": {
-    "description": "Return a random valid CPF",
-    "withMask": "With Mask",
-    "withoutMask": "Without mask"
-  },
-  "uuid": {
-    "description": "Return a random uuid"
-  },
-  "volume": {
-    "description": "Change volume of currently playing music",
-    "errorNotQueue": "There is nothing playing.",
-    "errorNotChannel": "You need to join a voice channel first!",
-    "currentVolume": "🔊 The current volume is: **{volume}%**",
-    "errorNotNumber": "Please use a number to set volume.",
-    "errorNotValid": "Please use a number between 0 - 100.",
-    "result": "Volume set to: **{arg}%**"
-  },
-  "news": {
-    "description": "News and headlines from Brazil",
-    "result": "News and headlines from Brazil",
-    "error": "An error occurred when seeking the news",
-    "dailyLimit": "Daily limit reached, try again tomorrow"
-  },
-  "tabnews": {
-    "description": "TabNews: Content for those who work with Programming"
-  },
-  "people": {
-    "description": "Get a random person",
-    "result": "Random person",
-    "resultDescription": "Fake people generator with various random and valid data: name, CPF, RG, email, password, date of birth, etc.",
-    "password": "Password",
-    "birthdate": "Birthdate",
-    "footerDisclaimer": "This data is not real, it is generated randomly."
-  },
-  "hex": {
-    "description": "Convert hex to rgb",
-    "invalid": "Invalid hex",
-    "result": "RGB: {rgb}",
-    "resultDescription": "Converted color"
-  },
-  "queue": {
-    "description": "Returns the list of songs in the queue.",
-    "nowplaying": "🎶 Playing",
-    "willPlay": "🎵 Next",
-    "totalSongs": "Songs in queue",
-    "requestBy": "Requested by: {user}",
-    "playing": "Playing:",
-    "comingNext": "Next: (**{title}**)"
-  },
-  "shuffle": {
-    "description": "Shuffles the list of songs in the queue.",
-    "result": "🔀 Shuffling the queue."
-  }
+	"ping": {
+		"description": "Show the bot's average ping",
+		"result": "📈 Average ping to API: {ping} ms",
+		"title": "Ping"
+	},
+	"skip": {
+		"description": "Skip the currently playing song",
+		"errorNotQueue": "There is nothing playing that I could skip for you.",
+		"result": "@{author} ⏭ skipped the song"
+	},
+	"common": {
+		"errorNotChannel": "You need to join a voice channel first!",
+		"errorCommand": "There was an error executing that command.",
+		"errorNotGuild": "This command can only be used in a server.",
+		"errorInvalidParameter": "Invalid parameter: {parameter}",
+		"name": "Name",
+		"email": "Email"
+	},
+	"stop": {
+		"description": "Stops the music",
+		"errorNotQueue": "There is nothing playing.",
+		"result": "@{author} ⏹ stopped the music!"
+	},
+	"pause": {
+		"description": "Pause the currently playing music",
+		"errorNotQueue": "There is nothing playing.",
+		"result": "@{author} ⏸ paused the music."
+	},
+	"play": {
+		"description": "Plays audio from YouTube, Soundcloud or Spotify",
+		"errorNotChannel": "You need to join a voice channel first!",
+		"errorNotInSameChannel": "You must be in the same channel as {user}",
+		"usageReply": "Usage: {prefix}play <YouTube URL | Video Name | Soundcloud URL | Spotify URL>",
+		"missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
+		"missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
+		"cantJoinChannel": "Could not join the channel: {error}",
+		"queueEnded": "❌ Music queue ended.",
+		"queueError": "Error: {error}",
+		"skipSong": "@{author} ⏩ skipped the song",
+		"pauseSong": "@{author} ⏸ paused the music.",
+		"resumeSong": "@{author} ▶ resumed the music!",
+		"unmutedSong": "@{author} 🔊 unmuted the music!",
+		"mutedSong": "@{author} 🔇 muted the music!",
+		"decreasedVolume": "@{author} 🔉 decreased the volume, the volume is now {volume}%",
+		"increasedVolume": "@{author} 🔊 increased the volume, the volume is now {volume}%",
+		"loopSong": "@{author} Loop is now {loop}",
+		"stopSong": "The player has been successfully stopped.",
+		"leaveChannel": "Leaving voice channel...",
+		"songNotFound": "Audio Not Found",
+		"songAccessErr": "Video is age restricted, private or unavailable",
+		"queueAdded": "🎵 Added to queue",
+		"songTitle": "Song Title",
+		"queueTracksInQueue": "Tracks in queue",
+		"queueTotalDuration": "Total duration",
+		"loading": "⌛ Loading...",
+		"nowplaying": "🎶 Playing",
+		"requestBy": "Requested by: {user}"
+	},
+	"resume": {
+		"description": "Resume currently playing music",
+		"errorNotQueue": "There is nothing playing.",
+		"resultNotPlaying": "@{author} ▶ resumed the music!",
+		"errorPlaying": "The queue is not paused."
+	},
+	"uptime": {
+		"description": "Check the uptime",
+		"result": "Uptime: `{days} day(s),{hours} hours, {minutes} minutes, {seconds} seconds`",
+		"title": "Uptime"
+	},
+	"nowplaying": {
+		"startedPlaying": "🎶 Started playing",
+		"description": "Show now playing song",
+		"errorNotQueue": "There is nothing playing.",
+		"embedTitle": "Now playing",
+		"live": " ◉ LIVE",
+		"timeRemaining": "Time Remaining: {time}",
+		"engine": "Playing from {engine}"
+	},
+	"playlist": {
+		"description": "Play a playlist from youtube",
+		"usagesReply": "Usage: {prefix}playlist <YouTube Playlist URL | Playlist Name>",
+		"errorNotChannel": "You need to join a voice channel first!",
+		"errorNotInSameChannel": "You must be in the same channel as {user}",
+		"missingPermissionConnect": "Cannot connect to voice channel, missing permissions",
+		"missingPermissionSpeak": "I cannot speak in this voice channel, make sure I have the proper permissions!",
+		"errorNotFoundPlaylist": "Playlist not found :(",
+		"fetchingPlaylist": "⌛ fetching the playlist...",
+		"playlistCharLimit": "\nPlaylist larger than character limit...",
+		"startedPlaylist": "@{author} Started a playlist",
+		"cantJoinChannel": "Could not join the channel: {error}"
+	},
+	"lyrics": {
+		"description": "Get lyrics for the currently playing song",
+		"errorNotQueue": "There is nothing playing.",
+		"lyricsNotFound": "No lyrics found for {title}.",
+		"embedTitle": "{title} - Lyrics"
+	},
+	"help": {
+		"description": "Display all commands and descriptions",
+		"embedTitle": "🌟 - Exodia Commands",
+		"embedDescription": "List of all commands"
+	},
+	"cnpj": {
+		"description": "Return a random valid CNPJ",
+		"withMask": "With Mask",
+		"withoutMask": "Without mask"
+	},
+	"cpf": {
+		"description": "Return a random valid CPF",
+		"withMask": "With Mask",
+		"withoutMask": "Without mask"
+	},
+	"uuid": {
+		"description": "Return a random uuid"
+	},
+	"volume": {
+		"description": "Change volume of currently playing music",
+		"errorNotQueue": "There is nothing playing.",
+		"errorNotChannel": "You need to join a voice channel first!",
+		"currentVolume": "🔊 The current volume is: **{volume}%**",
+		"errorNotNumber": "Please use a number to set volume.",
+		"errorNotValid": "Please use a number between 0 - 100.",
+		"result": "Volume set to: **{arg}%**"
+	},
+	"news": {
+		"description": "News and headlines from Brazil",
+		"result": "News and headlines from Brazil",
+		"error": "An error occurred when seeking the news",
+		"dailyLimit": "Daily limit reached, try again tomorrow",
+		"resultDescription": "news.resultDescription"
+	},
+	"tabnews": {
+		"description": "TabNews: Content for those who work with Programming"
+	},
+	"people": {
+		"description": "Get a random person",
+		"result": "Random person",
+		"resultDescription": "Fake people generator with various random and valid data: name, CPF, RG, email, password, date of birth, etc.",
+		"password": "Password",
+		"birthdate": "Birthdate",
+		"footerDisclaimer": "This data is not real, it is generated randomly."
+	},
+	"hex": {
+		"description": "Convert hex to rgb",
+		"invalid": "Invalid hex",
+		"result": "RGB: {rgb}",
+		"resultDescription": "Converted color"
+	},
+	"queue": {
+		"description": "Returns the list of songs in the queue.",
+		"nowplaying": "🎶 Playing",
+		"willPlay": "🎵 Next",
+		"totalSongs": "Songs in queue",
+		"requestBy": "Requested by: {user}",
+		"playing": "Playing:",
+		"comingNext": "Next: (**{title}**)"
+	},
+	"shuffle": {
+		"description": "Shuffles the list of songs in the queue.",
+		"result": "🔀 Shuffling the queue."
+	},
+	"Roubaram meu celular desbloqueado, e agora ?": "Roubaram meu celular desbloqueado, e agora ?",
+	"⭐ 10 · daniellimae · https": "⭐ 10 · daniellimae · https",
+	"Uma conversa fiada sobre \"linguagens bonitas\"": "Uma conversa fiada sobre \"linguagens bonitas\"",
+	"⭐ 7 · obrunoanastacio · https": "⭐ 7 · obrunoanastacio · https",
+	"Visão Geral sobre o HTTP": "Visão Geral sobre o HTTP",
+	"⭐ 3 · viniciusde · https": "⭐ 3 · viniciusde · https",
+	"O QUE APRENDI CRIANDO UM E-COMMERCE ZERO": "O QUE APRENDI CRIANDO UM E-COMMERCE ZERO",
+	"⭐ 2 · dennis · https": "⭐ 2 · dennis · https",
+	"Usei o ChatGPT para corrigir um BUG estranho no meu código": "Usei o ChatGPT para corrigir um BUG estranho no meu código",
+	"⭐ 2 · Iago · https": "⭐ 2 · Iago · https",
+	"Uma forma de ensinar OOP para programadores procedurais na década de 80 com cartões!": "Uma forma de ensinar OOP para programadores procedurais na década de 80 com cartões!",
+	"⭐ 2 · uriel · https": "⭐ 2 · uriel · https",
+	"[DÚVIDA] O que tem de errado com meu post?": "[DÚVIDA] O que tem de errado com meu post?",
+	"⭐ 1 · NathanFirmo · https": "⭐ 1 · NathanFirmo · https",
+	"1 - Chega de adiar, venha ter a primeira aula de Rust!": "1 - Chega de adiar, venha ter a primeira aula de Rust!",
+	"⭐ 6 · jeffersoncbd · https": "⭐ 6 · jeffersoncbd · https",
+	"Serverless": "Serverless",
+	"⭐ 6 · theryston · https": "⭐ 6 · theryston · https",
+	"Alguns Paradigmas de programação! Você conhece todos?": "Alguns Paradigmas de programação! Você conhece todos?",
+	"⭐ 4 · uriel · https": "⭐ 4 · uriel · https",
+	"[ajuda] Conteúdo sobre EAV Database Design": "[ajuda] Conteúdo sobre EAV Database Design",
+	"⭐ 3 · rodrigolibraga · https": "⭐ 3 · rodrigolibraga · https",
+	"Coding Mindset - Os Dez Mandamentos": "Coding Mindset - Os Dez Mandamentos",
+	"⭐ 3 · FelipeSilvaTech · https": "⭐ 3 · FelipeSilvaTech · https",
+	"Realize seus projetos de programação com menos esforço e mais sucesso lendo \"Código Limpo\"": "Realize seus projetos de programação com menos esforço e mais sucesso lendo \"Código Limpo\"",
+	"⭐ 3 · LivrariaDoProgramador · https": "⭐ 3 · LivrariaDoProgramador · https",
+	"[Ajuda] App de Produtividade": "[Ajuda] App de Produtividade",
+	"⭐ 3 · itsiago · https": "⭐ 3 · itsiago · https",
+	"Pitch": "Pitch",
+	"⭐ 12 · olavomello · https": "⭐ 12 · olavomello · https"
 }

@@ -1,45 +1,35 @@
-import { Reply, Embed } from 'commands/reply'
-import { i18n } from 'utils/i18n'
-import { ExtendedInteraction, InteractionType } from 'types/command'
+import { i18n } from 'utils/i18n';
+import { ExtendedInteraction, InteractionType } from 'types/command';
+import { replyLocalizedEmbed } from 'commands/reply';
 
 const isOnVoiceChannel = (
-  interaction: ExtendedInteraction,
-  type: InteractionType
+	interaction: ExtendedInteraction,
+	type: InteractionType
 ) => {
-  if (!interaction.member?.voice.channel) {
-    Reply(
-      Embed({
-        description: i18n.__('common.errorNotChannel'),
-        type: 'error',
-      }),
-      interaction,
-      type
-    )
+	if (!interaction.member?.voice.channel) {
+		replyLocalizedEmbed(interaction, type, {
+			description: i18n.__('common.errorNotChannel'),
+		});
 
-    return false
-  }
+		return false;
+	}
 
-  return true
-}
+	return true;
+};
 
 const isOnServer = (
-  interaction: ExtendedInteraction,
-  type: InteractionType
+	interaction: ExtendedInteraction,
+	type: InteractionType
 ) => {
-  if (!interaction.guild) {
-    Reply(
-      Embed({
-        description: i18n.__('common.errorNotGuild'),
-        type: 'error',
-      }),
-      interaction,
-      type
-    )
+	if (!interaction.guild) {
+		replyLocalizedEmbed(interaction, type, {
+			description: i18n.__('common.errorNotGuild'),
+		});
 
-    return false
-  }
+		return false;
+	}
 
-  return true
-}
+	return true;
+};
 
-export { isOnVoiceChannel, isOnServer }
+export { isOnVoiceChannel, isOnServer };

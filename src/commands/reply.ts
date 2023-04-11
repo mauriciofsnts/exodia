@@ -1,79 +1,88 @@
-import { EmbedBuilder } from 'discord.js'
-import { ExtendedInteraction, InteractionType } from 'types/command'
+import { EmbedBuilder } from 'discord.js';
+import { ExtendedInteraction, InteractionType } from 'types/command';
+import i18n from 'i18n';
 
-type EmbedProps = {
-  title?: string
-  thumbnail?: string
-  footer?: string
-  timestamp?: boolean
-  description?: string
-  type: 'info' | 'error' | 'success'
-}
+type EmbedOptions = {
+	title?: string;
+	description?: string;
+	fields?: { name: string; value: string; inline?: boolean }[];
+	url?: string;
+	footer?: string;
+};
 
-export enum Color {
-  success = 0x6875da,
-  error = 0xa71e1e,
-  info = 0xfdd700,
-}
+type ReplaceVars = {
+	[key: string]: string;
+};
 
-export function Embed({
-  title,
-  type,
-  description,
-  footer,
-  thumbnail,
-  timestamp,
-}: EmbedProps): EmbedBuilder {
-  const embed = new EmbedBuilder().setColor(Color[type])
+const createLocalizedEmbed = (
+	{
+		title: titleKey,
+		description: descriptionKey,
+		fields,
+		url,
+		footer,
+	}: EmbedOptions,
+	replaceVars?: ReplaceVars
+): EmbedBuilder => {
+	const embed = new EmbedBuilder();
+	embed.setColor(0x6875da);
+	embed.setTimestamp();
 
-  if (title) embed.setTitle(title)
+	if (titleKey) {
+		const titleString = i18n.__mf(titleKey, replaceVars);
+		embed.setTitle(titleString);
+	}
 
-  if (description) embed.setDescription(description)
+	if (descriptionKey) {
+		const descriptionString = i18n.__mf(descriptionKey, replaceVars);
+		embed.setDescription(descriptionString);
+	}
 
-  if (footer) embed.setFooter({ text: footer })
+	if (fields) {
+		fields.forEach(({ name, value, inline }) => {
+			const nameString = i18n.__mf(name, replaceVars);
+			const valueString = i18n.__mf(value, replaceVars);
 
-  if (timestamp) embed.setTimestamp()
+			embed.addFields({ name: nameString, value: valueString, inline: inline });
+		});
+	}
 
-  if (thumbnail) embed.setThumbnail(thumbnail)
+	if (url) {
+		embed.setURL(url);
+	}
 
-  return embed
-}
+	if (footer) {
+		const footerString = i18n.__mf(footer, replaceVars);
+		embed.setFooter({ text: footerString });
+	}
 
-export function Reply(
-  embed: EmbedBuilder,
-  interaction: ExtendedInteraction,
-  type: InteractionType
-) {
-  type === 'MESSAGE'
-    ? interaction.reply({ embeds: [embed] })
-    : interaction.followUp({ embeds: [embed] })
-}
+	return embed;
+};
 
-type MusicEmbed = {
-  title: string
-  query: string
-  thumbnail: string
-  member?: string | null
-  duration: string | number
-}
+const replyLocalizedEmbed = (
+	interaction: ExtendedInteraction,
+	type: InteractionType,
+	options: EmbedOptions,
+	replaceVars?: ReplaceVars
+) => {
+	const embed = createLocalizedEmbed(options, replaceVars);
 
-export function ReplyMusicEmbed({
-  title,
-  duration = '0',
-  member,
-  thumbnail,
-  query,
-}: MusicEmbed): EmbedBuilder {
-  const embed = new EmbedBuilder().setColor(Color.success).setTitle(title)
+	type === 'MESSAGE'
+		? interaction.reply({ embeds: [embed] })
+		: interaction.followUp({ embeds: [embed] });
+};
 
-  embed
-    .addFields(
-      { name: 'Best result for', value: query },
-      { name: 'Duration', value: duration.toString() }
-    )
-    .setThumbnail(thumbnail)
-    .setAuthor({ name: 'Youtube' })
-    .setFooter({ text: `added to queue by: ${member ?? ''}` })
+// ! Example usage:
+// replyLocalizedEmbed(interaction, type, {
+// 	title: 'ping.title',
+// 	description: 'ping.result',
+// 	fields: [
+// 		{
+// 			name: 'ping.field.name',
+// 			value: 'ping.field.value',
+// 			inline: true,
+// 		},
+// 	],
+// });
 
-  return embed
-}
+export { createLocalizedEmbed, replyLocalizedEmbed };

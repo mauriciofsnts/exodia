@@ -1,160 +1,193 @@
 {
-  "ping": {
-    "description": "Mostra o ping médio do bot.",
-    "result": "📈 Ping médio da API: {ping} ms"
-  },
-  "skip": {
-    "description": "Pula a música atual.",
-    "errorNotQueue": "Não há nada tocando que eu possa pular.",
-    "result": "@{author} ⏭ pulou a música"
-  },
-  "common": {
-    "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
-    "errorCommand": "Houve um erro ao executar este comando.",
-    "errorNotGuild": "Você precisa estar em um servidor para executar este comando.",
-    "errorInvalidParameter": "Parâmetro inválido: {parameter}",
-    "name": "Nome",
-    "email": "Email"
-  },
-  "stop": {
-    "description": "Para a música.",
-    "errorNotQueue": "Não há nada reproduzindo.",
-    "result": "@{author} ⏹ parou a música!"
-  },
-  "pause": {
-    "description": "Pausa a música reproduzindo.",
-    "errorNotQueue": "Não há nada reproduzindo.",
-    "result": "@{author} ⏸ pausou a música."
-  },
-  "play": {
-    "description": "Reproduz áudio do Youtube, Soundcloud ou Spotify.",
-    "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
-    "errorNotInSameChannel": "Você precisa está no mesmo canal que {user}",
-    "usageReply": "Uso: {prefix}play <URL do Youtube | Nome do Vídeo | URL do Soundcloud | URL do Spotify >",
-    "missingPermissionConnect": "Não posso conectar a canais de voz, falta permissão!",
-    "missingPermissionSpeak": "Não posso tocar neste canal de voz, falta permissão!",
-    "cantJoinChannel": "Não pude entrar no canal: {error}",
-    "queueEnded": "❌ Fim da playlist.",
-    "queueError": "Erro: {error}",
-    "skipSong": "@{author} ⏩ pulou a música.",
-    "pauseSong": "@{author} ⏸ pausou a música.",
-    "resumeSong": "@{author} ▶ resumiu a música!",
-    "unmutedSong": "@{author} 🔊 desmutou a música!",
-    "mutedSong": "@{author} 🔇 mutou a música!",
-    "decreasedVolume": "@{author} 🔉 baixou o volume, o volume agora é {volume}%",
-    "increasedVolume": "@{author} 🔊 aumentou o volume, o volume agora é {volume}%",
-    "loopSong": "@{author} Repetir está {loop}",
-    "stopSong": "@{author} ⏹ parou a música!",
-    "leaveChannel": "Deixando o canal de voz!",
-    "songNotFound": "Áudio não encontrado",
-    "songAccessErr": "O vídeo possui restrição de idade, é privado ou está indisponível",
-    "queueAdded": "🎵 Adicionado à fila",
-    "songTitle": "Título",
-    "queueTracksInQueue": "Músicas na fila",
-    "queueTotalDuration": "Duração total",
-    "loading": "⌛ Carregando...",
-    "nowplaying": "🎶 Tocando",
-    "requestBy": "Solicitado por: {user}"
-  },
-  "resume": {
-    "description": "Reproduz novamente a música pausada.",
-    "errorNotQueue": "Não há nada reproduzindo.",
-    "resultNotPlaying": "@{author} ▶ resumiu a música!",
-    "errorPlaying": "A playlist não está pausada."
-  },
-  "uptime": {
-    "description": "Verifica o tempo ativo",
-    "result": "Tempo online: `{days} dia(s),{hours} hora(s), {minutes} minuto(s), {seconds} segundo(s)`"
-  },
-  "nowplaying": {
-    "startedPlaying": "🎶 Tocando",
-    "description": "Mostra música em reprodução.",
-    "errorNotQueue": "Não há nada reproduzindo.",
-    "embedTitle": "Reproduzindo",
-    "live": " ◉ AO VIVO",
-    "timeRemaining": "Tempo restante: {time}",
-    "engine": "Reproduzindo de {engine}"
-  },
-  "playlist": {
-    "description": "Reproduz uma playlist do youtube",
-    "usagesReply": "Uso: {prefix}playlist <URL da Playlist do Youtube | Nome da Playlist>",
-    "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
-    "errorNotInSameChannel": "Você precisa está no mesmo canal que {user}",
-    "missingPermissionConnect": "Não posso conectar a canais de voz, falta permissão!",
-    "missingPermissionSpeak": "Não posso tocar neste canal de voz, falta permissão!",
-    "errorNotFoundPlaylist": "Playlist não encontrada :(",
-    "fetchingPlaylist": "⌛ importando playlist...",
-    "playlistCharLimit": "\nPlaylist maior que o permitido...",
-    "startedPlaylist": "@{author} reproduzindo uma playlist.",
-    "cantJoinChannel": "Não pude entrar no canal: {error}"
-  },
-  "lyrics": {
-    "description": "Mostra a letra da música que está reproduzindo.",
-    "errorNotQueue": "Não há nada reproduzindo.",
-    "lyricsNotFound": "Nenhuma letra encontrada para {title}.",
-    "embedTitle": "{title} - Letra"
-  },
-  "help": {
-    "description": "Mostra todos os comandos e descrições.",
-    "embedTitle": "🌟 - Exodia Commands",
-    "embedDescription": "Lista de todos os comandos."
-  },
-  "cnpj": {
-    "description": "Retorna um cnpj válido aleatório",
-    "withMask": "Com máscara",
-    "withoutMask": "Sem máscara"
-  },
-  "cpf": {
-    "description": "Retorna um cpf válido aleatório",
-    "withMask": "Com máscara",
-    "withoutMask": "Sem máscara"
-  },
-  "uuid": {
-    "description": "Retorna um uuid aleatório"
-  },
-  "volume": {
-    "description": "Muda o volume da música atual.",
-    "errorNotQueue": "Não há nada reproduzindo.",
-    "errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
-    "currentVolume": "🔊 O volume atual é: **{volume}%**",
-    "errorNotNumber": "Por-favor utilize números para mudar o volume.",
-    "errorNotValid": "Por-favor utilize números entre 0 - 100.",
-    "result": "Volume alterado para: **{arg}%**"
-  },
-  "news": {
-    "description": "Notícias e manchetes do Brasil",
-    "result": "Notícias e manchetes do Brasil",
-    "error": "Ocorreu um erro ao buscar as notícias",
-    "dailyLimit": "Você atingiu o limite diário de notícias, tente novamente amanhã."
-  },
-  "tabnews": {
-    "description": "TabNews: Conteúdos para quem trabalha com Programação"
-  },
-  "people": {
-    "description": "Retorna uma pessoa aleatória",
-    "result": "Gerador de pessoas",
-    "resultDescription": "Gerador de pessoas fake com diversos dados aleatórios e válidos: nome, cpf, rg, email, senha, data de nascimento, etc.",
-    "password": "Senha",
-    "birthdate": "Data de nascimento",
-    "footerDisclaimer": "Esses dados não são reais, são gerados aleatoriamente"
-  },
-  "hex": {
-    "description": "Converte um código hexadecimal para RGB",
-    "invalid": "Código hexadecimal inválido",
-    "result": "RGB: {rgb}",
-    "resultDescription": "Cor Convertida"
-  },
-  "queue": {
-    "description": "Retorna a lista de músicas na fila.",
-    "nowplaying": "🎶 Tocando",
-    "willPlay": "🎵 Próxima",
-    "totalSongs": "Músicas na fila",
-    "requestBy": "Solicitado por: {user}",
-    "playing": "Tocando:",
-    "comingNext": "Próxima: (**{title}**)"
-  },
-  "shuffle": {
-    "description": "Embaralha a lista de músicas na fila.",
-    "result": "🔀 Embaralhando a fila."
-  }
+	"ping": {
+		"description": "Mostra o ping médio do bot.",
+		"result": "📈 Ping médio da API: {ping} ms",
+		"title": "Ping"
+	},
+	"skip": {
+		"description": "Pula a música atual.",
+		"errorNotQueue": "Não há nada tocando que eu possa pular.",
+		"result": "@{author} ⏭ pulou a música"
+	},
+	"common": {
+		"errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
+		"errorCommand": "Houve um erro ao executar este comando.",
+		"errorNotGuild": "Você precisa estar em um servidor para executar este comando.",
+		"errorInvalidParameter": "Parâmetro inválido: {parameter}",
+		"name": "Nome",
+		"email": "Email"
+	},
+	"stop": {
+		"description": "Para a música.",
+		"errorNotQueue": "Não há nada reproduzindo.",
+		"result": "@{author} ⏹ parou a música!"
+	},
+	"pause": {
+		"description": "Pausa a música reproduzindo.",
+		"errorNotQueue": "Não há nada reproduzindo.",
+		"result": "@{author} ⏸ pausou a música."
+	},
+	"play": {
+		"description": "Reproduz áudio do Youtube, Soundcloud ou Spotify.",
+		"errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
+		"errorNotInSameChannel": "Você precisa está no mesmo canal que {user}",
+		"usageReply": "Uso: {prefix}play <URL do Youtube | Nome do Vídeo | URL do Soundcloud | URL do Spotify >",
+		"missingPermissionConnect": "Não posso conectar a canais de voz, falta permissão!",
+		"missingPermissionSpeak": "Não posso tocar neste canal de voz, falta permissão!",
+		"cantJoinChannel": "Não pude entrar no canal: {error}",
+		"queueEnded": "❌ Fim da playlist.",
+		"queueError": "Erro: {error}",
+		"skipSong": "@{author} ⏩ pulou a música.",
+		"pauseSong": "@{author} ⏸ pausou a música.",
+		"resumeSong": "@{author} ▶ resumiu a música!",
+		"unmutedSong": "@{author} 🔊 desmutou a música!",
+		"mutedSong": "@{author} 🔇 mutou a música!",
+		"decreasedVolume": "@{author} 🔉 baixou o volume, o volume agora é {volume}%",
+		"increasedVolume": "@{author} 🔊 aumentou o volume, o volume agora é {volume}%",
+		"loopSong": "@{author} Repetir está {loop}",
+		"stopSong": "@{author} ⏹ parou a música!",
+		"leaveChannel": "Deixando o canal de voz!",
+		"songNotFound": "Áudio não encontrado",
+		"songAccessErr": "O vídeo possui restrição de idade, é privado ou está indisponível",
+		"queueAdded": "🎵 Adicionado à fila",
+		"songTitle": "Título",
+		"queueTracksInQueue": "Músicas na fila",
+		"queueTotalDuration": "Duração total",
+		"loading": "⌛ Carregando...",
+		"nowplaying": "🎶 Tocando",
+		"requestBy": "Solicitado por: {user}"
+	},
+	"resume": {
+		"description": "Reproduz novamente a música pausada.",
+		"errorNotQueue": "Não há nada reproduzindo.",
+		"resultNotPlaying": "@{author} ▶ resumiu a música!",
+		"errorPlaying": "A playlist não está pausada."
+	},
+	"uptime": {
+		"description": "Verifica o tempo ativo",
+		"result": "Tempo online: `{days} dia(s),{hours} hora(s), {minutes} minuto(s), {seconds} segundo(s)`",
+		"title": "Uptime"
+	},
+	"nowplaying": {
+		"startedPlaying": "🎶 Tocando",
+		"description": "Mostra música em reprodução.",
+		"errorNotQueue": "Não há nada reproduzindo.",
+		"embedTitle": "Reproduzindo",
+		"live": " ◉ AO VIVO",
+		"timeRemaining": "Tempo restante: {time}",
+		"engine": "Reproduzindo de {engine}"
+	},
+	"playlist": {
+		"description": "Reproduz uma playlist do youtube",
+		"usagesReply": "Uso: {prefix}playlist <URL da Playlist do Youtube | Nome da Playlist>",
+		"errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
+		"errorNotInSameChannel": "Você precisa está no mesmo canal que {user}",
+		"missingPermissionConnect": "Não posso conectar a canais de voz, falta permissão!",
+		"missingPermissionSpeak": "Não posso tocar neste canal de voz, falta permissão!",
+		"errorNotFoundPlaylist": "Playlist não encontrada :(",
+		"fetchingPlaylist": "⌛ importando playlist...",
+		"playlistCharLimit": "\nPlaylist maior que o permitido...",
+		"startedPlaylist": "@{author} reproduzindo uma playlist.",
+		"cantJoinChannel": "Não pude entrar no canal: {error}"
+	},
+	"lyrics": {
+		"description": "Mostra a letra da música que está reproduzindo.",
+		"errorNotQueue": "Não há nada reproduzindo.",
+		"lyricsNotFound": "Nenhuma letra encontrada para {title}.",
+		"embedTitle": "{title} - Letra"
+	},
+	"help": {
+		"description": "Mostra todos os comandos e descrições.",
+		"embedTitle": "🌟 - Exodia Commands",
+		"embedDescription": "Lista de todos os comandos."
+	},
+	"cnpj": {
+		"description": "Retorna um cnpj válido aleatório",
+		"withMask": "Com máscara",
+		"withoutMask": "Sem máscara"
+	},
+	"cpf": {
+		"description": "Retorna um cpf válido aleatório",
+		"withMask": "Com máscara",
+		"withoutMask": "Sem máscara"
+	},
+	"uuid": {
+		"description": "Retorna um uuid aleatório"
+	},
+	"volume": {
+		"description": "Muda o volume da música atual.",
+		"errorNotQueue": "Não há nada reproduzindo.",
+		"errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
+		"currentVolume": "🔊 O volume atual é: **{volume}%**",
+		"errorNotNumber": "Por-favor utilize números para mudar o volume.",
+		"errorNotValid": "Por-favor utilize números entre 0 - 100.",
+		"result": "Volume alterado para: **{arg}%**"
+	},
+	"news": {
+		"description": "Notícias e manchetes do Brasil",
+		"result": "Notícias e manchetes do Brasil",
+		"error": "Ocorreu um erro ao buscar as notícias",
+		"dailyLimit": "Você atingiu o limite diário de notícias, tente novamente amanhã.",
+		"resultDescription": "news.resultDescription"
+	},
+	"tabnews": {
+		"description": "TabNews: Conteúdos para quem trabalha com Programação"
+	},
+	"people": {
+		"description": "Retorna uma pessoa aleatória",
+		"result": "Gerador de pessoas",
+		"resultDescription": "Gerador de pessoas fake com diversos dados aleatórios e válidos: nome, cpf, rg, email, senha, data de nascimento, etc.",
+		"password": "Senha",
+		"birthdate": "Data de nascimento",
+		"footerDisclaimer": "Esses dados não são reais, são gerados aleatoriamente"
+	},
+	"hex": {
+		"description": "Converte um código hexadecimal para RGB",
+		"invalid": "Código hexadecimal inválido",
+		"result": "RGB: {rgb}",
+		"resultDescription": "Cor Convertida"
+	},
+	"queue": {
+		"description": "Retorna a lista de músicas na fila.",
+		"nowplaying": "🎶 Tocando",
+		"willPlay": "🎵 Próxima",
+		"totalSongs": "Músicas na fila",
+		"requestBy": "Solicitado por: {user}",
+		"playing": "Tocando:",
+		"comingNext": "Próxima: (**{title}**)"
+	},
+	"shuffle": {
+		"description": "Embaralha a lista de músicas na fila.",
+		"result": "🔀 Embaralhando a fila."
+	},
+	"Roubaram meu celular desbloqueado, e agora ?": "Roubaram meu celular desbloqueado, e agora ?",
+	"⭐ 10 · daniellimae · https": "⭐ 10 · daniellimae · https",
+	"Uma conversa fiada sobre \"linguagens bonitas\"": "Uma conversa fiada sobre \"linguagens bonitas\"",
+	"⭐ 7 · obrunoanastacio · https": "⭐ 7 · obrunoanastacio · https",
+	"Visão Geral sobre o HTTP": "Visão Geral sobre o HTTP",
+	"⭐ 3 · viniciusde · https": "⭐ 3 · viniciusde · https",
+	"O QUE APRENDI CRIANDO UM E-COMMERCE ZERO": "O QUE APRENDI CRIANDO UM E-COMMERCE ZERO",
+	"⭐ 2 · dennis · https": "⭐ 2 · dennis · https",
+	"Usei o ChatGPT para corrigir um BUG estranho no meu código": "Usei o ChatGPT para corrigir um BUG estranho no meu código",
+	"⭐ 2 · Iago · https": "⭐ 2 · Iago · https",
+	"Uma forma de ensinar OOP para programadores procedurais na década de 80 com cartões!": "Uma forma de ensinar OOP para programadores procedurais na década de 80 com cartões!",
+	"⭐ 2 · uriel · https": "⭐ 2 · uriel · https",
+	"[DÚVIDA] O que tem de errado com meu post?": "[DÚVIDA] O que tem de errado com meu post?",
+	"⭐ 1 · NathanFirmo · https": "⭐ 1 · NathanFirmo · https",
+	"1 - Chega de adiar, venha ter a primeira aula de Rust!": "1 - Chega de adiar, venha ter a primeira aula de Rust!",
+	"⭐ 6 · jeffersoncbd · https": "⭐ 6 · jeffersoncbd · https",
+	"Serverless": "Serverless",
+	"⭐ 6 · theryston · https": "⭐ 6 · theryston · https",
+	"Alguns Paradigmas de programação! Você conhece todos?": "Alguns Paradigmas de programação! Você conhece todos?",
+	"⭐ 4 · uriel · https": "⭐ 4 · uriel · https",
+	"[ajuda] Conteúdo sobre EAV Database Design": "[ajuda] Conteúdo sobre EAV Database Design",
+	"⭐ 3 · rodrigolibraga · https": "⭐ 3 · rodrigolibraga · https",
+	"Coding Mindset - Os Dez Mandamentos": "Coding Mindset - Os Dez Mandamentos",
+	"⭐ 3 · FelipeSilvaTech · https": "⭐ 3 · FelipeSilvaTech · https",
+	"Realize seus projetos de programação com menos esforço e mais sucesso lendo \"Código Limpo\"": "Realize seus projetos de programação com menos esforço e mais sucesso lendo \"Código Limpo\"",
+	"⭐ 3 · LivrariaDoProgramador · https": "⭐ 3 · LivrariaDoProgramador · https",
+	"[Ajuda] App de Produtividade": "[Ajuda] App de Produtividade",
+	"⭐ 3 · itsiago · https": "⭐ 3 · itsiago · https",
+	"Pitch": "Pitch",
+	"⭐ 12 · olavomello · https": "⭐ 12 · olavomello · https"
 }

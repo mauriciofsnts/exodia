@@ -1,5 +1,5 @@
 import { ApplicationCommandType } from 'discord.js';
-import { Embed, Reply } from 'commands/reply';
+import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { uuid } from 'utils/uuid';
@@ -11,12 +11,9 @@ export default new Command({
 	categorie: '⚙️ Utility',
 	aliases: ['uuid'],
 	run: async ({ interaction, type }) => {
-		const embed = Embed({
-			title: 'UUID',
+		replyLocalizedEmbed(interaction, type, {
+			title: 'uuid.title',
 			description: uuid(),
-			type: 'info',
 		});
-
-		Reply(embed, interaction, type);
 	},
 });

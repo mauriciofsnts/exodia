@@ -1,4 +1,4 @@
-import { Embed, Reply } from 'commands/reply';
+import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { isOnServer, isOnVoiceChannel } from 'validations/channel';
@@ -15,15 +15,11 @@ export default new Command({
 
 		queue.skip();
 
-		return Reply(
-			Embed({
-				description: i18n.__mf('skip.result', {
-					author: member.nickname,
-				}),
-				type: 'success',
-			}),
+		replyLocalizedEmbed(
 			interaction,
 			type,
+			{ title: 'skip.title', description: 'skip.result' },
+			{ author: member.nickname ?? '-' }
 		);
 	},
 });

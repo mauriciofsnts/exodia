@@ -1,25 +1,20 @@
-import { client } from 'index'
-import { i18n } from 'utils/i18n'
-import { Embed, Reply } from 'commands/reply'
-import { ExtendedInteraction, InteractionType } from 'types/command'
+import { client } from 'index';
+import { i18n } from 'utils/i18n';
+import { ExtendedInteraction, InteractionType } from 'types/command';
+import { replyLocalizedEmbed } from 'commands/reply';
 
 const hasQueue = (interaction: ExtendedInteraction, type: InteractionType) => {
-  const queue = client.distube.getQueue(interaction!.guild!.id)
+	const queue = client.distube.getQueue(interaction!.guild!.id);
 
-  if (!queue || !queue.songs.length) {
-    Reply(
-      Embed({
-        description: i18n.__('nowplaying.errorNotQueue'),
-        type: 'error',
-      }),
-      interaction,
-      type
-    )
+	if (!queue || !queue.songs.length) {
+		replyLocalizedEmbed(interaction, type, {
+			description: i18n.__('nowplaying.errorNotQueue'),
+		});
 
-    return false
-  }
+		return false;
+	}
 
-  return true
-}
+	return true;
+};
 
-export { hasQueue }
+export { hasQueue };

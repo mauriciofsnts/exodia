@@ -1,4 +1,4 @@
-import { Embed, Reply } from 'commands/reply';
+import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { ApplicationCommandOptionType, InteractionType } from 'discord.js';
@@ -23,43 +23,38 @@ export default new Command({
 		const { queue } = commandParams;
 
 		const value =
-      interaction.type === InteractionType.ApplicationCommand
-      	? String(interaction.options.get('value')?.value)
-      	: Array.isArray(args) && args.join(' ');
+			interaction.type === InteractionType.ApplicationCommand
+				? String(interaction.options.get('value')?.value)
+				: Array.isArray(args) && args.join(' ');
 
 		if (isNaN(Number(value))) {
-			return Reply(
-				Embed({
-					description: i18n.__('volume.errorNotNumber'),
-					type: 'success',
-				}),
-				interaction,
-				type,
-			);
+			replyLocalizedEmbed(interaction, type, {
+				title: 'volume.title',
+				description: 'volume.errorNotNumber',
+			});
+
+			return;
 		}
 
 		if (Number(value) > 100 || Number(value) < 0) {
-			return Reply(
-				Embed({
-					description: i18n.__('volume.errorNotValid'),
-					type: 'success',
-				}),
-				interaction,
-				type,
-			);
+			replyLocalizedEmbed(interaction, type, {
+				title: 'volume.title',
+				description: 'volume.errorNotValid',
+			});
+
+			return;
 		}
 
 		queue.setVolume(Number(value) / 100);
 
-		return Reply(
-			Embed({
-				description: i18n.__mf('volume.result', {
-					arg: Number(value),
-				}),
-				type: 'success',
-			}),
+		replyLocalizedEmbed(
 			interaction,
 			type,
+			{
+				title: 'volume.title',
+				description: 'volume.result',
+			},
+			{ arg: value ? value : '-' }
 		);
 	},
 });

@@ -1,4 +1,4 @@
-import { Embed, Reply } from 'commands/reply';
+import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { isOnServer, isOnVoiceChannel } from 'validations/channel';
@@ -15,15 +15,11 @@ export default new Command({
 
 		queue.stop();
 
-		return Reply(
-			Embed({
-				description: i18n.__mf('stop.result', {
-					author: member.nickname,
-				}),
-				type: 'success',
-			}),
+		replyLocalizedEmbed(
 			interaction,
 			type,
+			{ title: 'stop.title', description: 'stop.result' },
+			{ author: member.nickname ?? '-' }
 		);
 	},
 });
