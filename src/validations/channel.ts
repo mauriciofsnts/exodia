@@ -1,4 +1,3 @@
-import { i18n } from 'utils/i18n';
 import { ExtendedInteraction, InteractionType } from 'types/command';
 import { replyLocalizedEmbed } from 'commands/reply';
 
@@ -8,7 +7,7 @@ const isOnVoiceChannel = (
 ) => {
 	if (!interaction.member?.voice.channel) {
 		replyLocalizedEmbed(interaction, type, {
-			description: i18n.__('common.errorNotChannel'),
+			description: 'common.errorNotChannel',
 		});
 
 		return false;
@@ -23,7 +22,7 @@ const isOnServer = (
 ) => {
 	if (!interaction.guild) {
 		replyLocalizedEmbed(interaction, type, {
-			description: i18n.__('common.errorNotGuild'),
+			description: 'common.errorNotGuild',
 		});
 
 		return false;

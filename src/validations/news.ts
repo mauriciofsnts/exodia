@@ -11,7 +11,7 @@ export const isMaxNewsRequestsReached = (
 
 	if (dailyNewsRequest === Number(loadEnv(ENVS.DAILY_MAX_REQUESTS))) {
 		replyLocalizedEmbed(interaction, type, {
-			description: i18n.__('common.errorNotGuild'),
+			description: 'news.dailyLimit',
 		});
 
 		return false;
