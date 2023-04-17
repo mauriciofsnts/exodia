@@ -33,10 +33,12 @@ export default new Command({
 				: Array.isArray(args) && args.join(' ');
 
 		if (!songTitle) {
-			replyLocalizedEmbed(interaction, type, {
-				title: 'play.errorNotSong',
-				description: i18n.__mf('play.usageReply', { prefix }),
-			});
+			replyLocalizedEmbed(
+				interaction,
+				type,
+				{ title: 'play.songNotFound', description: 'play.usageReply' },
+				{ prefix: prefix }
+			);
 
 			return;
 		}

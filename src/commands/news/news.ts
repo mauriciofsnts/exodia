@@ -35,7 +35,6 @@ export default new Command({
 
 				replyLocalizedEmbed(interaction, type, {
 					title: 'news.result',
-					description: 'news.resultDescription',
 					fields,
 				});
 			})

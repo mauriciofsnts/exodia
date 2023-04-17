@@ -1,6 +1,7 @@
 import { APIEmbedField, EmbedBuilder } from 'discord.js';
 import { ExtendedInteraction, InteractionType } from 'types/command';
 import i18n from 'i18n';
+import { LocaleKey } from 'utils/i18n';
 
 export interface FieldArray extends APIEmbedField {
 	rawValue?: boolean;
@@ -8,8 +9,8 @@ export interface FieldArray extends APIEmbedField {
 [];
 
 type EmbedOptions = {
-	title?: string;
-	description?: string;
+	title?: LocaleKey;
+	description?: LocaleKey | { key: string; rawValue?: boolean };
 	fields?: {
 		name: string;
 		value: string;
@@ -32,7 +33,7 @@ const createLocalizedEmbed = (
 		fields,
 		url,
 		footer,
-		thumbnail
+		thumbnail,
 	}: EmbedOptions,
 	replaceVars?: ReplaceVars
 ): EmbedBuilder => {
@@ -46,7 +47,13 @@ const createLocalizedEmbed = (
 	}
 
 	if (descriptionKey) {
-		const descriptionString = i18n.__mf(descriptionKey, replaceVars);
+		const descriptionString =
+			typeof descriptionKey === 'string'
+				? i18n.__mf(descriptionKey, replaceVars)
+				: descriptionKey.rawValue
+				? descriptionKey.key
+				: i18n.__mf(descriptionKey.key, replaceVars);
+
 		embed.setDescription(descriptionString);
 	}
 

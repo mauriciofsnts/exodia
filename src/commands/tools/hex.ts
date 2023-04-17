@@ -57,7 +57,7 @@ export default new Command({
 					{ name: 'hex.cmyk', value: colorValues.cmyk },
 					{ name: 'hex.hsv', value: colorValues.hsv },
 				],
-			}
+			},
 			// { colorValues }
 		);
 	},

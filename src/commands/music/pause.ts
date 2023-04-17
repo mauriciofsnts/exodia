@@ -20,7 +20,7 @@ export default new Command({
 				interaction,
 				type,
 				{ description: 'pause.result' },
-				{ author: member.nickname ?? '-' }
+				{ author: member.nickname ?? '-' },
 			);
 
 			return;

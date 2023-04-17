@@ -19,7 +19,7 @@ export default new Command({
 			interaction,
 			type,
 			{ description: 'skip.result' },
-			{ author: member.nickname ?? '-' }
+			{ author: member.nickname ?? '-' },
 		);
 	},
 });

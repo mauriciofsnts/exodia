@@ -51,7 +51,7 @@ export default new Command({
 			{
 				description: 'volume.result',
 			},
-			{ arg: value ? value : '-' }
+			{ arg: value ? value : '-' },
 		);
 	},
 });

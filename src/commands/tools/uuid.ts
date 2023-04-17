@@ -13,7 +13,7 @@ export default new Command({
 	run: async ({ interaction, type }) => {
 		replyLocalizedEmbed(interaction, type, {
 			title: 'uuid.title',
-			description: uuid(),
+			description: { key: uuid(), rawValue: true },
 		});
 	},
 });

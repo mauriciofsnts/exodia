@@ -80,7 +80,8 @@
 		"embedTitle": "Now playing",
 		"live": " ◉ LIVE",
 		"timeRemaining": "Time Remaining: {time}",
-		"engine": "Playing from {engine}"
+		"engine": "Playing from {engine}",
+		"result": "{songName}\n${songUrl}"
 	},
 	"playlist": {
 		"description": "Play a playlist from youtube",

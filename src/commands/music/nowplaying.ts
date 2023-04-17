@@ -39,11 +39,16 @@ export default new Command({
 			fields.push({ name: '\u200b', value: `${fieldValue}` });
 		}
 
-		replyLocalizedEmbed(interaction, type, {
-			title: 'nowplaying.embedTitle',
-			description: `${song.name}\n${song.url}`,
-			fields,
-			footer,
-		});
+		replyLocalizedEmbed(
+			interaction,
+			type,
+			{
+				title: 'nowplaying.embedTitle',
+				description: `nowplaying.result`,
+				fields,
+				footer,
+			},
+			{ songName: song.name ?? '', songUrl: song.url }
+		);
 	},
 });

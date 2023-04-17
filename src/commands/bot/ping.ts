@@ -14,7 +14,7 @@ export default new Command({
 			interaction,
 			type,
 			{ title: 'ping.title', description: 'ping.result' },
-			{ ping: Math.round(client.ws.ping).toString() }
+			{ ping: Math.round(client.ws.ping).toString() },
 		);
 	},
 });

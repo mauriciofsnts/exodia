@@ -23,7 +23,7 @@ export default new Command({
 					{ name: 'cpf.withoutMask', value: output },
 				],
 			},
-			{ mask, output }
+			{ mask, output },
 		);
 	},
 });

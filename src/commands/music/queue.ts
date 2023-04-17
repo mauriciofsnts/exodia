@@ -34,8 +34,10 @@ export default new Command({
 		const nextSongs = i18n.__mf('queue.comingNext', { songs: songs });
 
 		replyLocalizedEmbed(interaction, type, {
-			title: 'queue.embedTitle',
-			description: `${tracks.slice(0, 10).join('\n')}\n\n${nextSongs}`,
+			description: {
+				key: `${tracks.slice(0, 10).join('\n')}\n\n${nextSongs}`,
+				rawValue: true,
+			},
 			fields: [
 				{
 					name: i18n.__('queue.nowPlaying'),

@@ -13,7 +13,8 @@
 		"errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
 		"errorCommand": "Houve um erro ao executar este comando.",
 		"errorNotGuild": "Você precisa estar em um servidor para executar este comando.",
-		"errorInvalidParameter": "Parâmetro inválido: {parameter}",
+		"errorInvalidParameter": "Parâmetro inválido: {parameter}",		
+		"errorGenericMusic": "Um erro ocorreu ao reproduzir música. Por favor, tente novamente mais tarde.",
 		"name": "Nome",
 		"email": "Email",
 		"id": "ID"
@@ -65,7 +66,7 @@
 	"resume": {
 		"description": "Reproduz novamente a música pausada.",
 		"errorNotQueue": "Não há nada reproduzindo.",
-		"resultNotPlaying": "@{author} ▶ resumiu a música!",
+		"result": "@{author} ▶ resumiu a música!",
 		"errorPlaying": "A playlist não está pausada."
 	},
 	"uptime": {
@@ -80,7 +81,8 @@
 		"embedTitle": "Reproduzindo",
 		"live": " ◉ AO VIVO",
 		"timeRemaining": "Tempo restante: {time}",
-		"engine": "Reproduzindo de {engine}"
+		"engine": "Reproduzindo de {engine}",
+		"result": "{songName}\n${songUrl}"
 	},
 	"playlist": {
 		"description": "Reproduz uma playlist do youtube",
@@ -109,12 +111,14 @@
 	"cnpj": {
 		"description": "Retorna um cnpj válido aleatório",
 		"withMask": "Com máscara",
-		"withoutMask": "Sem máscara"
+		"withoutMask": "Sem máscara",
+		"result": "CNPJ válido gerado, Trata-se de um CNPJ aleatório, não é um CNPJ real."
 	},
 	"cpf": {
 		"description": "Retorna um cpf válido aleatório",
 		"withMask": "Com máscara",
-		"withoutMask": "Sem máscara"
+		"withoutMask": "Sem máscara",
+		"result": "CPF válido gerado, Trata-se de um CPF aleatório, não é um CPF real."
 	},
 	"uuid": {
 		"title": "Identificador único gerado",
@@ -134,7 +138,7 @@
 		"result": "Notícias e manchetes do Brasil",
 		"error": "Ocorreu um erro ao buscar as notícias",
 		"dailyLimit": "Você atingiu o limite diário de notícias, tente novamente amanhã.",
-		"resultDescription": "news.resultDescription"
+		"errorDescription": "Ocorreu um erro ao buscar as notícias, tente novamente mais tarde."
 	},
 	"tabnews": {
 		"description": "TabNews: Conteúdos para quem trabalha com Programação"

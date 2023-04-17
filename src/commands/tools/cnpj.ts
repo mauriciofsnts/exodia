@@ -23,7 +23,7 @@ export default new Command({
 					{ name: 'cnpj.withoutMask', value: output },
 				],
 			},
-			{ mask, output }
+			{ mask, output },
 		);
 	},
 });
