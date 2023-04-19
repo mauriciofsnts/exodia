@@ -16,7 +16,7 @@ export default new Command({
 	aliases: ['help'],
 	categorie: '🤖 Bot',
 	run: async ({ interaction, type }) => {
-		let commands = client.commands;
+		const commands = client.commands;
 
 		const botPrefix = loadEnv(ENVS.PREFIX);
 		const fields: APIEmbedField[] = [];
@@ -34,11 +34,11 @@ export default new Command({
 		}, {});
 
 		for (const categorie in commandCategories) {
-			const commands = commandCategories[categorie];
+			const cmds = commandCategories[categorie];
 			let value = '';
 
-			for (let i = 0; i < commands.length; i++) {
-				const cmd = commands[i];
+			for (let i = 0; i < cmds.length; i++) {
+				const cmd = cmds[i];
 
 				const name = `**${botPrefix}${cmd.name} ${
 					cmd.aliases ? `(${cmd.aliases})` : ''
@@ -46,7 +46,7 @@ export default new Command({
 
 				value += `${name} - ${cmd.description}\n`;
 
-				if (i === commands.length - 1) {
+				if (i === cmds.length - 1) {
 					value += '\n\n\n';
 				}
 			}
@@ -62,7 +62,7 @@ export default new Command({
 				description: 'help.embedDescription',
 				fields,
 			},
-			{ botname: 'Exodia' }
+			{ botname: 'Exodia' },
 		);
 	},
 });

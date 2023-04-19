@@ -13,7 +13,7 @@ export default new Command({
 		let seconds = Math.floor(client.uptime! / 1000);
 		let minutes = Math.floor(seconds / 60);
 		let hours = Math.floor(minutes / 60);
-		let days = Math.floor(hours / 24);
+		const days = Math.floor(hours / 24);
 
 		seconds %= 60;
 		minutes %= 60;
@@ -28,7 +28,7 @@ export default new Command({
 				hours: hours.toString(),
 				minutes: minutes.toString(),
 				seconds: seconds.toString(),
-			}
+			},
 		);
 	},
 });

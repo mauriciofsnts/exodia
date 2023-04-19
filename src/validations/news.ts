@@ -5,7 +5,7 @@ import { ENVS, loadEnv } from 'utils/envHelper';
 
 export const isMaxNewsRequestsReached = (
 	interaction: ExtendedInteraction,
-	type: InteractionType
+	type: InteractionType,
 ) => {
 	const dailyNewsRequest = client.dailyNewsRequest;
 

@@ -19,7 +19,7 @@ export default new Command({
 
 				for (const article of articles) {
 					const shortUrl = await shortener.shorten(
-						`https://www.tabnews.com.br/${article.owner_username}/${article.slug}`
+						`https://www.tabnews.com.br/${article.owner_username}/${article.slug}`,
 					);
 
 					fields.push({
@@ -35,7 +35,7 @@ export default new Command({
 					url: 'https://www.tabnews.com.br',
 				});
 			})
-			.catch((error) => {
+			.catch(() => {
 				replyLocalizedEmbed(interaction, type, {
 					title: 'news.error',
 					description: 'news.errorDescription',

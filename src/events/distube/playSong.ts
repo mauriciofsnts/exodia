@@ -12,7 +12,7 @@ export default new DistubeEvents('playSong', async (queue, song) => {
 
 	embed.setTitle(i18n.__('play.nowplaying'));
 	embed.setDescription(
-		`**[${song.name}](${song.url})** \`[${song.formattedDuration}]\``
+		`**[${song.name}](${song.url})** \`[${song.formattedDuration}]\``,
 	);
 	embed.setColor(0x6875da);
 	embed.setThumbnail(song.thumbnail ?? '');
@@ -35,10 +35,10 @@ export default new DistubeEvents('playSong', async (queue, song) => {
 		new ButtonBuilder()
 			.setCustomId('stop')
 			.setEmoji('⏹️')
-			.setStyle(ButtonStyle.Secondary)
+			.setStyle(ButtonStyle.Secondary),
 	);
 
-	let msg = await queue.textChannel?.send({
+	const msg = await queue.textChannel?.send({
 		embeds: [embed],
 		components: [row],
 	});
@@ -54,11 +54,11 @@ export default new DistubeEvents('playSong', async (queue, song) => {
 		await collection.deferUpdate();
 
 		switch (collection.customId) {
-			case 'pause':
-				if (queue.paused) {
-					queue.resume();
+		case 'pause':
+			if (queue.paused) {
+				queue.resume();
 
-					const updatedRow =
+				const updatedRow =
 						new ActionRowBuilder<ButtonBuilder>().addComponents(
 							new ButtonBuilder()
 								.setCustomId('pause')
@@ -73,17 +73,18 @@ export default new DistubeEvents('playSong', async (queue, song) => {
 							new ButtonBuilder()
 								.setCustomId('stop')
 								.setEmoji('⏹️')
-								.setStyle(ButtonStyle.Secondary)
+								.setStyle(ButtonStyle.Secondary),
 						);
 
-					await collection.editReply({
-						embeds: [embed],
-						components: [updatedRow],
-					});
-				} else {
-					queue.pause();
+				await collection.editReply({
+					embeds: [embed],
+					components: [updatedRow],
+				});
+			}
+			else {
+				queue.pause();
 
-					const updatedRow =
+				const updatedRow =
 						new ActionRowBuilder<ButtonBuilder>().addComponents(
 							new ButtonBuilder()
 								.setCustomId('pause')
@@ -98,23 +99,23 @@ export default new DistubeEvents('playSong', async (queue, song) => {
 							new ButtonBuilder()
 								.setCustomId('stop')
 								.setEmoji('⏹️')
-								.setStyle(ButtonStyle.Secondary)
+								.setStyle(ButtonStyle.Secondary),
 						);
 
-					await collection.editReply({
-						embeds: [embed],
-						components: [updatedRow],
-					});
-				}
-				break;
+				await collection.editReply({
+					embeds: [embed],
+					components: [updatedRow],
+				});
+			}
+			break;
 
-			case 'next':
-				queue.skip();
-				break;
+		case 'next':
+			queue.skip();
+			break;
 
-			case 'stop':
-				queue.stop();
-				break;
+		case 'stop':
+			queue.stop();
+			break;
 		}
 	});
 

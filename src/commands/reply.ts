@@ -35,7 +35,7 @@ const createLocalizedEmbed = (
 		footer,
 		thumbnail,
 	}: EmbedOptions,
-	replaceVars?: ReplaceVars
+	replaceVars?: ReplaceVars,
 ): EmbedBuilder => {
 	const embed = new EmbedBuilder();
 	embed.setColor(0x6875da);
@@ -51,8 +51,8 @@ const createLocalizedEmbed = (
 			typeof descriptionKey === 'string'
 				? i18n.__mf(descriptionKey, replaceVars)
 				: descriptionKey.rawValue
-				? descriptionKey.key
-				: i18n.__mf(descriptionKey.key, replaceVars);
+					? descriptionKey.key
+					: i18n.__mf(descriptionKey.key, replaceVars);
 
 		embed.setDescription(descriptionString);
 	}
@@ -86,7 +86,7 @@ const replyLocalizedEmbed = (
 	interaction: ExtendedInteraction,
 	type: InteractionType,
 	options: EmbedOptions,
-	replaceVars?: ReplaceVars
+	replaceVars?: ReplaceVars,
 ) => {
 	const embed = createLocalizedEmbed(options, replaceVars);
 

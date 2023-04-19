@@ -3,7 +3,7 @@ import { replyLocalizedEmbed } from 'commands/reply';
 
 const isOnVoiceChannel = (
 	interaction: ExtendedInteraction,
-	type: InteractionType
+	type: InteractionType,
 ) => {
 	if (!interaction.member?.voice.channel) {
 		replyLocalizedEmbed(interaction, type, {
@@ -18,7 +18,7 @@ const isOnVoiceChannel = (
 
 const isOnServer = (
 	interaction: ExtendedInteraction,
-	type: InteractionType
+	type: InteractionType,
 ) => {
 	if (!interaction.guild) {
 		replyLocalizedEmbed(interaction, type, {

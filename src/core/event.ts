@@ -1,13 +1,14 @@
-import { ClientEvents } from 'discord.js'
-import { DisTubeEvents } from 'distube'
+/* eslint-disable no-unused-vars */
+import { ClientEvents } from 'discord.js';
+import { DisTubeEvents } from 'distube';
 
 export class Events<T extends keyof ClientEvents> {
-  constructor(public event: T, public run: (...args: ClientEvents[T]) => any) {}
+	constructor(public event: T, public run: (...args: ClientEvents[T]) => any) {}
 }
 
 export class DistubeEvents<T extends keyof DisTubeEvents> {
-  constructor(
+	constructor(
     public event: T,
-    public run: (...args: DisTubeEvents[T]) => any
-  ) {}
+    public run: (...args: DisTubeEvents[T]) => any,
+	) {}
 }

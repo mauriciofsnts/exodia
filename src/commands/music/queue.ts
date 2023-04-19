@@ -13,21 +13,12 @@ export default new Command({
 	run: async ({ interaction, type, commandParams }) => {
 		const { queue } = commandParams;
 
-		const q = queue.songs
-			.map(
-				(song, i) =>
-					`${i === 0 ? i18n.__('queue.playing') : `${i}.`} ${song.name} - \`${
-						song.formattedDuration
-					}\``
-			)
-			.join('\n');
-
 		const tracks = queue.songs.map(
 			(song, i) => `**${i + 1}** - [${song.name}](${song.url}) | ${
 				song.formattedDuration
 			}       
       ${i18n.__mf('queue.requestedBy', { user: song.user })}
-      `
+      `,
 		);
 
 		const songs = queue.songs.length;

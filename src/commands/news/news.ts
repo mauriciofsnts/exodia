@@ -38,7 +38,7 @@ export default new Command({
 					fields,
 				});
 			})
-			.catch((error) => {
+			.catch(() => {
 				replyLocalizedEmbed(interaction, type, {
 					title: 'news.error',
 					description: 'news.errorDescription',

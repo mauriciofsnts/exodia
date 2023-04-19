@@ -12,7 +12,7 @@ export default new DistubeEvents('addList', async (queue, song) => {
 			footer: 'play.requestBy',
 			thumbnail: song.thumbnail ?? '',
 		},
-		{ user: song.user?.tag ?? '-' }
+		{ user: song.user?.tag ?? '-' },
 	);
 
 	queue.textChannel?.send({

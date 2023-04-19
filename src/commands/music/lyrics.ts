@@ -21,9 +21,9 @@ export default new Command({
 
 		try {
 			lyrics = await lyricsFinder(title, '');
-			if (!lyrics)
-				lyrics = i18n.__mf('lyrics.lyricsNotFound', { title: title });
-		} catch (error) {
+			if (!lyrics) {lyrics = i18n.__mf('lyrics.lyricsNotFound', { title: title });}
+		}
+		catch (error) {
 			lyrics = i18n.__mf('lyrics.lyricsNotFound', { title: title });
 		}
 
@@ -35,7 +35,7 @@ export default new Command({
 			interaction,
 			type,
 			{ title: 'lyrics.embedTitle', description: responseLyrics },
-			{ title: title ?? '-' }
+			{ title: title ?? '-' },
 		);
 	},
 });

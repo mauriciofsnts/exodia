@@ -73,7 +73,7 @@ export class ExodiaClient extends Client {
 		const slashCommands: ApplicationCommandDataResolvable[] = [];
 		// get all commands
 		const commandFiles = await globPromise(
-			`${__dirname}/../commands/*/*{.ts,.js}`
+			`${__dirname}/../commands/*/*{.ts,.js}`,
 		);
 
 		//  get each command on folder and set as bot command
@@ -99,20 +99,20 @@ export class ExodiaClient extends Client {
 		eventFiles.forEach(async (filePath) => {
 			const event: Events<keyof ClientEvents> = await importFile(
 				filePath,
-				true
+				true,
 			);
 			this.on(event.event, event.run);
 		});
 
 		// register distube events
 		const distubeEventFiles = await globPromise(
-			`${__dirname}/../events/distube/*{.ts,.js}`
+			`${__dirname}/../events/distube/*{.ts,.js}`,
 		);
 
 		distubeEventFiles.forEach(async (filePath) => {
 			const event: ClientDistubeEvents<keyof DisTubeEvents> = await importFile(
 				filePath,
-				true
+				true,
 			);
 			this.distube.on(event.event, event.run);
 		});

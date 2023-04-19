@@ -44,11 +44,11 @@ export default new Command({
 			type,
 			{
 				title: 'nowplaying.embedTitle',
-				description: `nowplaying.result`,
+				description: 'nowplaying.result',
 				fields,
 				footer,
 			},
-			{ songName: song.name ?? '', songUrl: song.url }
+			{ songName: song.name ?? '', songUrl: song.url },
 		);
 	},
 });

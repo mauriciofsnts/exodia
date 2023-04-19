@@ -1,13 +1,13 @@
-import { ExodiaClient } from 'core/client'
+import { ExodiaClient } from 'core/client';
 import {
-  ChatInputApplicationCommandData,
-  CommandInteraction,
-  CommandInteractionOptionResolver,
-  GuildMember,
-  PermissionResolvable,
-} from 'discord.js'
-import { CommandParams } from 'utils/buildCommandParams'
-import { Categorie } from './categories'
+	ChatInputApplicationCommandData,
+	CommandInteraction,
+	CommandInteractionOptionResolver,
+	GuildMember,
+	PermissionResolvable,
+} from 'discord.js';
+import { CommandParams } from 'utils/buildCommandParams';
+import { Categorie } from './categories';
 
 export interface ExtendedInteraction extends CommandInteraction {
   member: GuildMember
@@ -22,6 +22,7 @@ interface RunOptions {
   commandParams: CommandParams
 }
 
+// eslint-disable-next-line no-unused-vars
 type RunFunction = (options: RunOptions) => any
 
 export type CommandType = {

@@ -1,6 +1,7 @@
 import i18n from 'i18n';
 import { join } from 'path';
 
+// eslint-disable-next-line no-unused-vars
 import en from '../locales/en.json';
 import ptBr from '../locales/pt_br.json';
 
@@ -12,11 +13,11 @@ i18n.configure({
 	objectNotation: true,
 	updateFiles: false,
 
-	logWarnFn: function (msg: string) {
+	logWarnFn: function(msg: string) {
 		console.log(msg);
 	},
 
-	logErrorFn: function (msg) {
+	logErrorFn: function(msg) {
 		console.error(msg);
 	},
 });

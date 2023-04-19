@@ -37,7 +37,7 @@ export default new Command({
 				interaction,
 				type,
 				{ title: 'play.songNotFound', description: 'play.usageReply' },
-				{ prefix: prefix }
+				{ prefix: prefix },
 			);
 
 			return;

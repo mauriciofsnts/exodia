@@ -18,6 +18,7 @@ export type TabNewsArticle = {
 export interface ITabNews {
   news: TabNewsArticle[]
 
+  // eslint-disable-next-line no-unused-vars
   get(index: number): TabNewsArticle
 
   getAll(): TabNewsArticle[]

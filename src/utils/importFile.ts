@@ -1,7 +1,7 @@
 async function importFile(filePath: string, asDefault?: boolean) {
-  if (asDefault) return (await import(filePath))?.default
+	if (asDefault) return (await import(filePath))?.default;
 
-  return await import(filePath)
+	return await import(filePath);
 }
 
-export default importFile
+export default importFile;
