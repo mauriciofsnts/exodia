@@ -2,8 +2,9 @@
 	"extends": "eslint:recommended",
 	"env": {
 		"node": true,
-		"es6": true
+		"es2021": true
 	},
+	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"ecmaVersion": 2021,
 		"sourceType": "module",
@@ -25,7 +26,6 @@
 		"max-nested-callbacks": ["error", { "max": 4 }],
 		"max-statements-per-line": ["error", { "max": 2 }],
 		"no-console": "off",
-		"no-empty-function": "error",
 		"no-floating-decimal": "error",
 		"no-inline-comments": "error",
 		"no-lonely-if": "error",
@@ -34,7 +34,6 @@
 			"error",
 			{ "max": 2, "maxEOF": 1, "maxBOF": 0 }
 		],
-		"no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
 		"no-trailing-spaces": ["error"],
 		"no-var": "error",
 		"object-curly-spacing": ["error", "always"],
@@ -54,6 +53,7 @@
 		"space-infix-ops": "error",
 		"space-unary-ops": "error",
 		"spaced-comment": "error",
-		"yoda": "error"
+		"yoda": "error",
+		"no-empty-function": "off"
 	}
 }
