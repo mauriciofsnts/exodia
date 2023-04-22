@@ -30,7 +30,7 @@ export default new Command({
 
 		if (!input) {
 			replyLocalizedEmbed(interaction, type, {
-				description: 'hex.invalidDescription',
+				description: 'hex.invalid',
 			});
 
 			return;
@@ -40,7 +40,7 @@ export default new Command({
 
 		if (!colorValues) {
 			replyLocalizedEmbed(interaction, type, {
-				description: 'hex.invalidDescription',
+				description: 'hex.invalid',
 			});
 
 			return;

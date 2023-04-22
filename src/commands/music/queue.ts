@@ -14,36 +14,27 @@ export default new Command({
 		const { queue } = commandParams;
 
 		const tracks = queue.songs.map(
-			(song, i) => `**${i + 1}** - [${song.name}](${song.url}) | ${
-				song.formattedDuration
-			}       
-      ${i18n.__mf('queue.requestedBy', { user: song.user })}
-      `,
+			(song, i) =>
+				`**${i + 1}** - [${song.name}](${song.url}) | ${song.formattedDuration}`,
 		);
 
-		const songs = queue.songs.length;
-		const nextSongs = i18n.__mf('queue.comingNext', { songs: songs });
+		const songsLength = queue.songs.length;
 
 		replyLocalizedEmbed(interaction, type, {
 			description: {
-				key: `${tracks.slice(0, 10).join('\n')}\n\n${nextSongs}`,
+				key: `${tracks.slice(0, 10).join('\n')}\n\n`,
 				rawValue: true,
 			},
 			fields: [
 				{
-					name: i18n.__('queue.nowPlaying'),
-					value: `[${queue.songs[0].name}](${queue.songs[0].url}) - ${queue.songs[0].formattedDuration} | Requested by: ${queue.songs[0].user}`,
-					inline: false,
-				},
-				{
-					name: i18n.__('queue.willPlay'),
-					value: queue.formattedDuration,
-					inline: true,
-				},
-				{
 					name: i18n.__('queue.totalSongs'),
-					value: `${songs}`,
-					inline: true,
+					value: `${songsLength}`,
+					rawValue: true,
+				},
+				{
+					name: i18n.__('queue.nowplaying'),
+					value: `[${queue.songs[0].name}](${queue.songs[0].url}) - ${queue.songs[0].formattedDuration} | Requested by: ${queue.songs[0].user}`,
+					rawValue: true,
 				},
 			],
 		});

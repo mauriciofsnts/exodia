@@ -36,7 +36,7 @@ export default new Command({
 					: new Date(song.duration * 1000).toISOString().substr(11, 8));
 			false;
 
-			fields.push({ name: '\u200b', value: `${fieldValue}` });
+			fields.push({ name: '\u200b', value: `${fieldValue}`, rawValue: true });
 		}
 
 		replyLocalizedEmbed(
