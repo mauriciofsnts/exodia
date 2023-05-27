@@ -157,7 +157,11 @@
 		"description": "Converte um código hexadecimal para RGB",
 		"invalid": "Código hexadecimal inválido",
 		"result": "RGB: {rgb}",
-		"resultDescription": "Cor Convertida"
+		"resultDescription": "Cor Convertida",
+		"hex": "Hexadecimal",
+		"rgb": "RGB",
+		"hsv": "HSV",
+		"cmyk": "CMYK"
 	},
 	"queue": {
 		"description": "Retorna a lista de músicas na fila.",

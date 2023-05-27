@@ -55,7 +55,7 @@
 		"queueTracksInQueue": "Tracks in queue",
 		"queueTotalDuration": "Total duration",
 		"loading": "⌛ Loading...",
-		"nowplaying": "🎶 Playing",		
+		"nowplaying": "🎶 Playing",
 		"songInfo": "**[{name}]({url})**",
 		"requestBy": "Requested by: {user}",
 		"error": "🎵 Error",
@@ -154,7 +154,11 @@
 		"description": "Convert hex to rgb",
 		"invalid": "Invalid hex",
 		"result": "RGB: {rgb}",
-		"resultDescription": "Converted color"
+		"resultDescription": "Converted color",
+		"rgb": "RGB",
+		"hsv": "HSV",
+		"cmyk": "CMYK",
+		"hex": "Hex"
 	},
 	"queue": {
 		"description": "Returns the list of songs in the queue.",

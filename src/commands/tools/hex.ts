@@ -1,12 +1,12 @@
+import { replyLocalizedEmbed } from 'commands/reply';
+import { Command } from 'core/command';
 import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
 	InteractionType,
 } from 'discord.js';
-import { replyLocalizedEmbed } from 'commands/reply';
-import { Command } from 'core/command';
-import { i18n } from 'utils/i18n';
 import { getColorValuesFormated } from 'utils/colors';
+import { i18n } from 'utils/i18n';
 
 export default new Command({
 	name: 'hex',
@@ -50,7 +50,6 @@ export default new Command({
 			interaction,
 			type,
 			{
-				title: 'hex.resultDescription',
 				fields: [
 					{ name: 'hex.hex', value: colorValues.hex },
 					{ name: 'hex.rgb', value: colorValues.rgb },
