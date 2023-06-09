@@ -13,7 +13,7 @@
 		"errorNotChannel": "Você precisa entrar em um canal de voz primeiro!",
 		"errorCommand": "Houve um erro ao executar este comando.",
 		"errorNotGuild": "Você precisa estar em um servidor para executar este comando.",
-		"errorInvalidParameter": "Parâmetro inválido: {parameter}",		
+		"errorInvalidParameter": "Parâmetro inválido: {parameter}",
 		"errorGenericMusic": "Um erro ocorreu ao reproduzir música. Por favor, tente novamente mais tarde.",
 		"name": "Nome",
 		"email": "Email",
@@ -175,5 +175,9 @@
 	"shuffle": {
 		"description": "Embaralha a lista de músicas na fila.",
 		"result": "🔀 Embaralhando a fila."
+	},
+	"services": {
+		"description": "Links para os serviços disponíveis, não esqueça de deixar um like :)",
+		"title": "mrzt - Open Source Services"
 	}
 }

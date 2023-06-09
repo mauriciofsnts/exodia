@@ -172,5 +172,9 @@
 	"shuffle": {
 		"description": "Shuffles the list of songs in the queue.",
 		"result": "🔀 Shuffling the queue."
+	},
+	"services": {
+		"description": "Links to available services, don't forget to leave a like :)",
+		"title": "mrzt - Open Source Services"
 	}
 }
