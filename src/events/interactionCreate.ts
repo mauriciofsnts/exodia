@@ -3,6 +3,7 @@ import { ExtendedInteraction } from 'types/command';
 import { Events } from 'core/event';
 import { client } from 'index';
 import { buildCommandParams } from 'utils/buildCommandParams';
+import { sendErrorToAdmin } from 'utils/sendErrorToAdmin';
 
 export default new Events('interactionCreate', async (interaction) => {
 	if (!interaction.isCommand()) return;
@@ -21,20 +22,20 @@ export default new Events('interactionCreate', async (interaction) => {
 		}
 	}
 
-	try {
-		command.run({
+	command
+		.run({
 			args: interaction.options as CommandInteractionOptionResolver,
 			client,
 			interaction: interaction as ExtendedInteraction,
 			type: 'INTERACTION',
 			commandParams: buildCommandParams(interaction as ExtendedInteraction),
+		})
+		.catch((error) => {
+			sendErrorToAdmin(error, command.name);
+
+			interaction.followUp({
+				content: 'There was an error while executing this command!',
+				ephemeral: true,
+			});
 		});
-	}
-	catch (error) {
-		console.error(error);
-		await interaction.followUp({
-			content: 'There was an error while executing this command!',
-			ephemeral: true,
-		});
-	}
 });

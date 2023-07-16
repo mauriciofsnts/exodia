@@ -23,7 +23,7 @@ interface RunOptions {
 }
 
 // eslint-disable-next-line no-unused-vars
-type RunFunction = (options: RunOptions) => any
+type RunFunction = (options: RunOptions) => Promise<void>
 
 export type CommandType = {
   userPermissions?: PermissionResolvable[]
