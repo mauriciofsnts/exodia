@@ -179,5 +179,8 @@
 	"services": {
 		"description": "Links para os serviços disponíveis, não esqueça de deixar um like :)",
 		"title": "mrzt - Open Source Services"
+	},
+	"quote": {
+		"description": "Retorne uma quote com uma bela imagem de fundo"
 	}
 }

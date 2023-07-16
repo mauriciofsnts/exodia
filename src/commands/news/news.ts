@@ -4,7 +4,7 @@ import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { getNews } from 'core/newsapi';
 import { isMaxNewsRequestsReached } from 'validations/news';
-import { UrlShortener } from 'core/URLShortener';
+import { UrlShortener } from 'core/UrlShortener';
 
 export default new Command({
 	name: 'news',
