@@ -12,6 +12,7 @@
 			"experimentalObjectRestSpread": true
 		}
 	},
+	"ignorePatterns": ["node_modules/", "build/"],
 	"rules": {
 		"arrow-spacing": ["warn", { "before": true, "after": true }],
 		"brace-style": ["error", "stroustrup", { "allowSingleLine": true }],

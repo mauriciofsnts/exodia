@@ -2,7 +2,7 @@ import { FieldArray, replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
 import { getTabNews } from 'core/tabnews';
-import { UrlShortener } from 'core/UrlShortener';
+import { UrlShortener } from 'core/URLShortener';
 
 export default new Command({
 	name: 'tabnews',
