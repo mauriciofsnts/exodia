@@ -8,7 +8,7 @@ export default new Command({
 	description: i18n.__('services.description'),
 	type: ApplicationCommandType.ChatInput,
 	categorie: '🤖 Bot',
-	aliases: ['uptime'],
+	aliases: ['services'],
 	run: async ({ interaction, type }) => {
 		const kuttDescription =
 			'Encurtador de URL que você pode hospedar com análises simples, autenticação e controle de acesso.';
