@@ -1,8 +1,8 @@
 import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
 import { i18n } from 'utils/i18n';
-import { isOnServer, isOnVoiceChannel } from 'validations/channel';
 import { hasQueue } from 'validations/audio';
+import { isOnServer, isOnVoiceChannel } from 'validations/channel';
 
 export default new Command({
 	name: 'stop',
@@ -13,7 +13,9 @@ export default new Command({
 	run: async ({ interaction, type, commandParams }) => {
 		const { member, queue } = commandParams;
 
-		queue.stop();
+		if (queue.songs.length > 0) {
+			queue.stop();
+		}
 
 		replyLocalizedEmbed(
 			interaction,

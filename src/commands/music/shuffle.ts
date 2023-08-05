@@ -1,7 +1,7 @@
 import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
-import { hasQueue } from 'validations/audio';
 import { i18n } from 'utils/i18n';
+import { hasQueue } from 'validations/audio';
 import { isOnServer, isOnVoiceChannel } from 'validations/channel';
 
 export default new Command({
@@ -13,7 +13,9 @@ export default new Command({
 	run: async ({ interaction, type, commandParams }) => {
 		const { queue } = commandParams;
 
-		queue.shuffle();
+		if (queue.songs.length > 2) {
+			queue.shuffle();
+		}
 
 		replyLocalizedEmbed(interaction, type, {
 			description: 'shuffle.result',
