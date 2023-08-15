@@ -6,7 +6,13 @@ export default new DistubeEvents('finish', async (queue) => {
 		title: 'play.queueEnded',
 	});
 
-	queue.textChannel?.send({
-		embeds: [embed],
-	});
+	queue.textChannel
+		?.send({
+			embeds: [embed],
+		})
+		.then((msg) => {
+			setTimeout(() => {
+				msg.delete();
+			}, 10000);
+		});
 });
