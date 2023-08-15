@@ -1,9 +1,10 @@
 import { replyLocalizedEmbed } from 'commands/reply';
 import { Command } from 'core/command';
+import { ApplicationCommandOptionType } from 'discord.js';
+import getArgs from 'utils/getArgs';
 import { i18n } from 'utils/i18n';
-import { ApplicationCommandOptionType, InteractionType } from 'discord.js';
 import { hasQueue } from 'validations/audio';
-import { isOnVoiceChannel, isOnServer } from 'validations/channel';
+import { isOnServer, isOnVoiceChannel } from 'validations/channel';
 
 export default new Command({
 	name: 'volume',
@@ -22,10 +23,7 @@ export default new Command({
 	run: async ({ interaction, args, type, commandParams }) => {
 		const { queue } = commandParams;
 
-		const value =
-			interaction.type === InteractionType.ApplicationCommand
-				? String(interaction.options.get('value')?.value)
-				: Array.isArray(args) && args.join(' ');
+		const value = getArgs(interaction, args, 'value');
 
 		if (isNaN(Number(value))) {
 			replyLocalizedEmbed(interaction, type, {

@@ -3,10 +3,10 @@ import { Command } from 'core/command';
 import {
 	ApplicationCommandOptionType,
 	GuildTextBasedChannel,
-	InteractionType,
 } from 'discord.js';
 import { client } from 'index';
 import { ENVS, loadEnv } from 'utils/envHelper';
+import getArgs from 'utils/getArgs';
 import { i18n } from 'utils/i18n';
 import { isOnServer, isOnVoiceChannel } from 'validations/channel';
 
@@ -27,10 +27,7 @@ export default new Command({
 		},
 	],
 	run: async ({ interaction, args, type }) => {
-		const songTitle =
-			interaction.type === InteractionType.ApplicationCommand
-				? String(interaction.options.get('song')?.value)
-				: Array.isArray(args) && args.join(' ');
+		const songTitle = getArgs(interaction, args, 'song');
 
 		if (!songTitle) {
 			replyLocalizedEmbed(

@@ -3,9 +3,9 @@ import { Command } from 'core/command';
 import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
-	InteractionType,
 } from 'discord.js';
 import { getColorValuesFormated } from 'utils/colors';
+import getArgs from 'utils/getArgs';
 import { i18n } from 'utils/i18n';
 
 export default new Command({
@@ -23,10 +23,7 @@ export default new Command({
 		},
 	],
 	run: async ({ interaction, args, type }) => {
-		const input =
-			interaction.type === InteractionType.ApplicationCommand
-				? interaction.options.get('hexadecimal')?.value?.toString()
-				: Array.isArray(args) && args.join(' ');
+		const input = getArgs(interaction, args, 'hexadecimal');
 
 		if (!input) {
 			replyLocalizedEmbed(interaction, type, {

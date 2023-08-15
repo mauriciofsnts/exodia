@@ -1,11 +1,11 @@
+import { Command } from 'core/command';
+import { QuoteGenerator } from 'core/quoteGenerator';
 import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
-	InteractionType,
 } from 'discord.js';
-import { Command } from 'core/command';
+import getArgs from 'utils/getArgs';
 import { i18n } from 'utils/i18n';
-import { QuoteGenerator } from 'core/quoteGenerator';
 
 export default new Command({
 	name: 'quote',
@@ -22,10 +22,7 @@ export default new Command({
 		},
 	],
 	run: async ({ interaction, args }) => {
-		const input =
-			interaction.type === InteractionType.ApplicationCommand
-				? interaction.options.get('quote')?.value?.toString()
-				: Array.isArray(args) && args.join(' ');
+		const input = getArgs(interaction, args, 'quote');
 
 		if (!input) return;
 
