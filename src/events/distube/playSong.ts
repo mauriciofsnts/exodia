@@ -110,11 +110,11 @@ export default new DistubeEvents('playSong', async (queue, song) => {
 			break;
 
 		case 'next':
-			queue.skip();
+			if (queue.songs.length > 1) queue.skip();
 			break;
 
 		case 'stop':
-			queue.stop();
+			if (queue.songs.length > 0) queue.stop();
 			break;
 		}
 	});
