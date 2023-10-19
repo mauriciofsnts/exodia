@@ -120,6 +120,12 @@
 		"withoutMask": "Sem máscara",
 		"result": "CPF válido gerado, Trata-se de um CPF aleatório, não é um CPF real."
 	},
+	"rg": {
+		"description": "Retorna um rg válido aleatório",
+		"withMask": "Com máscara",
+		"withoutMask": "Sem máscara",
+		"result": "RG válido gerado, Trata-se de um RG aleatório, não é um RG real."
+	},
 	"uuid": {
 		"title": "Identificador único gerado",
 		"description": "Retorna um uuid aleatório"
@@ -182,5 +188,9 @@
 	},
 	"quote": {
 		"description": "Retorne uma quote com uma bela imagem de fundo"
+	},
+	"generate": {
+		"description": "Gere informações aleatórias",
+		"invalid": "Módulo inválido, tente: {modules}"
 	}
 }

@@ -178,6 +178,10 @@
 		"title": "mrzt - Open Source Services"
 	},
 	"quote": {
-		"description": "Retorne uma quote com uma bela imagem de fundo"
+		"description": "Return a quote with a beautiful background image."
+	},
+	"generate": {
+		"description": "Generate a random information",
+		"invalid": "Invalid module, try: {modules}"
 	}
 }
