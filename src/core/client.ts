@@ -21,7 +21,7 @@ import { YtDlpPlugin } from '@distube/yt-dlp';
 import { SoundCloudPlugin } from '@distube/soundcloud';
 import SpotifyPlugin from '@distube/spotify';
 
-const globPromise = promisify(glob);
+const globPromise = promisify(glob.Glob);
 
 export class ExodiaClient extends Client {
 	commands: Collection<string, CommandType> = new Collection();
@@ -96,7 +96,7 @@ export class ExodiaClient extends Client {
 		// register events
 		const eventFiles = await globPromise(`${__dirname}/../events/*{.ts,.js}`);
 
-		eventFiles.forEach(async (filePath) => {
+		eventFiles.forEach(async (filePath: string) => {
 			const event: Events<keyof ClientEvents> = await importFile(
 				filePath,
 				true,
@@ -109,7 +109,7 @@ export class ExodiaClient extends Client {
 			`${__dirname}/../events/distube/*{.ts,.js}`,
 		);
 
-		distubeEventFiles.forEach(async (filePath) => {
+		distubeEventFiles.forEach(async (filePath: string) => {
 			const event: ClientDistubeEvents<keyof DisTubeEvents> = await importFile(
 				filePath,
 				true,
