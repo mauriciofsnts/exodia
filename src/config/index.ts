@@ -8,6 +8,10 @@ const schema = z.object({
   PREFIX: z.string().default("!"),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
   REDIS_URL: z.string().url().default("redis://localhost:6379"),
+  // Optional: when set, a Postgres-backed Database is wired into BotContext.
+  // Leave unset (or empty) to run without persistence (db stays null).
+  // Empty string is coerced to undefined so `DATABASE_URL=` in .env is treated as off.
+  DATABASE_URL: z.preprocess((v) => (v === "" ? undefined : v), z.string().url().optional()),
   ADMIN_USER_ID: z.string().optional(),
   // How long the bot stays in an empty voice channel before disconnecting (ms).
   PLAYER_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(300_000),
