@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import { Redis } from "ioredis";
 import type { Config } from "@/config/index.js";
 import type { Logger } from "@/lib/logger.js";
 
