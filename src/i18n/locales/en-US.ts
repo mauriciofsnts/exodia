@@ -21,6 +21,7 @@ export const enUS = {
     mostPlayedHeader: "🔥 **Top {count} most played** — added to the queue:",
     mostPlayedEntry: "{position}. {title} — {plays} plays",
     noHistory: "No play history yet — play some songs first.",
+    voteHint: "React 👍 👎 ⭐ to vote — it shapes the /mostplayed ranking.",
   },
   commands: {
     ping: {

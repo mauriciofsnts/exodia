@@ -66,18 +66,30 @@ export class TrackSearchCache {
     );
   }
 
-  // A guild's most played tracks, ranked by total hits across all of a song's
-  // query aliases. SUM(hits) is bigint in Postgres, so cast it back to a number.
+  // A guild's most played tracks. Ranked by net vote score (likes − dislikes +
+  // favs) first, with total plays as the tiebreaker. Votes live in track_votes;
+  // LEFT JOIN so tracks without votes still appear (score 0). SUM(hits) is bigint
+  // in Postgres, so cast it back to a number.
   async topPlayed(guildId: string, limit: number): Promise<TopTrack[]> {
     return this.db.query<TopTrack>(
-      `SELECT url,
-              MAX(title) AS title,
-              MAX(duration) AS duration,
-              SUM(hits)::int AS plays
-         FROM track_searches
-        WHERE guild_id = $1
-        GROUP BY url
-        ORDER BY plays DESC, MAX(updated_at) DESC
+      `SELECT s.url,
+              MAX(s.title) AS title,
+              MAX(s.duration) AS duration,
+              SUM(s.hits)::int AS plays
+         FROM track_searches s
+         LEFT JOIN (
+           SELECT guild_id, url,
+                  COUNT(*) FILTER (WHERE vote = 'like') AS likes,
+                  COUNT(*) FILTER (WHERE vote = 'dislike') AS dislikes,
+                  COUNT(*) FILTER (WHERE vote = 'fav') AS favs
+             FROM track_votes
+            GROUP BY guild_id, url
+         ) v ON v.guild_id = s.guild_id AND v.url = s.url
+        WHERE s.guild_id = $1
+        GROUP BY s.url, v.likes, v.dislikes, v.favs
+        ORDER BY (COALESCE(v.likes, 0) - COALESCE(v.dislikes, 0) + COALESCE(v.favs, 0)) DESC,
+                 plays DESC,
+                 MAX(s.updated_at) DESC
         LIMIT $2`,
       [guildId, limit],
     );

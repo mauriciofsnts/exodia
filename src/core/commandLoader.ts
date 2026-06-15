@@ -7,7 +7,12 @@ import type {
   InteractionEditReplyOptions,
   InteractionReplyOptions,
   Message,
+  MessageComponentInteraction,
+  MessageReaction,
   MessageReplyOptions,
+  PartialMessageReaction,
+  PartialUser,
+  User,
   VoiceBasedChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType, GuildMember, MessageFlags } from "discord.js";
@@ -16,8 +21,10 @@ import { CommandError } from "@/lib/errors.js";
 import type {
   CommandDefinition,
   CommandExecutionContext,
+  ComponentHandler,
   Middleware,
   OptionDef,
+  ReactionHandler,
 } from "./commandBuilder.js";
 import { composeMiddlewares } from "./commandBuilder.js";
 import type { BotContext } from "./context.js";
@@ -26,6 +33,8 @@ export class CommandLoader {
   private commands = new Map<string, CommandDefinition>();
   private prefixCommands = new Map<string, CommandDefinition>();
   private globalMiddlewares: Middleware[] = [];
+  private componentHandlers = new Map<string, ComponentHandler>();
+  private reactionHandlers: ReactionHandler[] = [];
 
   use(middleware: Middleware): this {
     this.globalMiddlewares.push(middleware);
@@ -46,6 +55,11 @@ export class CommandLoader {
       if (definition.prefix) {
         this.prefixCommands.set(definition.prefix.toLowerCase(), definition);
       }
+
+      for (const component of definition.components) {
+        this.componentHandlers.set(component.prefix, component.handle);
+      }
+      this.reactionHandlers.push(...definition.reactions);
     }
   }
 
@@ -55,19 +69,95 @@ export class CommandLoader {
 
   registerInteractionHandler(client: Client, ctx: BotContext): void {
     client.on("interactionCreate", async (interaction) => {
-      if (!interaction.isChatInputCommand()) return;
+      if (interaction.isChatInputCommand()) {
+        const command = this.commands.get(interaction.commandName);
+        if (!command) return;
 
-      const command = this.commands.get(interaction.commandName);
-      if (!command) return;
+        // Stored /setlang preference wins; Discord's locale is only the fallback.
+        const locale = await resolveLocale(
+          ctx,
+          interaction.guildId,
+          interaction.guildLocale ?? interaction.locale,
+        );
+        const execCtx = buildSlashContext(ctx, interaction, command, locale);
+        await safeExecute(command, execCtx, ctx, this.globalMiddlewares);
+        return;
+      }
 
-      // Stored /setlang preference wins; Discord's locale is only the fallback.
-      const locale = await resolveLocale(
-        ctx,
-        interaction.guildId,
-        interaction.guildLocale ?? interaction.locale,
-      );
-      const execCtx = buildSlashContext(ctx, interaction, command, locale);
-      await safeExecute(command, execCtx, ctx, this.globalMiddlewares);
+      if (interaction.isMessageComponent()) {
+        await this.dispatchComponent(interaction, ctx);
+      }
+    });
+  }
+
+  private async dispatchComponent(
+    interaction: MessageComponentInteraction,
+    ctx: BotContext,
+  ): Promise<void> {
+    // customId routing: "<prefix>:<...args>" → handler registered for <prefix>.
+    const [prefix, ...args] = interaction.customId.split(":");
+    const handler = this.componentHandlers.get(prefix);
+    if (!handler) return;
+
+    const locale = await resolveLocale(
+      ctx,
+      interaction.guildId,
+      interaction.guildLocale ?? interaction.locale,
+    );
+
+    try {
+      await handler({
+        bot: ctx,
+        interaction,
+        customId: interaction.customId,
+        args,
+        guildId: interaction.guildId,
+        userId: interaction.user.id,
+        locale,
+        t: ctx.i18n.bind(locale),
+      });
+    } catch (err) {
+      ctx.logger.error({ err, customId: interaction.customId }, "Component handler failed");
+      if (!interaction.replied && !interaction.deferred) {
+        await interaction.reply({ content: "❌", flags: MessageFlags.Ephemeral }).catch(() => {});
+      }
+    }
+  }
+
+  registerReactionHandler(client: Client, ctx: BotContext): void {
+    if (this.reactionHandlers.length === 0) return;
+
+    const dispatch = async (
+      rawReaction: MessageReaction | PartialMessageReaction,
+      rawUser: User | PartialUser,
+      event: "add" | "remove",
+    ): Promise<void> => {
+      let reaction: MessageReaction;
+      let user: User;
+      try {
+        // Reactions on uncached messages arrive partial — resolve before dispatch.
+        reaction = rawReaction.partial ? await rawReaction.fetch() : rawReaction;
+        user = rawUser.partial ? await rawUser.fetch() : rawUser;
+      } catch {
+        return; // message or user no longer reachable
+      }
+      if (user.bot) return;
+
+      const emoji = reaction.emoji.name ?? reaction.emoji.id ?? "";
+      for (const handler of this.reactionHandlers) {
+        try {
+          await handler({ bot: ctx, reaction, user, emoji, event });
+        } catch (err) {
+          ctx.logger.error({ err, emoji }, "Reaction handler failed");
+        }
+      }
+    };
+
+    client.on("messageReactionAdd", (r, u) => {
+      dispatch(r, u, "add").catch(() => {});
+    });
+    client.on("messageReactionRemove", (r, u) => {
+      dispatch(r, u, "remove").catch(() => {});
     });
   }
 
@@ -236,6 +326,18 @@ function buildSlashContext(
         ? interaction.followUp(payload as InteractionReplyOptions).then(() => {})
         : interaction.reply(payload as InteractionReplyOptions).then(() => {});
     },
+    respond: async (content) => {
+      const payload = typeof content === "string" ? { content } : content;
+      if (interaction.replied) {
+        return interaction.followUp(payload as InteractionReplyOptions);
+      }
+      if (interaction.deferred) {
+        return interaction.editReply(payload as InteractionEditReplyOptions);
+      }
+      return interaction
+        .reply({ ...(payload as InteractionReplyOptions), withResponse: true })
+        .then((res) => res.resource?.message as Message);
+    },
   };
 }
 
@@ -274,6 +376,11 @@ function buildPrefixContext(
       // Keep rich content (embeds/components/files); drop interaction-only fields.
       const { content: text, embeds, components, files } = content as MessageReplyOptions;
       return message.reply({ content: text, embeds, components, files }).then(() => {});
+    },
+    respond: (content) => {
+      const payload = typeof content === "string" ? { content } : content;
+      const { content: text, embeds, components, files } = payload as MessageReplyOptions;
+      return message.reply({ content: text, embeds, components, files });
     },
   };
 }

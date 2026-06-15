@@ -20,9 +20,11 @@ export class Bot {
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessageReactions, // vote reactions on the play card
         GatewayIntentBits.MessageContent, // privileged — enable in Discord dev portal
       ],
-      partials: [Partials.Message, Partials.Channel],
+      // Reaction/User partials are required to receive events on uncached messages.
+      partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.User],
     });
 
     for (const mw of middlewares) this.loader.use(mw);
@@ -35,6 +37,7 @@ export class Bot {
 
     this.loader.registerInteractionHandler(this.client, ctx);
     this.loader.registerPrefixHandler(this.client, ctx);
+    this.loader.registerReactionHandler(this.client, ctx);
 
     this.client.once("ready", (c) => {
       ctx.logger.info(`Bot online: ${c.user.tag}`);

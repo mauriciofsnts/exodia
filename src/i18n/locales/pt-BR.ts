@@ -21,6 +21,7 @@ export const ptBR = {
     mostPlayedHeader: "🔥 **Top {count} mais tocadas** — adicionadas à fila:",
     mostPlayedEntry: "{position}. {title} — {plays} plays",
     noHistory: "Sem histórico de reprodução ainda — toque algumas músicas primeiro.",
+    voteHint: "Reaja 👍 👎 ⭐ pra votar — influencia o ranking do /mostplayed.",
   },
   commands: {
     ping: {

@@ -2,9 +2,12 @@ import type {
   ChatInputCommandInteraction,
   InteractionReplyOptions,
   Message,
+  MessageComponentInteraction,
+  MessageReaction,
   MessageReplyOptions,
   PermissionsBitField,
   TextBasedChannel,
+  User,
   VoiceBasedChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
@@ -73,6 +76,10 @@ export interface CommandExecutionContext<TOptions extends OptionDef[] = []> {
   // Buys time for slow work (>3s) before replying. Slash: defers the interaction;
   // prefix: shows a typing indicator. A later reply() fills/edits the response.
   defer(ephemeral?: boolean): Promise<void>;
+  // Like reply(), but returns the created Message so the caller can attach
+  // reactions or react to component clicks on it. Slash: edits the deferred
+  // reply (or replies); prefix: replies to the invoking message.
+  respond(content: string | InteractionReplyOptions | MessageReplyOptions): Promise<Message>;
   interaction: ChatInputCommandInteraction | null;
   message: Message | null;
   source: "guild" | "dm";
@@ -95,12 +102,46 @@ export type Next = () => Promise<void>;
 // biome-ignore lint/suspicious/noExplicitAny: intentional type erasure — middleware must accept any command's context
 export type Middleware = (ctx: CommandExecutionContext<any>, next: Next) => Promise<void>;
 
+// --- Message components (buttons / select menus) ---
+
+export interface ComponentExecutionContext {
+  bot: BotContext;
+  interaction: MessageComponentInteraction;
+  customId: string;
+  args: string[]; // customId segments after the routing prefix (split on ":")
+  guildId: string | null;
+  userId: string;
+  locale: Locale;
+  t: TFunction;
+}
+
+export type ComponentHandler = (ctx: ComponentExecutionContext) => Promise<void>;
+
+export interface ComponentHandlerDef {
+  prefix: string; // matches the customId up to its first ":"
+  handle: ComponentHandler;
+}
+
+// --- Emoji reactions ---
+
+export interface ReactionExecutionContext {
+  bot: BotContext;
+  reaction: MessageReaction; // always resolved — partials are fetched before dispatch
+  user: User; // always resolved, never a bot
+  emoji: string; // unicode emoji or custom emoji name
+  event: "add" | "remove";
+}
+
+export type ReactionHandler = (ctx: ReactionExecutionContext) => Promise<void>;
+
 export interface CommandDefinition {
   name: string;
   description: string;
   prefix: string | null;
   options: OptionDef[];
   middlewares: Middleware[];
+  components: ComponentHandlerDef[];
+  reactions: ReactionHandler[];
   // biome-ignore lint/suspicious/noExplicitAny: type-erased at definition boundary — concrete type lives in CommandBuilder<TOptions>
   execute: ExecuteHandler<any>;
 }
@@ -126,6 +167,8 @@ export class CommandBuilder<TOptions extends OptionDef[] = []> {
   private _prefix: string | null = null;
   private _options: OptionDef[] = [];
   private _middlewares: Middleware[] = [];
+  private _components: ComponentHandlerDef[] = [];
+  private _reactions: ReactionHandler[] = [];
   // biome-ignore lint/suspicious/noExplicitAny: concrete type carried by TOptions, erased here for storage
   private _execute: ExecuteHandler<any> = async () => {};
 
@@ -155,6 +198,21 @@ export class CommandBuilder<TOptions extends OptionDef[] = []> {
     return this;
   }
 
+  // Routes component interactions (buttons/selects) whose customId starts with
+  // `prefix:` to this handler. The command that renders the component owns it.
+  onComponent(prefix: string, handle: ComponentHandler): this {
+    this._components.push({ prefix, handle });
+    return this;
+  }
+
+  // Registers a reaction handler. Reactions fire on existing messages, so the
+  // handler self-filters (e.g. by looking the message up); it isn't scoped to a
+  // single invocation.
+  onReaction(handler: ReactionHandler): this {
+    this._reactions.push(handler);
+    return this;
+  }
+
   execute(handler: ExecuteHandler<TOptions>): this {
     this._execute = handler;
     return this;
@@ -170,6 +228,8 @@ export class CommandBuilder<TOptions extends OptionDef[] = []> {
       prefix: this._prefix,
       options: this._options,
       middlewares: this._middlewares,
+      components: this._components,
+      reactions: this._reactions,
       execute: this._execute,
     };
   }

@@ -1,10 +1,53 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+  ActionRowBuilder,
+  ApplicationCommandOptionType,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
 import { search, type YouTubeVideo } from "play-dl";
-import { createCommand } from "@/core/commandBuilder.js";
-import { CommandError } from "@/lib/errors.js";
+import {
+  type ComponentExecutionContext,
+  createCommand,
+  type ReactionExecutionContext,
+} from "@/core/commandBuilder.js";
+import { CommandError, PlayerError } from "@/lib/errors.js";
 import { cooldown } from "@/middlewares/cooldown.js";
 import { guildOnly } from "@/middlewares/guildOnly.js";
+import { VOTE_EMOJIS } from "@/services/music/voteRepository.js";
 import type { Track } from "@/services/player/track.js";
+
+// Records (or clears) a like/dislike/fav vote when someone reacts on a play card.
+// Self-filters: ignores non-vote emojis and messages that aren't vote cards.
+async function handleVoteReaction(ctx: ReactionExecutionContext): Promise<void> {
+  const votes = ctx.bot.votes;
+  if (!votes) return;
+
+  const vote = VOTE_EMOJIS[ctx.emoji];
+  if (!vote) return;
+
+  const target = await votes.lookupMessage(ctx.reaction.message.id);
+  if (!target) return;
+
+  if (ctx.event === "add") {
+    await votes.addVote(target.guildId, target.url, ctx.user.id, vote);
+  } else {
+    await votes.removeVote(target.guildId, target.url, ctx.user.id, vote);
+  }
+}
+
+// Skip button on the play card (component routed by the "music" customId prefix).
+async function handleSkipButton(ctx: ComponentExecutionContext): Promise<void> {
+  if (!ctx.guildId) return;
+  try {
+    ctx.bot.player.skip(ctx.guildId);
+    await ctx.interaction.reply({ content: ctx.t("music.skipped"), flags: MessageFlags.Ephemeral });
+  } catch (err) {
+    const message = err instanceof PlayerError ? err.message : ctx.t("errors.generic");
+    await ctx.interaction.reply({ content: `❌ ${message}`, flags: MessageFlags.Ephemeral });
+  }
+}
 
 export default createCommand()
   .setName("play")
@@ -18,7 +61,9 @@ export default createCommand()
   })
   .use(guildOnly)
   .use(cooldown(3))
-  .execute(async ({ bot, args, reply, defer, voiceChannel, textChannel, displayName, t }) => {
+  .onReaction(handleVoteReaction)
+  .onComponent("music", handleSkipButton)
+  .execute(async ({ bot, args, respond, defer, voiceChannel, textChannel, displayName, t }) => {
     if (!voiceChannel) throw new CommandError(t("errors.notInVoice"));
 
     // Search + stream resolution can exceed Discord's 3s window — defer first.
@@ -63,6 +108,29 @@ export default createCommand()
       trackError: (errored) => announce(t("music.trackError", { title: errored.title })),
     });
 
-    await reply(t("music.addedToQueue", { title: track.title }));
+    const embed = new EmbedBuilder()
+      .setColor(0x5865f2)
+      .setTitle(track.title)
+      .setURL(track.url)
+      .setDescription(t("music.addedToQueue", { title: track.title }))
+      .setFooter({ text: `${displayName} · ${t("music.voteHint")}` });
+
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId("music:skip")
+        .setEmoji("⏭️")
+        .setLabel("Skip")
+        .setStyle(ButtonStyle.Secondary),
+    );
+
+    const card = await respond({ embeds: [embed], components: [row] });
+
+    // Seed the vote reactions (no-op without persistence — nothing would record them).
+    if (bot.votes) {
+      await bot.votes.registerMessage(card.id, guildId, track.url);
+      for (const emoji of Object.keys(VOTE_EMOJIS)) {
+        await card.react(emoji).catch(() => {});
+      }
+    }
   })
   .build();
