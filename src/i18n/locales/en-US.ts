@@ -12,6 +12,7 @@ export const enUS = {
     stopped: "⏹️ Music stopped and queue cleared.",
     nothingPlaying: "Nothing is playing right now.",
     nowPlaying: "▶️ **Now playing:** {title} — requested by {requestedBy}",
+    trackError: "⚠️ Couldn't play **{title}**, skipping to the next one.",
     queueEntry: "{position}. {title} — {requestedBy}",
     emptyQueue: "*Queue is empty*",
   },

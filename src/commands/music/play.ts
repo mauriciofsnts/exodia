@@ -13,7 +13,7 @@ export default createCommand()
     type: ApplicationCommandOptionType.String,
     required: true,
   })
-  .execute(async ({ bot, args, reply, voiceChannel, displayName, t }) => {
+  .execute(async ({ bot, args, reply, voiceChannel, textChannel, displayName, t }) => {
     if (!voiceChannel) throw new CommandError(t("errors.notInVoice"));
 
     await reply(t("music.searching"));
@@ -24,12 +24,26 @@ export default createCommand()
 
     if (!video?.url) throw new CommandError(t("errors.noResults"));
 
-    await bot.player.play(voiceChannel, {
-      title: video.title ?? "Unknown",
-      url: video.url,
-      duration: video.durationInSec ?? 0,
-      requestedBy: displayName,
-    });
+    // Playback events fire detached from this interaction, so announce in the
+    // invoking text channel (which stays valid) rather than via reply.
+    const announce = (content: string) => {
+      if (textChannel?.isSendable()) textChannel.send(content).catch(() => {});
+    };
+
+    await bot.player.play(
+      voiceChannel,
+      {
+        title: video.title ?? "Unknown",
+        url: video.url,
+        duration: video.durationInSec ?? 0,
+        requestedBy: displayName,
+      },
+      {
+        trackStart: (track) =>
+          announce(t("music.nowPlaying", { title: track.title, requestedBy: track.requestedBy })),
+        trackError: (track) => announce(t("music.trackError", { title: track.title })),
+      },
+    );
 
     await reply(t("music.addedToQueue", { title: video.title ?? "Unknown" }));
   })

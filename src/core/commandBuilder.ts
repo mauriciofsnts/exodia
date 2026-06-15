@@ -4,6 +4,7 @@ import type {
   Message,
   MessageReplyOptions,
   PermissionsBitField,
+  TextBasedChannel,
   VoiceBasedChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
@@ -80,6 +81,7 @@ export interface CommandExecutionContext<TOptions extends OptionDef[] = []> {
   displayName: string;
   memberPermissions: Readonly<PermissionsBitField> | null;
   voiceChannel: VoiceBasedChannel | null;
+  textChannel: TextBasedChannel | null; // where the command was invoked — for out-of-band messages
 }
 
 export type ExecuteHandler<TOptions extends OptionDef[] = []> = (

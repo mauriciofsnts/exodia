@@ -12,6 +12,7 @@ export const ptBR = {
     stopped: "⏹️ Música parada e fila limpa.",
     nothingPlaying: "Nenhuma música tocando no momento.",
     nowPlaying: "▶️ **Tocando:** {title} — pedido por {requestedBy}",
+    trackError: "⚠️ Não consegui tocar **{title}**, pulando para a próxima.",
     queueEntry: "{position}. {title} — {requestedBy}",
     emptyQueue: "*Fila vazia*",
   },

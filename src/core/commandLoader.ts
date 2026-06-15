@@ -221,6 +221,7 @@ function buildSlashContext(
     displayName: interaction.user.displayName,
     memberPermissions: member?.permissions ?? interaction.memberPermissions,
     voiceChannel: resolveVoiceChannel(member),
+    textChannel: interaction.channel,
     reply: (content) => {
       const payload = typeof content === "string" ? { content } : content;
       return interaction.replied || interaction.deferred
@@ -253,6 +254,7 @@ function buildPrefixContext(
     displayName: message.author.displayName,
     memberPermissions: message.member?.permissions ?? null,
     voiceChannel: resolveVoiceChannel(message.member),
+    textChannel: message.channel,
     reply: (content) => {
       const text =
         typeof content === "string" ? content : ((content as MessageReplyOptions).content ?? "");

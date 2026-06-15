@@ -9,6 +9,8 @@ const schema = z.object({
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
   REDIS_URL: z.string().url().default("redis://localhost:6379"),
   ADMIN_USER_ID: z.string().optional(),
+  // How long the bot stays in an empty voice channel before disconnecting (ms).
+  PLAYER_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(300_000),
 });
 
 const parsed = schema.safeParse(process.env);

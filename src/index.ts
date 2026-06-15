@@ -11,7 +11,7 @@ async function main() {
   const cache = createCache(config, logger);
   await cache.connect();
 
-  const player = new PlayerManager();
+  const player = new PlayerManager(logger, config.PLAYER_IDLE_TIMEOUT_MS);
   const i18n = new I18n();
 
   const bot = new Bot(
