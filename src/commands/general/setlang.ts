@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
-import { type Locale, SUPPORTED_LOCALES } from "@/i18n/index.js";
+import { guildLocaleKey, type Locale, SUPPORTED_LOCALES } from "@/i18n/index.js";
 import { CommandError } from "@/lib/errors.js";
 
 const LOCALE_LABELS: Record<Locale, string> = {
@@ -26,7 +26,7 @@ export default createCommand()
       throw new CommandError(t("commands.setlang.noPermission"));
     }
 
-    await bot.cache.set(`guild:${guildId}:locale`, args.lang);
+    await bot.cache.set(guildLocaleKey(guildId), args.lang);
 
     await reply(t("commands.setlang.success", { lang: LOCALE_LABELS[args.lang] }));
   })

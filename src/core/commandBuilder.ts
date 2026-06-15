@@ -65,6 +65,7 @@ export type TypedArgs<Options extends OptionDef[]> = {
 
 export interface CommandExecutionContext<TOptions extends OptionDef[] = []> {
   bot: BotContext;
+  commandName: string; // canonical name (matches the definition), regardless of invocation style
   args: TypedArgs<TOptions>;
   raw: string[]; // unparsed tokens — prefix commands only
   reply(content: string | InteractionReplyOptions | MessageReplyOptions): Promise<void>;

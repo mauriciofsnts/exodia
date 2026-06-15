@@ -10,7 +10,7 @@ import type {
   VoiceBasedChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType, GuildMember } from "discord.js";
-import type { Locale } from "@/i18n/index.js";
+import { guildLocaleKey, type Locale } from "@/i18n/index.js";
 import { CommandError } from "@/lib/errors.js";
 import type {
   CommandDefinition,
@@ -59,8 +59,13 @@ export class CommandLoader {
       const command = this.commands.get(interaction.commandName);
       if (!command) return;
 
-      const locale = ctx.i18n.resolveLocale(interaction.guildLocale ?? interaction.locale);
-      const execCtx = buildSlashContext(ctx, interaction, command.options, locale);
+      // Stored /setlang preference wins; Discord's locale is only the fallback.
+      const locale = await resolveLocale(
+        ctx,
+        interaction.guildId,
+        interaction.guildLocale ?? interaction.locale,
+      );
+      const execCtx = buildSlashContext(ctx, interaction, command, locale);
       await safeExecute(command, execCtx, ctx, this.globalMiddlewares);
     });
   }
@@ -76,14 +81,20 @@ export class CommandLoader {
       const command = this.prefixCommands.get(rawCommand.toLowerCase());
       if (!command) return;
 
-      const rawLocale = message.guildId
-        ? await ctx.cache.get(`guild:${message.guildId}:locale`)
-        : null;
-      const locale = ctx.i18n.resolveLocale(rawLocale);
-      const execCtx = buildPrefixContext(ctx, message, tokens, command.options, locale);
+      const locale = await resolveLocale(ctx, message.guildId);
+      const execCtx = buildPrefixContext(ctx, message, tokens, command, locale);
       await safeExecute(command, execCtx, ctx, this.globalMiddlewares);
     });
   }
+}
+
+async function resolveLocale(
+  ctx: BotContext,
+  guildId: string | null,
+  discordLocale?: string | null,
+): Promise<Locale> {
+  const stored = guildId ? await ctx.cache.get(guildLocaleKey(guildId)) : null;
+  return ctx.i18n.resolveLocale(stored ?? discordLocale);
 }
 
 function collectFiles(dir: string): string[] {
@@ -153,7 +164,14 @@ function buildPrefixArgs(tokens: string[], options: OptionDef[]): Record<string,
   const args: Record<string, unknown> = {};
   for (let i = 0; i < options.length; i++) {
     const opt = options[i];
-    const token = tokens[i] ?? null;
+    const isLast = i === options.length - 1;
+    // The trailing string option is greedy: it swallows the remaining tokens so
+    // multi-word values (e.g. a search query like `!play never gonna give you up`)
+    // aren't truncated to the first word.
+    const token =
+      isLast && opt.type === ApplicationCommandOptionType.String
+        ? tokens.slice(i).join(" ") || null
+        : (tokens[i] ?? null);
     if (opt.required && token === null) {
       throw new CommandError(`Argumento "${opt.name}" é obrigatório.`);
     }
@@ -182,14 +200,15 @@ function resolveVoiceChannel(member: GuildMember | null): VoiceBasedChannel | nu
 function buildSlashContext(
   bot: BotContext,
   interaction: ChatInputCommandInteraction,
-  options: OptionDef[],
+  command: CommandDefinition,
   locale: Locale,
 ): CommandExecutionContext {
   const member = interaction.member instanceof GuildMember ? interaction.member : null;
 
   return {
     bot,
-    args: buildSlashArgs(interaction, options) as never,
+    commandName: command.name,
+    args: buildSlashArgs(interaction, command.options) as never,
     raw: [],
     interaction,
     message: null,
@@ -215,12 +234,13 @@ function buildPrefixContext(
   bot: BotContext,
   message: Message,
   tokens: string[],
-  options: OptionDef[],
+  command: CommandDefinition,
   locale: Locale,
 ): CommandExecutionContext {
   return {
     bot,
-    args: buildPrefixArgs(tokens, options) as never,
+    commandName: command.name,
+    args: buildPrefixArgs(tokens, command.options) as never,
     raw: tokens,
     interaction: null,
     message,

@@ -17,25 +17,20 @@ export const adminErrorNotifier: Middleware = async (ctx, next) => {
   }
 };
 
-async function notifyAdmin(
-  ctx: Parameters<Middleware>[0],
-  err: unknown,
-): Promise<void> {
+async function notifyAdmin(ctx: Parameters<Middleware>[0], err: unknown): Promise<void> {
   const adminId = ctx.bot.config.ADMIN_USER_ID;
   if (!adminId) return;
 
   const admin = await ctx.bot.client.users.fetch(adminId);
 
   const errorMessage = err instanceof Error ? err.message : String(err);
-  const stack = err instanceof Error && err.stack
-    ? err.stack.slice(0, 1000)
-    : "No stack trace";
+  const stack = err instanceof Error && err.stack ? err.stack.slice(0, 1000) : "No stack trace";
 
   const embed = new EmbedBuilder()
     .setColor(0xe74c3c)
     .setTitle("⚠️ Unhandled command error")
     .addFields(
-      { name: "Command", value: `\`${ctx.interaction?.commandName ?? ctx.raw[0] ?? "unknown"}\``, inline: true },
+      { name: "Command", value: `\`${ctx.commandName}\``, inline: true },
       { name: "Source", value: ctx.source, inline: true },
       { name: "User", value: `<@${ctx.userId}> (${ctx.displayName})`, inline: true },
       {
