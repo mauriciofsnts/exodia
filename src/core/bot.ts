@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
+import { EventScheduler } from "@/services/events/eventScheduler.js";
 import { onboardGuild } from "@/services/guild/onboarding.js";
 import type { Middleware } from "./commandBuilder.js";
 import { CommandLoader } from "./commandLoader.js";
@@ -11,6 +12,7 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 export class Bot {
   private client: Client;
   private loader = new CommandLoader();
+  private scheduler: EventScheduler | null = null;
 
   constructor(
     private ctx: Omit<BotContext, "client" | "commands">,
@@ -43,6 +45,9 @@ export class Bot {
 
     this.client.once("ready", (c) => {
       ctx.logger.info(`Bot online: ${c.user.tag}`);
+      // Start polling guild_events once guilds are cached (no-op without a db).
+      this.scheduler = new EventScheduler(ctx);
+      this.scheduler.start();
     });
 
     // Onboard each newly joined guild: create a config channel and post the guide.
@@ -65,6 +70,7 @@ export class Bot {
     const shutdown = async (signal: string) => {
       ctx.logger.info(`${signal} received — shutting down`);
 
+      this.scheduler?.stop();
       ctx.player.destroyAll();
       this.client.destroy();
       ctx.cache.disconnect();

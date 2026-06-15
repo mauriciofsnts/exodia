@@ -58,6 +58,30 @@ export const enUS = {
       needValue: "❌ Provide a value, e.g. `{prefix}config {action} <value>`.",
       resumeReady: "✅ Setup continued in {channel}.",
       resumeHere: "✅ Let's configure right here.",
+      eventsSet: "✅ Auto-creating Discord events: {state}.",
+      eventsChannelSet: "✅ Event announcements will go to {channel}.",
+    },
+    gen: {
+      result: "🧪 **{type}**\n`{value}`\nraw: `{raw}`",
+      unknown: "❌ Unknown type. Use cpf, cnpj, card, rg or cep.",
+    },
+    news: {
+      header: "📰 {category} — latest",
+      empty: "No headlines right now.",
+      failed: "❌ Couldn't fetch the news right now.",
+      unknown: "❌ Unknown category.",
+    },
+    shorten: {
+      result: "🔗 {url}",
+      invalid: "❌ Provide a valid http(s) URL.",
+      failed: "❌ Couldn't shorten that URL right now.",
+    },
+    matches: {
+      headerUpcoming: "⚽ {league} — upcoming",
+      headerRecent: "⚽ {league} — recent results",
+      empty: "No matches found for {league}.",
+      failed: "❌ Couldn't fetch matches right now.",
+      unknown: "❌ Unknown championship.",
     },
   },
   onboarding: {
@@ -66,5 +90,14 @@ export const enUS = {
       "Set my prefix with `{prefix}config prefix <value>` and language with `{prefix}config lang <en-US|pt-BR>`. Current prefix: `{prefix}`.",
     cantCreateChannel:
       "I couldn't create a config channel — I need the **Manage Channels** permission. Create a text channel and run `{prefix}config resume` to finish setup.",
+  },
+  events: {
+    starting: "📣 The event **{name}** is starting now!",
+    added: "✅ Event **{name}** scheduled for {when}.",
+    invalidDate: "❌ Invalid date. Use e.g. `2026-06-20T18:00`.",
+    pastDate: "❌ The start time must be in the future.",
+    listHeader: "📅 Upcoming events:",
+    listEntry: "• **{name}** — {when}",
+    listEmpty: "No upcoming events.",
   },
 } as const;

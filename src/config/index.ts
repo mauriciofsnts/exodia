@@ -15,6 +15,11 @@ const schema = z.object({
   ADMIN_USER_ID: z.string().optional(),
   // How long the bot stays in an empty voice channel before disconnecting (ms).
   PLAYER_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(300_000),
+  // Optional: GET-based URL shortener endpoint with a `{url}` placeholder.
+  // Defaults to is.gd inside the provider when unset.
+  SHORTENER_ENDPOINT: z.string().optional(),
+  // TheSportsDB API key — the public test key "3" works for upcoming fixtures.
+  SPORTSDB_API_KEY: z.string().default("3"),
 });
 
 const parsed = schema.safeParse(process.env);

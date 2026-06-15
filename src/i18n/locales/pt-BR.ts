@@ -58,6 +58,30 @@ export const ptBR = {
       needValue: "❌ Informe um valor, ex.: `{prefix}config {action} <valor>`.",
       resumeReady: "✅ Configuração continuada em {channel}.",
       resumeHere: "✅ Vamos configurar aqui mesmo.",
+      eventsSet: "✅ Criação automática de eventos no Discord: {state}.",
+      eventsChannelSet: "✅ Anúncios de eventos irão para {channel}.",
+    },
+    gen: {
+      result: "🧪 **{type}**\n`{value}`\nraw: `{raw}`",
+      unknown: "❌ Tipo desconhecido. Use cpf, cnpj, card, rg ou cep.",
+    },
+    news: {
+      header: "📰 {category} — mais recentes",
+      empty: "Sem manchetes no momento.",
+      failed: "❌ Não consegui buscar as notícias agora.",
+      unknown: "❌ Categoria desconhecida.",
+    },
+    shorten: {
+      result: "🔗 {url}",
+      invalid: "❌ Informe uma URL http(s) válida.",
+      failed: "❌ Não consegui encurtar essa URL agora.",
+    },
+    matches: {
+      headerUpcoming: "⚽ {league} — próximas",
+      headerRecent: "⚽ {league} — resultados recentes",
+      empty: "Nenhuma partida encontrada para {league}.",
+      failed: "❌ Não consegui buscar as partidas agora.",
+      unknown: "❌ Campeonato desconhecido.",
     },
   },
   onboarding: {
@@ -66,5 +90,14 @@ export const ptBR = {
       "Defina meu prefixo com `{prefix}config prefix <valor>` e o idioma com `{prefix}config lang <en-US|pt-BR>`. Prefixo atual: `{prefix}`.",
     cantCreateChannel:
       "Não consegui criar um canal de configuração — preciso da permissão **Gerenciar Canais**. Crie um canal de texto e rode `{prefix}config resume` para concluir a configuração.",
+  },
+  events: {
+    starting: "📣 O evento **{name}** está começando agora!",
+    added: "✅ Evento **{name}** agendado para {when}.",
+    invalidDate: "❌ Data inválida. Use, por ex.: `2026-06-20T18:00`.",
+    pastDate: "❌ O horário de início deve estar no futuro.",
+    listHeader: "📅 Próximos eventos:",
+    listEntry: "• **{name}** — {when}",
+    listEmpty: "Nenhum evento futuro.",
   },
 } as const;

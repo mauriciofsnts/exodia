@@ -3,6 +3,7 @@ import type { Redis } from "ioredis";
 import type { Config } from "@/config/index.js";
 import type { I18n } from "@/i18n/index.js";
 import type { Logger } from "@/lib/logger.js";
+import type { EventRepository } from "@/services/events/eventRepository.js";
 import type { GuildConfigService } from "@/services/guild/guildConfig.js";
 import type { TrackSearchCache } from "@/services/music/searchCache.js";
 import type { VoteRepository } from "@/services/music/voteRepository.js";
@@ -21,5 +22,6 @@ export interface BotContext {
   guildConfig: GuildConfigService; // per-guild prefix/locale settings (Redis-backed)
   trackCache: TrackSearchCache | null; // query→track persistence; null when db is off
   votes: VoteRepository | null; // play-card reaction votes; null when db is off
+  events: EventRepository | null; // scheduled guild events; null when db is off
   commands: CommandDefinition[]; // all loaded commands — populated by Bot after load (for /help)
 }

@@ -26,6 +26,8 @@ export default createCommand()
       { name: "prefix", value: "prefix" },
       { name: "lang", value: "lang" },
       { name: "resume", value: "resume" },
+      { name: "events", value: "events" },
+      { name: "eventschannel", value: "eventschannel" },
     ],
   })
   .addOption({
@@ -76,6 +78,24 @@ export default createCommand()
           ? t("commands.config.resumeReady", { channel: `<#${channel.id}>` })
           : t("commands.config.resumeHere"),
       );
+      return;
+    }
+
+    if (action === "events") {
+      const value = args.value?.trim().toLowerCase();
+      if (value !== "on" && value !== "off") {
+        throw new CommandError(t("commands.config.needValue", { prefix, action }));
+      }
+      await bot.guildConfig.update(guildId, { eventsEnabled: value === "on" });
+      await reply(t("commands.config.eventsSet", { state: value }));
+      return;
+    }
+
+    if (action === "eventschannel") {
+      const id = args.value?.match(/\d{5,}/)?.[0];
+      if (!id) throw new CommandError(t("commands.config.needValue", { prefix, action }));
+      await bot.guildConfig.update(guildId, { eventsChannelId: id });
+      await reply(t("commands.config.eventsChannelSet", { channel: `<#${id}>` }));
       return;
     }
 

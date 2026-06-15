@@ -5,6 +5,8 @@ export interface GuildConfig {
   prefix?: string;
   locale?: Locale;
   configured?: boolean; // onboarding completed (config channel set up)
+  eventsEnabled?: boolean; // auto-create Discord scheduled events from guild_events
+  eventsChannelId?: string; // where to announce events when they start
 }
 
 const configKey = (guildId: string) => `guild:${guildId}:config`;
