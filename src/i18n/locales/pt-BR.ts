@@ -37,5 +37,34 @@ export const ptBR = {
       dmContent:
         "🔐 Sua nova senha (esta mensagem se autodestrói em {seconds}s):\n||`{password}`||",
     },
+    help: {
+      title: "📖 Comandos",
+      hint: "Use `{prefix}help <comando>` para ver detalhes de um comando específico.",
+      notFound: "Comando `{command}` não encontrado. Use `{prefix}help` para listar.",
+      usage: "Uso",
+      options: "Opções",
+      noOptions: "Sem opções.",
+      required: "obrigatório",
+      optional: "opcional",
+    },
+    config: {
+      title: "⚙️ Configuração do servidor",
+      current: "Prefixo: `{prefix}`\nIdioma: `{lang}`",
+      help: "Altere com `{prefix}config prefix <valor>` ou `{prefix}config lang <en-US|pt-BR>`.",
+      prefixSet: "✅ Prefixo definido para `{prefix}`.",
+      langSet: "✅ Idioma definido para `{lang}`.",
+      invalidPrefix: "❌ O prefixo deve ter 1–5 caracteres sem espaços.",
+      invalidLang: "❌ Idioma desconhecido. Opções: {langs}.",
+      needValue: "❌ Informe um valor, ex.: `{prefix}config {action} <valor>`.",
+      resumeReady: "✅ Configuração continuada em {channel}.",
+      resumeHere: "✅ Vamos configurar aqui mesmo.",
+    },
+  },
+  onboarding: {
+    welcome: "👋 Obrigado por me adicionar em {guild}!",
+    guide:
+      "Defina meu prefixo com `{prefix}config prefix <valor>` e o idioma com `{prefix}config lang <en-US|pt-BR>`. Prefixo atual: `{prefix}`.",
+    cantCreateChannel:
+      "Não consegui criar um canal de configuração — preciso da permissão **Gerenciar Canais**. Crie um canal de texto e rode `{prefix}config resume` para concluir a configuração.",
   },
 } as const;

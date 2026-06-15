@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
+import { onboardGuild } from "@/services/guild/onboarding.js";
 import type { Middleware } from "./commandBuilder.js";
 import { CommandLoader } from "./commandLoader.js";
 import type { BotContext } from "./context.js";
@@ -12,7 +13,7 @@ export class Bot {
   private loader = new CommandLoader();
 
   constructor(
-    private ctx: Omit<BotContext, "client">,
+    private ctx: Omit<BotContext, "client" | "commands">,
     middlewares: Middleware[] = [],
   ) {
     this.client = new Client({
@@ -31,9 +32,10 @@ export class Bot {
   }
 
   async start(): Promise<void> {
-    const ctx: BotContext = { ...this.ctx, client: this.client };
-
+    // Load first so the command list is complete before it's exposed on the context.
     await this.loader.load(resolve(__dirname, "../commands"));
+
+    const ctx: BotContext = { ...this.ctx, client: this.client, commands: this.loader.all };
 
     this.loader.registerInteractionHandler(this.client, ctx);
     this.loader.registerPrefixHandler(this.client, ctx);
@@ -41,6 +43,13 @@ export class Bot {
 
     this.client.once("ready", (c) => {
       ctx.logger.info(`Bot online: ${c.user.tag}`);
+    });
+
+    // Onboard each newly joined guild: create a config channel and post the guide.
+    this.client.on("guildCreate", (guild) => {
+      onboardGuild(guild, ctx).catch((err) => {
+        ctx.logger.error({ err, guildId: guild.id }, "Guild onboarding failed");
+      });
     });
 
     this.client.on("error", (err) => {

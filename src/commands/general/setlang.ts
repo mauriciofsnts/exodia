@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
-import { guildLocaleKey, type Locale, SUPPORTED_LOCALES } from "@/i18n/index.js";
+import { type Locale, SUPPORTED_LOCALES } from "@/i18n/index.js";
 import { CommandError } from "@/lib/errors.js";
 import { requirePermission } from "@/middlewares/requirePermission.js";
 
@@ -24,7 +24,7 @@ export default createCommand()
   .execute(async ({ source, guildId, args, bot, reply, t }) => {
     if (source !== "guild" || !guildId) throw new CommandError(t("errors.guildOnly"));
 
-    await bot.cache.set(guildLocaleKey(guildId), args.lang);
+    await bot.guildConfig.update(guildId, { locale: args.lang });
 
     await reply(t("commands.setlang.success", { lang: LOCALE_LABELS[args.lang] }));
   })

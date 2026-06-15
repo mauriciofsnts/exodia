@@ -16,7 +16,7 @@ import type {
   VoiceBasedChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType, GuildMember, MessageFlags } from "discord.js";
-import { guildLocaleKey, type Locale } from "@/i18n/index.js";
+import type { Locale } from "@/i18n/index.js";
 import { CommandError } from "@/lib/errors.js";
 import type {
   CommandDefinition,
@@ -162,13 +162,14 @@ export class CommandLoader {
   }
 
   registerPrefixHandler(client: Client, ctx: BotContext): void {
-    const { PREFIX } = ctx.config;
-
     client.on("messageCreate", async (message) => {
       if (message.author.bot) return;
-      if (!message.content.startsWith(PREFIX)) return;
 
-      const [rawCommand, ...tokens] = message.content.slice(PREFIX.length).trim().split(/\s+/);
+      // Per-guild prefix (cached in memory after the first lookup).
+      const prefix = await ctx.guildConfig.resolvePrefix(message.guildId);
+      if (!message.content.startsWith(prefix)) return;
+
+      const [rawCommand, ...tokens] = message.content.slice(prefix.length).trim().split(/\s+/);
       const command = this.prefixCommands.get(rawCommand.toLowerCase());
       if (!command) return;
 
@@ -184,7 +185,7 @@ async function resolveLocale(
   guildId: string | null,
   discordLocale?: string | null,
 ): Promise<Locale> {
-  const stored = guildId ? await ctx.cache.get(guildLocaleKey(guildId)) : null;
+  const stored = await ctx.guildConfig.resolveLocale(guildId);
   return ctx.i18n.resolveLocale(stored ?? discordLocale);
 }
 

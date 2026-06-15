@@ -37,5 +37,34 @@ export const enUS = {
       dmContent:
         "🔐 Your new password (this message self-destructs in {seconds}s):\n||`{password}`||",
     },
+    help: {
+      title: "📖 Commands",
+      hint: "Use `{prefix}help <command>` for details on a specific command.",
+      notFound: "Command `{command}` not found. Use `{prefix}help` to list them.",
+      usage: "Usage",
+      options: "Options",
+      noOptions: "No options.",
+      required: "required",
+      optional: "optional",
+    },
+    config: {
+      title: "⚙️ Server configuration",
+      current: "Prefix: `{prefix}`\nLanguage: `{lang}`",
+      help: "Change with `{prefix}config prefix <value>` or `{prefix}config lang <en-US|pt-BR>`.",
+      prefixSet: "✅ Prefix set to `{prefix}`.",
+      langSet: "✅ Language set to `{lang}`.",
+      invalidPrefix: "❌ Prefix must be 1–5 characters with no spaces.",
+      invalidLang: "❌ Unknown language. Options: {langs}.",
+      needValue: "❌ Provide a value, e.g. `{prefix}config {action} <value>`.",
+      resumeReady: "✅ Setup continued in {channel}.",
+      resumeHere: "✅ Let's configure right here.",
+    },
+  },
+  onboarding: {
+    welcome: "👋 Thanks for adding me to {guild}!",
+    guide:
+      "Set my prefix with `{prefix}config prefix <value>` and language with `{prefix}config lang <en-US|pt-BR>`. Current prefix: `{prefix}`.",
+    cantCreateChannel:
+      "I couldn't create a config channel — I need the **Manage Channels** permission. Create a text channel and run `{prefix}config resume` to finish setup.",
   },
 } as const;

@@ -6,9 +6,6 @@ export type Locale = "en-US" | "pt-BR";
 export const SUPPORTED_LOCALES: Locale[] = ["en-US", "pt-BR"];
 export const DEFAULT_LOCALE: Locale = "pt-BR";
 
-// Redis key holding a guild's configured locale (set via /setlang)
-export const guildLocaleKey = (guildId: string): string => `guild:${guildId}:locale`;
-
 // Dot-notation paths over the translation tree (leaves only)
 // Checks T[K] extends string (leaf) rather than extends object (branch) — more reliable with deep as const
 type Leaves<T, P extends string = ""> = {

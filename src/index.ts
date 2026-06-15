@@ -6,6 +6,7 @@ import { adminErrorNotifier } from "./middlewares/adminErrorNotifier.js";
 import { commandCounter } from "./middlewares/commandCounter.js";
 import { createCache } from "./services/cache/index.js";
 import { createDatabase } from "./services/db/postgres.js";
+import { GuildConfigService } from "./services/guild/guildConfig.js";
 import { TrackSearchCache } from "./services/music/searchCache.js";
 import { VoteRepository } from "./services/music/voteRepository.js";
 import { PlayerManager } from "./services/player/playerManager.js";
@@ -30,6 +31,7 @@ async function main() {
 
   const player = new PlayerManager(logger, config.PLAYER_IDLE_TIMEOUT_MS);
   const i18n = new I18n();
+  const guildConfig = new GuildConfigService(cache, config.PREFIX);
 
   const bot = new Bot(
     {
@@ -39,6 +41,7 @@ async function main() {
       cache,
       player,
       i18n,
+      guildConfig,
       trackCache,
       votes,
     },
