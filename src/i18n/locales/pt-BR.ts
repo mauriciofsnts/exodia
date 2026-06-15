@@ -4,6 +4,8 @@ export const ptBR = {
     notInVoice: "Você precisa estar em um canal de voz.",
     noResults: "Nenhum resultado encontrado.",
     generic: "Ocorreu um erro ao executar esse comando.",
+    noPermission: "Você não tem permissão para usar esse comando.",
+    cooldown: "⏳ Espere {seconds}s antes de usar esse comando de novo.",
   },
   music: {
     searching: "Procurando...",

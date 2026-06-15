@@ -4,12 +4,13 @@ import { pathToFileURL } from "node:url";
 import type {
   ChatInputCommandInteraction,
   Client,
+  InteractionEditReplyOptions,
   InteractionReplyOptions,
   Message,
   MessageReplyOptions,
   VoiceBasedChannel,
 } from "discord.js";
-import { ApplicationCommandOptionType, GuildMember } from "discord.js";
+import { ApplicationCommandOptionType, GuildMember, MessageFlags } from "discord.js";
 import { guildLocaleKey, type Locale } from "@/i18n/index.js";
 import { CommandError } from "@/lib/errors.js";
 import type {
@@ -127,7 +128,7 @@ async function safeExecute(
     try {
       await ctx.reply({
         content: `❌ ${msg}`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       } as InteractionReplyOptions);
     } catch {
       // reply already sent or interaction expired
@@ -222,9 +223,16 @@ function buildSlashContext(
     memberPermissions: member?.permissions ?? interaction.memberPermissions,
     voiceChannel: resolveVoiceChannel(member),
     textChannel: interaction.channel,
+    defer: (ephemeral) =>
+      interaction.deferReply(ephemeral ? { flags: MessageFlags.Ephemeral } : {}).then(() => {}),
     reply: (content) => {
       const payload = typeof content === "string" ? { content } : content;
-      return interaction.replied || interaction.deferred
+      // After defer(), fill the pending "thinking…" response via editReply;
+      // once a real reply exists, additional messages go through followUp.
+      if (interaction.deferred && !interaction.replied) {
+        return interaction.editReply(payload as InteractionEditReplyOptions).then(() => {});
+      }
+      return interaction.replied
         ? interaction.followUp(payload as InteractionReplyOptions).then(() => {})
         : interaction.reply(payload as InteractionReplyOptions).then(() => {});
     },
@@ -255,10 +263,17 @@ function buildPrefixContext(
     memberPermissions: message.member?.permissions ?? null,
     voiceChannel: resolveVoiceChannel(message.member),
     textChannel: message.channel,
+    defer: () => {
+      // Prefix commands have no deferral — a typing indicator is the closest signal.
+      return message.channel.isSendable()
+        ? message.channel.sendTyping().catch(() => {})
+        : Promise.resolve();
+    },
     reply: (content) => {
-      const text =
-        typeof content === "string" ? content : ((content as MessageReplyOptions).content ?? "");
-      return message.reply(text).then(() => {});
+      if (typeof content === "string") return message.reply(content).then(() => {});
+      // Keep rich content (embeds/components/files); drop interaction-only fields.
+      const { content: text, embeds, components, files } = content as MessageReplyOptions;
+      return message.reply({ content: text, embeds, components, files }).then(() => {});
     },
   };
 }

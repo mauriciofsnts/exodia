@@ -70,6 +70,9 @@ export interface CommandExecutionContext<TOptions extends OptionDef[] = []> {
   args: TypedArgs<TOptions>;
   raw: string[]; // unparsed tokens — prefix commands only
   reply(content: string | InteractionReplyOptions | MessageReplyOptions): Promise<void>;
+  // Buys time for slow work (>3s) before replying. Slash: defers the interaction;
+  // prefix: shows a typing indicator. A later reply() fills/edits the response.
+  defer(ephemeral?: boolean): Promise<void>;
   interaction: ChatInputCommandInteraction | null;
   message: Message | null;
   source: "guild" | "dm";

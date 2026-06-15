@@ -2,6 +2,8 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { search, type YouTubeVideo } from "play-dl";
 import { createCommand } from "@/core/commandBuilder.js";
 import { CommandError } from "@/lib/errors.js";
+import { cooldown } from "@/middlewares/cooldown.js";
+import { guildOnly } from "@/middlewares/guildOnly.js";
 
 export default createCommand()
   .setName("play")
@@ -13,10 +15,13 @@ export default createCommand()
     type: ApplicationCommandOptionType.String,
     required: true,
   })
-  .execute(async ({ bot, args, reply, voiceChannel, textChannel, displayName, t }) => {
+  .use(guildOnly)
+  .use(cooldown(3))
+  .execute(async ({ bot, args, reply, defer, voiceChannel, textChannel, displayName, t }) => {
     if (!voiceChannel) throw new CommandError(t("errors.notInVoice"));
 
-    await reply(t("music.searching"));
+    // Search + stream resolution can exceed Discord's 3s window — defer first.
+    await defer();
 
     const results = await search(args.query, { source: { youtube: "video" }, limit: 1 });
     // play-dl returns a union that collapses to never — cast to the expected type

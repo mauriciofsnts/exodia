@@ -4,6 +4,8 @@ export const enUS = {
     notInVoice: "You need to be in a voice channel.",
     noResults: "No results found.",
     generic: "An error occurred while executing this command.",
+    noPermission: "You don't have permission to use this command.",
+    cooldown: "⏳ Wait {seconds}s before using this command again.",
   },
   music: {
     searching: "Searching...",
