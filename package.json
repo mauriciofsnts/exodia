@@ -1,0 +1,30 @@
+{
+  "name": "exodia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "deploy": "tsx scripts/deploy-commands.ts",
+    "format": "biome format --write .",
+    "lint": "biome lint --write .",
+    "check": "biome check --write ."
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.19.2",
+    "discord.js": "^14.16.0",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.3.2",
+    "pino": "^9.3.2",
+    "pino-pretty": "^11.2.1",
+    "play-dl": "^1.9.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.16",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.4"
+  }
+}

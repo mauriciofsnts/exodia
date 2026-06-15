@@ -1,0 +1,94 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+```bash
+pnpm dev          # run bot in watch mode (tsx)
+pnpm start        # run bot in production (tsx)
+pnpm deploy       # register slash commands with Discord API
+pnpm check        # format + lint + organize imports (Biome, auto-fix)
+pnpm format       # format only
+pnpm lint         # lint only
+pnpm exec tsc --noEmit  # type-check without emitting
+```
+
+No test suite yet. No build step — `tsx` runs TypeScript directly.
+
+## Formatting
+
+Biome (`biome.json`) handles formatting, linting, and import organization. Run `pnpm check` before committing. Config: 2-space indent, 100-char line width, `node:` protocol enforced for Node built-ins. The `noExplicitAny` rule is set to `warn` (not error) — `any` is used intentionally in `commandBuilder.ts` for type erasure in the middleware/handler pipeline.
+
+## File naming
+
+All files use **camelCase with a lowercase first letter** (e.g. `commandBuilder.ts`, `playerManager.ts`). This applies to every file under `src/` and `scripts/`. Directories use lowercase kebab-case.
+
+## Architecture
+
+The bot is built around three layers: **core framework** (`src/core/`), **commands** (`src/commands/`), and **services** (`src/services/`).
+
+### Command lifecycle
+
+1. `src/index.ts` builds `BotContext` and passes it (with optional global middlewares) to `Bot`
+2. `Bot` creates the Discord `Client` and delegates command loading to `CommandLoader`
+3. `CommandLoader.load()` auto-discovers all files under `src/commands/` — every file with a default export matching `CommandDefinition` is registered automatically
+4. On each invocation: `CommandLoader` builds typed args → runs `global middlewares → per-command middlewares → execute handler`
+
+### CommandBuilder (`src/core/commandBuilder.ts`)
+
+The core abstraction. Generic over `TOptions extends OptionDef[]` — each `.addOption()` call appends to the type tuple, so `args` in `.execute()` is statically typed without casts.
+
+Key types:
+- `TypedArgs<TOptions>` — maps each option name to its TS type (`string`, `number`, `boolean`, or `T | null` when `required` is absent)
+- `CommandExecutionContext<TOptions>` — passed to every handler; contains `bot` (full `BotContext`), `args`, `raw` (prefix tokens), `reply`, `interaction`, `message`
+- `Middleware` — `(ctx, next) => Promise<void>`, compose pattern (global-first, then per-command)
+
+`const O extends OptionDef` in `addOption` forces literal type inference so `required: true` is preserved as `true`, not widened to `boolean`.
+
+### BotContext (`src/core/context.ts`)
+
+Passed to every command handler via `ctx.bot`. Contains:
+- `client` — discord.js `Client`
+- `config` — validated env vars (zod schema in `src/config/index.ts`)
+- `logger` — pino instance
+- `db` — `Database | null` (pluggable interface in `src/core/database.ts`)
+- `cache` — ioredis client
+- `player` — `PlayerManager` (one queue per guild)
+
+### Database interface (`src/core/database.ts`)
+
+Intentionally thin: `query`, `execute`, `transaction`, `close`. Implement this interface and pass the instance as `db` in `src/index.ts`. Currently `null` — nothing in the codebase depends on it yet.
+
+### PlayerManager (`src/services/player/playerManager.ts`)
+
+Manages one `GuildPlayer` per guild (voice connection + audio player + `Queue`). Uses `@discordjs/voice` + `play-dl` for YouTube streaming. Reconnect logic is handled inside `PlayerManager` via `VoiceConnectionStatus.Disconnected` events.
+
+### Adding a command
+
+Create a file anywhere under `src/commands/` — it will be auto-discovered:
+
+```typescript
+export default createCommand()
+  .setName('name')
+  .setDescription('...')
+  .setPrefix('name')          // optional: also respond to !name
+  .addOption({ name: 'x', description: '...', type: ApplicationCommandOptionType.String, required: true })
+  .use(myPerCommandMiddleware) // optional
+  .execute(async ({ bot, args, reply }) => {
+    args.x // string — no cast needed
+  })
+  .build();
+```
+
+After adding slash commands, run `pnpm deploy` to register them with Discord.
+
+### Adding a global middleware
+
+Create a function matching `Middleware` and add it to the array in `src/index.ts`:
+
+```typescript
+new Bot({ ...ctx }, [commandCounter, myNewMiddleware])
+```
+
+Middlewares in `src/middlewares/` have access to the full `CommandExecutionContext` including `ctx.bot.cache`, `ctx.bot.db`, etc.
