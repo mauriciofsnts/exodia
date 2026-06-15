@@ -6,6 +6,7 @@ export const ptBR = {
     generic: "Ocorreu um erro ao executar esse comando.",
     noPermission: "Você não tem permissão para usar esse comando.",
     cooldown: "⏳ Espere {seconds}s antes de usar esse comando de novo.",
+    dbRequired: "Esse comando precisa do banco de dados habilitado.",
   },
   music: {
     searching: "Procurando...",
@@ -17,6 +18,9 @@ export const ptBR = {
     trackError: "⚠️ Não consegui tocar **{title}**, pulando para a próxima.",
     queueEntry: "{position}. {title} — {requestedBy}",
     emptyQueue: "*Fila vazia*",
+    mostPlayedHeader: "🔥 **Top {count} mais tocadas** — adicionadas à fila:",
+    mostPlayedEntry: "{position}. {title} — {plays} plays",
+    noHistory: "Sem histórico de reprodução ainda — toque algumas músicas primeiro.",
   },
   commands: {
     ping: {

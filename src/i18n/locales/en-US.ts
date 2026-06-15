@@ -6,6 +6,7 @@ export const enUS = {
     generic: "An error occurred while executing this command.",
     noPermission: "You don't have permission to use this command.",
     cooldown: "⏳ Wait {seconds}s before using this command again.",
+    dbRequired: "This command needs the database to be enabled.",
   },
   music: {
     searching: "Searching...",
@@ -17,6 +18,9 @@ export const enUS = {
     trackError: "⚠️ Couldn't play **{title}**, skipping to the next one.",
     queueEntry: "{position}. {title} — {requestedBy}",
     emptyQueue: "*Queue is empty*",
+    mostPlayedHeader: "🔥 **Top {count} most played** — added to the queue:",
+    mostPlayedEntry: "{position}. {title} — {plays} plays",
+    noHistory: "No play history yet — play some songs first.",
   },
   commands: {
     ping: {
