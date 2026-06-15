@@ -31,5 +31,11 @@ export const ptBR = {
       success: "✅ Idioma do servidor definido para **{lang}**.",
       noPermission: "Você precisa da permissão **Gerenciar Servidor** para usar esse comando.",
     },
+    password: {
+      sentToDm: "🔐 Te mandei uma senha nova no privado.",
+      dmFailed: "❌ Não consegui te mandar DM — abra suas mensagens diretas e tente de novo.",
+      dmContent:
+        "🔐 Sua nova senha (esta mensagem se autodestrói em {seconds}s):\n||`{password}`||",
+    },
   },
 } as const;

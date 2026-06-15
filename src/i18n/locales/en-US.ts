@@ -31,5 +31,11 @@ export const enUS = {
       success: "✅ Server language set to **{lang}**.",
       noPermission: "You need the **Manage Server** permission to use this command.",
     },
+    password: {
+      sentToDm: "🔐 Sent a fresh password to your DMs.",
+      dmFailed: "❌ Couldn't DM you — open your direct messages and try again.",
+      dmContent:
+        "🔐 Your new password (this message self-destructs in {seconds}s):\n||`{password}`||",
+    },
   },
 } as const;
