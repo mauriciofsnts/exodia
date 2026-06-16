@@ -6,7 +6,6 @@ import {
   EmbedBuilder,
   MessageFlags,
 } from "discord.js";
-import { search, type YouTubeVideo } from "play-dl";
 import {
   type ComponentExecutionContext,
   createCommand,
@@ -17,6 +16,7 @@ import { cooldown } from "@/middlewares/cooldown.js";
 import { guildOnly } from "@/middlewares/guildOnly.js";
 import { VOTE_EMOJIS } from "@/services/music/voteRepository.js";
 import type { Track } from "@/services/player/track.js";
+import { searchYouTube } from "@/services/player/youtubeSearch.js";
 
 // Records (or clears) a like/dislike/fav vote when someone reacts on a play card.
 // Self-filters: ignores non-vote emojis and messages that aren't vote cards.
@@ -80,18 +80,10 @@ export default createCommand()
     if (cached) {
       track = { ...cached, requestedBy: displayName };
     } else {
-      const results = await search(args.query, { source: { youtube: "video" }, limit: 1 });
-      // play-dl returns a union that collapses to never — cast to the expected type
-      const video = results[0] as YouTubeVideo | undefined;
+      const result = await searchYouTube(args.query);
+      if (!result) throw new CommandError(t("errors.noResults"));
 
-      if (!video?.url) throw new CommandError(t("errors.noResults"));
-
-      track = {
-        title: video.title ?? "Unknown",
-        url: video.url,
-        duration: video.durationInSec ?? 0,
-        requestedBy: displayName,
-      };
+      track = { ...result, requestedBy: displayName };
       // Save this query as an alias that resolves to the track next time.
       await bot.trackCache?.save(guildId, args.query, track);
     }

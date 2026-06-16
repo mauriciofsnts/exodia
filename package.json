@@ -17,10 +17,11 @@
     "discord.js": "^14.16.0",
     "dotenv": "^16.4.5",
     "ioredis": "^5.3.2",
+    "libsodium-wrappers": "^0.8.4",
     "pg": "^8.21.0",
     "pino": "^9.3.2",
     "pino-pretty": "^11.2.1",
-    "play-dl": "^1.9.7",
+    "youtube-dl-exec": "^3.1.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {

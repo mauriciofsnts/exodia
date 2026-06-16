@@ -1,0 +1,39 @@
+# Local infra for the bot. Run with: docker compose up -d
+# The bot itself runs on the host (pnpm dev) and connects via the URLs in .env.
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: exodia-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"] # persist guild config/cache across restarts
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: exodia-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: exodia
+      POSTGRES_PASSWORD: exodia
+      POSTGRES_DB: exodia
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U exodia -d exodia"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis-data:
+  postgres-data:

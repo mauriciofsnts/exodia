@@ -5,11 +5,13 @@ import {
   createAudioResource,
   entersState,
   joinVoiceChannel,
+  NoSubscriberBehavior,
+  StreamType,
   type VoiceConnection,
   VoiceConnectionStatus,
 } from "@discordjs/voice";
 import type { VoiceBasedChannel } from "discord.js";
-import { stream } from "play-dl";
+import youtubeDl from "youtube-dl-exec";
 import { PlayerError } from "@/lib/errors.js";
 import type { Logger } from "@/lib/logger.js";
 import { Queue } from "./queue.js";
@@ -102,8 +104,15 @@ export class PlayerManager {
       adapterCreator: channel.guild.voiceAdapterCreator,
     });
 
-    const player = createAudioPlayer();
+    // Keep playing while the connection (re)negotiates instead of auto-pausing.
+    const player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
     connection.subscribe(player);
+
+    // Without an error listener a resource failure crashes the process — log and
+    // let the Idle handler advance the queue.
+    player.on("error", (error) => {
+      this.logger.error({ err: error, guildId: channel.guild.id }, "Audio player error");
+    });
 
     const guildPlayer: GuildPlayer = {
       connection,
@@ -150,13 +159,33 @@ export class PlayerManager {
     guildPlayer.current = track;
 
     try {
-      const { stream: audioStream, type } = await stream(track.url, { quality: 2 });
-      const resource = createAudioResource(audioStream, { inputType: type });
+      // Don't stream into the void: wait until the voice connection is actually
+      // connected (resolves immediately if it already is).
+      await entersState(guildPlayer.connection, VoiceConnectionStatus.Ready, 20_000);
+
+      // Pure-JS extractors (play-dl/ytdl-core) can no longer decipher YouTube's
+      // player, so stream the audio through yt-dlp. Preferring Opus/WebM itags
+      // lets prism-media demux the Opus directly — no ffmpeg/transcoding needed.
+      // exec() spawns yt-dlp; stdout streams natively (no in-memory buffering).
+      const subprocess = youtubeDl.exec(track.url, {
+        output: "-",
+        format: "251/250/249/bestaudio[ext=webm]/bestaudio",
+        quiet: true,
+        noWarnings: true,
+      });
+      // yt-dlp rejects when its stdout closes early (skip/stop) — swallow it.
+      subprocess.catch(() => {});
+
+      const audioStream = subprocess.stdout;
+      if (!audioStream) throw new Error("yt-dlp produced no audio stream");
+      audioStream.on("error", () => {}); // avoid crashing on broken-pipe teardown
+
+      const resource = createAudioResource(audioStream, { inputType: StreamType.WebmOpus });
       guildPlayer.player.play(resource);
       guildPlayer.notifier?.trackStart(track);
     } catch (err) {
-      // A single broken track (removed video, geo-block, play-dl hiccup) must not
-      // stall the whole queue — report it and move on to the next one.
+      // A single broken track (removed video, geo-block, extractor hiccup) must
+      // not stall the whole queue — report it and move on to the next one.
       this.logger.error({ err, guildId, url: track.url }, "Failed to stream track — skipping");
       guildPlayer.notifier?.trackError(track);
       await this.processQueue(guildId);
