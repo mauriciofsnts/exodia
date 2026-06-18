@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exodia
+  namespace: exodia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exodia
+  template:
+    metadata:
+      labels:
+        app: exodia
+    spec:
+      imagePullSecrets:
+        - name: harbor-pull-secret
+      containers:
+        - name: exodia
+          image: harbor.mrzt.dev/mrzt/exodia:master
+          env:
+            - name: PREFIX
+              value: "!"
+            - name: LOG_LEVEL
+              value: info
+            - name: PLAYER_IDLE_TIMEOUT_MS
+              value: "300000"
+            - name: SPORTSDB_API_KEY
+              value: "3"
+            - name: DISCORD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: exodia-secret
+                  key: discord-token
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: exodia-secret
+                  key: database-url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: exodia-secret
+                  key: redis-url
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
