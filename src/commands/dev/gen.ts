@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
+import { embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
 import { generateCard, generateCep, generateCnpj, generateCpf, generateRg } from "./generators.js";
 
@@ -34,6 +35,12 @@ export default createCommand()
 
     const value = generate();
     const raw = value.replace(/\D/g, "");
-    await reply(t("commands.gen.result", { type: args.type.toUpperCase(), value, raw }));
+    const card = embed()
+      .setTitle(t("commands.gen.title", { type: args.type.toUpperCase() }))
+      .addFields(
+        { name: t("commands.gen.formatted"), value: `\`${value}\`` },
+        { name: t("commands.gen.raw"), value: `\`${raw}\`` },
+      );
+    await reply({ embeds: [card] });
   })
   .build();

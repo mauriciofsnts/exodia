@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
+import { notifyAdmin } from "@/middlewares/adminErrorNotifier.js";
 import { EventScheduler } from "@/services/events/eventScheduler.js";
 import { onboardGuild } from "@/services/guild/onboarding.js";
 import type { Middleware } from "./commandBuilder.js";
@@ -39,12 +40,39 @@ export class Bot {
 
     const ctx: BotContext = { ...this.ctx, client: this.client, commands: this.loader.all };
 
+    // Detached playback errors (audio player / yt-dlp streaming) fire outside any
+    // command, so route them to the admin notifier explicitly.
+    ctx.player.setErrorReporter((err, report) => {
+      notifyAdmin(ctx, err, {
+        label: `player:${report.stage}`,
+        source: "playback",
+        guildId: report.guildId,
+        extra: report.url ? { url: report.url } : undefined,
+      }).catch((e) => ctx.logger.error({ err: e }, "Failed to notify admin of player error"));
+    });
+
     this.loader.registerInteractionHandler(this.client, ctx);
     this.loader.registerPrefixHandler(this.client, ctx);
     this.loader.registerReactionHandler(this.client, ctx);
 
     this.client.once("ready", (c) => {
       ctx.logger.info(`Bot online: ${c.user.tag}`);
+
+      // Fetch and log the admin user configured via ADMIN_USER_ID in .env.
+      const adminId = ctx.config.ADMIN_USER_ID;
+      if (adminId) {
+        c.users
+          .fetch(adminId)
+          .then((admin) => {
+            ctx.logger.info({ id: admin.id, tag: admin.tag }, "Admin user loaded");
+          })
+          .catch((err) => {
+            ctx.logger.error({ err, adminId }, "Failed to fetch admin user");
+          });
+      } else {
+        ctx.logger.warn("ADMIN_USER_ID not set — skipping admin user fetch");
+      }
+
       // Start polling guild_events once guilds are cached (no-op without a db).
       this.scheduler = new EventScheduler(ctx);
       this.scheduler.start();

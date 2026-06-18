@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
+import { EmbedColor, embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
 import { cooldown } from "@/middlewares/cooldown.js";
 import { guildOnly } from "@/middlewares/guildOnly.js";
@@ -54,13 +55,15 @@ export default createCommand()
       );
     }
 
-    const lines = [t("music.mostPlayedHeader", { count: top.length })];
-    top.forEach((entry, i) => {
-      lines.push(
-        t("music.mostPlayedEntry", { position: i + 1, title: entry.title, plays: entry.plays }),
-      );
-    });
+    const lines = top.map((entry, i) =>
+      t("music.mostPlayedEntry", { position: i + 1, title: entry.title, plays: entry.plays }),
+    );
 
-    await reply(lines.join("\n"));
+    const card = embed(EmbedColor.music)
+      .setTitle(t("music.mostPlayedTitle", { count: top.length }))
+      .setDescription(lines.join("\n"))
+      .setFooter({ text: t("music.mostPlayedFooter") });
+
+    await reply({ embeds: [card] });
   })
   .build();

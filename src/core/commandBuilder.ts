@@ -1,4 +1,5 @@
 import type {
+  AutocompleteInteraction,
   ChatInputCommandInteraction,
   InteractionReplyOptions,
   Message,
@@ -36,7 +37,23 @@ export interface OptionDef<
   type: T;
   required?: R;
   choices?: ReadonlyArray<OptionChoice>;
+  // Slash-only: suggest values live as the user types. Mutually exclusive with
+  // `choices`. Ignored for prefix commands.
+  autocomplete?: AutocompleteHandler;
 }
+
+export interface AutocompleteContext {
+  bot: BotContext;
+  interaction: AutocompleteInteraction;
+  value: string; // current text in the focused option
+  guildId: string | null;
+  locale: Locale;
+  t: TFunction;
+}
+
+export type AutocompleteHandler = (
+  ctx: AutocompleteContext,
+) => Promise<OptionChoice[]> | OptionChoice[];
 
 type OptionTypeMap = {
   [ApplicationCommandOptionType.String]: string;
@@ -134,6 +151,16 @@ export interface ReactionExecutionContext {
 
 export type ReactionHandler = (ctx: ReactionExecutionContext) => Promise<void>;
 
+export interface ReactionHandlerDef {
+  // When set, the dispatcher invokes this handler only for these emojis — and,
+  // crucially, skips fetching partial reactions/users entirely when no handler
+  // matches the reacted emoji. Omit to receive every reaction (handler
+  // self-filters). The emoji is read off the (already-resolved) reaction emoji,
+  // so the filter costs nothing and avoids an API round trip per stray reaction.
+  emojis?: readonly string[];
+  handle: ReactionHandler;
+}
+
 export interface CommandDefinition {
   name: string;
   description: string;
@@ -141,7 +168,7 @@ export interface CommandDefinition {
   options: OptionDef[];
   middlewares: Middleware[];
   components: ComponentHandlerDef[];
-  reactions: ReactionHandler[];
+  reactions: ReactionHandlerDef[];
   // biome-ignore lint/suspicious/noExplicitAny: type-erased at definition boundary — concrete type lives in CommandBuilder<TOptions>
   execute: ExecuteHandler<any>;
 }
@@ -168,7 +195,7 @@ export class CommandBuilder<TOptions extends OptionDef[] = []> {
   private _options: OptionDef[] = [];
   private _middlewares: Middleware[] = [];
   private _components: ComponentHandlerDef[] = [];
-  private _reactions: ReactionHandler[] = [];
+  private _reactions: ReactionHandlerDef[] = [];
   // biome-ignore lint/suspicious/noExplicitAny: concrete type carried by TOptions, erased here for storage
   private _execute: ExecuteHandler<any> = async () => {};
 
@@ -208,8 +235,10 @@ export class CommandBuilder<TOptions extends OptionDef[] = []> {
   // Registers a reaction handler. Reactions fire on existing messages, so the
   // handler self-filters (e.g. by looking the message up); it isn't scoped to a
   // single invocation.
-  onReaction(handler: ReactionHandler): this {
-    this._reactions.push(handler);
+  // `emojis` (optional) lets the dispatcher skip irrelevant reactions before
+  // resolving partials — pass the set this handler reacts to (e.g. vote emojis).
+  onReaction(handler: ReactionHandler, emojis?: readonly string[]): this {
+    this._reactions.push({ handle: handler, emojis });
     return this;
   }
 

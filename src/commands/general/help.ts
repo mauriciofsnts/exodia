@@ -1,8 +1,7 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import { ApplicationCommandOptionType, type EmbedBuilder } from "discord.js";
 import { type CommandDefinition, createCommand } from "@/core/commandBuilder.js";
 import type { TFunction } from "@/i18n/index.js";
-
-const EMBED_COLOR = 0x5865f2;
+import { embed } from "@/lib/embeds.js";
 
 const TYPE_LABELS: Partial<Record<ApplicationCommandOptionType, string>> = {
   [ApplicationCommandOptionType.String]: "text",
@@ -21,8 +20,7 @@ function commandList(commands: CommandDefinition[], prefix: string, t: TFunction
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((c) => `\`${invocation(c, prefix)}\` — ${c.description}`);
 
-  return new EmbedBuilder()
-    .setColor(EMBED_COLOR)
+  return embed()
     .setTitle(t("commands.help.title"))
     .setDescription(`${t("commands.help.hint", { prefix })}\n\n${lines.join("\n")}`);
 }
@@ -31,8 +29,7 @@ function commandDetail(cmd: CommandDefinition, prefix: string, t: TFunction): Em
   const optsUsage = cmd.options.map((o) => (o.required ? `<${o.name}>` : `[${o.name}]`)).join(" ");
   const usage = `${invocation(cmd, prefix)}${optsUsage ? ` ${optsUsage}` : ""}`;
 
-  const embed = new EmbedBuilder()
-    .setColor(EMBED_COLOR)
+  const card = embed()
     .setTitle(cmd.name)
     .setDescription(cmd.description)
     .addFields({ name: t("commands.help.usage"), value: `\`${usage}\`` });
@@ -45,12 +42,12 @@ function commandDetail(cmd: CommandDefinition, prefix: string, t: TFunction): Em
         return `• \`${o.name}\` (${kind}, ${req}) — ${o.description}`;
       })
       .join("\n");
-    embed.addFields({ name: t("commands.help.options"), value: optionLines });
+    card.addFields({ name: t("commands.help.options"), value: optionLines });
   } else {
-    embed.addFields({ name: t("commands.help.options"), value: t("commands.help.noOptions") });
+    card.addFields({ name: t("commands.help.options"), value: t("commands.help.noOptions") });
   }
 
-  return embed;
+  return card;
 }
 
 export default createCommand()
@@ -62,6 +59,19 @@ export default createCommand()
     description: "Command to show details for",
     type: ApplicationCommandOptionType.String,
     required: false,
+    autocomplete: ({ bot, value }) => {
+      const q = value.trim().toLowerCase();
+      return [...bot.commands]
+        .filter(
+          (c) =>
+            !q ||
+            c.name.toLowerCase().includes(q) ||
+            (c.prefix?.toLowerCase().includes(q) ?? false),
+        )
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .slice(0, 25)
+        .map((c) => ({ name: `${c.name} — ${c.description}`.slice(0, 100), value: c.name }));
+    },
   })
   .execute(async ({ bot, args, reply, t }) => {
     const prefix = bot.config.PREFIX;

@@ -83,6 +83,7 @@ export class TrackSearchCache {
                   COUNT(*) FILTER (WHERE vote = 'dislike') AS dislikes,
                   COUNT(*) FILTER (WHERE vote = 'fav') AS favs
              FROM track_votes
+            WHERE guild_id = $1
             GROUP BY guild_id, url
          ) v ON v.guild_id = s.guild_id AND v.url = s.url
         WHERE s.guild_id = $1

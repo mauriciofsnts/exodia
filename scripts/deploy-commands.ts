@@ -44,7 +44,8 @@ async function deploy() {
       description: opt.description,
       type: opt.type,
       required: opt.required ?? false,
-      ...(opt.choices ? { choices: opt.choices } : {}),
+      // autocomplete and choices are mutually exclusive on Discord's side.
+      ...(opt.autocomplete ? { autocomplete: true } : opt.choices ? { choices: opt.choices } : {}),
     })),
   }));
 

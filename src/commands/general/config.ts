@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
 import { DEFAULT_LOCALE, type Locale, SUPPORTED_LOCALES } from "@/i18n/index.js";
+import { embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
 import { guildOnly } from "@/middlewares/guildOnly.js";
 import { requirePermission } from "@/middlewares/requirePermission.js";
@@ -102,12 +103,16 @@ export default createCommand()
     // show: current settings + how to change them
     const cfg = await bot.guildConfig.get(guildId);
     const lang = cfg.locale ?? DEFAULT_LOCALE;
-    await reply(
-      [
-        `**${t("commands.config.title")}**`,
-        t("commands.config.current", { prefix, lang }),
-        t("commands.config.help", { prefix }),
-      ].join("\n"),
-    );
+    await reply({
+      embeds: [
+        embed()
+          .setTitle(t("commands.config.title"))
+          .addFields(
+            { name: t("commands.config.fieldPrefix"), value: `\`${prefix}\``, inline: true },
+            { name: t("commands.config.fieldLanguage"), value: `\`${lang}\``, inline: true },
+          )
+          .setDescription(t("commands.config.help", { prefix })),
+      ],
+    });
   })
   .build();

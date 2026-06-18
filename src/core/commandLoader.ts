@@ -2,6 +2,7 @@ import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import type {
+  AutocompleteInteraction,
   ChatInputCommandInteraction,
   Client,
   InteractionEditReplyOptions,
@@ -17,14 +18,15 @@ import type {
 } from "discord.js";
 import { ApplicationCommandOptionType, GuildMember, MessageFlags } from "discord.js";
 import type { Locale } from "@/i18n/index.js";
-import { CommandError } from "@/lib/errors.js";
+import { CommandError, PlayerError } from "@/lib/errors.js";
+import { notifyAdmin } from "@/middlewares/adminErrorNotifier.js";
 import type {
   CommandDefinition,
   CommandExecutionContext,
   ComponentHandler,
   Middleware,
   OptionDef,
-  ReactionHandler,
+  ReactionHandlerDef,
 } from "./commandBuilder.js";
 import { composeMiddlewares } from "./commandBuilder.js";
 import type { BotContext } from "./context.js";
@@ -34,7 +36,7 @@ export class CommandLoader {
   private prefixCommands = new Map<string, CommandDefinition>();
   private globalMiddlewares: Middleware[] = [];
   private componentHandlers = new Map<string, ComponentHandler>();
-  private reactionHandlers: ReactionHandler[] = [];
+  private reactionHandlers: ReactionHandlerDef[] = [];
 
   use(middleware: Middleware): this {
     this.globalMiddlewares.push(middleware);
@@ -86,8 +88,47 @@ export class CommandLoader {
 
       if (interaction.isMessageComponent()) {
         await this.dispatchComponent(interaction, ctx);
+        return;
+      }
+
+      if (interaction.isAutocomplete()) {
+        await this.dispatchAutocomplete(interaction, ctx);
       }
     });
+  }
+
+  private async dispatchAutocomplete(
+    interaction: AutocompleteInteraction,
+    ctx: BotContext,
+  ): Promise<void> {
+    const command = this.commands.get(interaction.commandName);
+    if (!command) return;
+
+    const focused = interaction.options.getFocused(true);
+    const option = command.options.find((o) => o.name === focused.name);
+    if (!option?.autocomplete) return;
+
+    const locale = await resolveLocale(
+      ctx,
+      interaction.guildId,
+      interaction.guildLocale ?? interaction.locale,
+    );
+
+    try {
+      const choices = await option.autocomplete({
+        bot: ctx,
+        interaction,
+        value: String(focused.value ?? ""),
+        guildId: interaction.guildId,
+        locale,
+        t: ctx.i18n.bind(locale),
+      });
+      // Discord caps autocomplete at 25 choices.
+      await interaction.respond(choices.slice(0, 25));
+    } catch (err) {
+      ctx.logger.error({ err, command: command.name }, "Autocomplete failed");
+      await interaction.respond([]).catch(() => {});
+    }
   }
 
   private async dispatchComponent(
@@ -118,6 +159,16 @@ export class CommandLoader {
       });
     } catch (err) {
       ctx.logger.error({ err, customId: interaction.customId }, "Component handler failed");
+      // Component handlers run outside the command middleware, so surface unexpected
+      // (non-user-facing) faults to the admin here.
+      if (!(err instanceof CommandError) && !(err instanceof PlayerError)) {
+        await notifyAdmin(ctx, err, {
+          label: `component:${prefix}`,
+          source: "component",
+          userId: interaction.user.id,
+          guildId: interaction.guildId,
+        }).catch(() => {});
+      }
       if (!interaction.replied && !interaction.deferred) {
         await interaction.reply({ content: "❌", flags: MessageFlags.Ephemeral }).catch(() => {});
       }
@@ -132,6 +183,14 @@ export class CommandLoader {
       rawUser: User | PartialUser,
       event: "add" | "remove",
     ): Promise<void> => {
+      // The emoji is resolved even on partial reactions, so filter first and
+      // bail before any fetch when no handler cares about this emoji — avoids an
+      // API round trip per stray reaction on busy servers.
+      const emoji = rawReaction.emoji.name ?? rawReaction.emoji.id ?? "";
+      const handlers = this.reactionHandlers.filter((h) => !h.emojis || h.emojis.includes(emoji));
+      if (handlers.length === 0) return;
+      if (rawUser.bot) return; // PartialUser still exposes `bot`
+
       let reaction: MessageReaction;
       let user: User;
       try {
@@ -143,10 +202,9 @@ export class CommandLoader {
       }
       if (user.bot) return;
 
-      const emoji = reaction.emoji.name ?? reaction.emoji.id ?? "";
-      for (const handler of this.reactionHandlers) {
+      for (const { handle } of handlers) {
         try {
-          await handler({ bot: ctx, reaction, user, emoji, event });
+          await handle({ bot: ctx, reaction, user, emoji, event });
         } catch (err) {
           ctx.logger.error({ err, emoji }, "Reaction handler failed");
         }
@@ -214,7 +272,9 @@ async function safeExecute(
     await pipeline(ctx);
   } catch (err) {
     const msg =
-      err instanceof CommandError ? err.message : "Ocorreu um erro ao executar esse comando.";
+      err instanceof CommandError || err instanceof PlayerError
+        ? err.message
+        : ctx.t("errors.generic");
     botCtx.logger.error({ err, command: command.name }, "Command execution failed");
     try {
       await ctx.reply({
@@ -271,15 +331,29 @@ function buildPrefixArgs(tokens: string[], options: OptionDef[]): Record<string,
       case ApplicationCommandOptionType.String:
         args[opt.name] = token;
         break;
-      case ApplicationCommandOptionType.Integer:
-        args[opt.name] = token !== null ? parseInt(token, 10) : null;
+      case ApplicationCommandOptionType.Integer: {
+        if (token === null) {
+          args[opt.name] = null;
+          break;
+        }
+        const n = parseInt(token, 10);
+        if (Number.isNaN(n)) throw new CommandError(`Argumento "${opt.name}" deve ser um número.`);
+        args[opt.name] = n;
         break;
+      }
       case ApplicationCommandOptionType.Boolean:
         args[opt.name] = token !== null ? token === "true" : null;
         break;
-      case ApplicationCommandOptionType.Number:
-        args[opt.name] = token !== null ? parseFloat(token) : null;
+      case ApplicationCommandOptionType.Number: {
+        if (token === null) {
+          args[opt.name] = null;
+          break;
+        }
+        const n = parseFloat(token);
+        if (Number.isNaN(n)) throw new CommandError(`Argumento "${opt.name}" deve ser um número.`);
+        args[opt.name] = n;
         break;
+      }
     }
   }
   return args;

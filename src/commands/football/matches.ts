@@ -1,5 +1,6 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
+import { EmbedColor, embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
 import { cached } from "@/services/cache/cached.js";
 import { LEAGUES } from "@/services/football/leagues.js";
@@ -7,7 +8,6 @@ import { TheSportsDbProvider } from "@/services/football/theSportsDbProvider.js"
 
 const LIMIT = 8;
 const CACHE_TTL = 300; // 5 minutes
-const EMBED_COLOR = 0x2ecc71;
 
 export default createCommand()
   .setName("matches")
@@ -18,7 +18,13 @@ export default createCommand()
     description: "Championship",
     type: ApplicationCommandOptionType.String,
     required: true,
-    choices: Object.entries(LEAGUES).map(([key, league]) => ({ name: league.label, value: key })),
+    autocomplete: ({ value }) => {
+      const q = value.trim().toLowerCase();
+      return Object.entries(LEAGUES)
+        .filter(([key, league]) => !q || key.includes(q) || league.label.toLowerCase().includes(q))
+        .slice(0, 25)
+        .map(([key, league]) => ({ name: league.label, value: key }));
+    },
   })
   .execute(async ({ bot, args, reply, defer, t }) => {
     const league = LEAGUES[args.championship.toLowerCase()];
@@ -47,11 +53,12 @@ export default createCommand()
         ? t("commands.matches.headerUpcoming", { league: league.label })
         : t("commands.matches.headerRecent", { league: league.label });
 
-    const embed = new EmbedBuilder()
-      .setColor(EMBED_COLOR)
+    const card = embed(EmbedColor.sports)
       .setTitle(title)
-      .setDescription(lines.join("\n"));
+      .setDescription(lines.join("\n"))
+      .setFooter({ text: t("commands.matches.footer", { count: matches.length }) })
+      .setTimestamp();
 
-    await reply({ embeds: [embed] });
+    await reply({ embeds: [card] });
   })
   .build();

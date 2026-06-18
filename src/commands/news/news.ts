@@ -1,12 +1,12 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
+import { embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
 import { cached } from "@/services/cache/cached.js";
 import { NEWS_CATEGORIES, newsProviders } from "@/services/news/index.js";
 
 const LIMIT = 5;
 const CACHE_TTL = 300; // 5 minutes
-const EMBED_COLOR = 0x5865f2;
 
 export default createCommand()
   .setName("news")
@@ -42,11 +42,12 @@ export default createCommand()
       return `• [${title}](${item.url})${item.source ? ` — ${item.source}` : ""}`;
     });
 
-    const embed = new EmbedBuilder()
-      .setColor(EMBED_COLOR)
+    const card = embed()
       .setTitle(t("commands.news.header", { category: args.category }))
-      .setDescription(lines.join("\n"));
+      .setDescription(lines.join("\n"))
+      .setFooter({ text: t("commands.news.footer", { count: items.length }) })
+      .setTimestamp();
 
-    await reply({ embeds: [embed] });
+    await reply({ embeds: [card] });
   })
   .build();

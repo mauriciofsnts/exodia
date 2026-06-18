@@ -1,4 +1,5 @@
 import { createCommand } from "@/core/commandBuilder.js";
+import { EmbedColor, embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
 
 export default createCommand()
@@ -11,29 +12,42 @@ export default createCommand()
     const current = bot.player.getCurrent(guildId);
     const queue = bot.player.getQueue(guildId);
 
+    // Nothing playing → a one-liner is enough.
     if (!current) {
       await reply(t("music.nothingPlaying"));
       return;
     }
 
-    const lines = [
-      t("music.nowPlaying", { title: current.title, requestedBy: current.requestedBy }),
-    ];
+    const upNext =
+      queue && !queue.isEmpty
+        ? queue.list
+            .map((track, i) =>
+              t("music.queueEntry", {
+                position: i + 1,
+                title: track.title,
+                requestedBy: track.requestedBy,
+              }),
+            )
+            .join("\n")
+        : t("music.emptyQueue");
+
+    const card = embed(EmbedColor.music)
+      .setTitle(t("music.queueTitle"))
+      .addFields(
+        {
+          name: t("music.queueNowPlaying"),
+          value: t("music.queueCurrent", {
+            title: current.title,
+            requestedBy: current.requestedBy,
+          }),
+        },
+        { name: t("music.queueUpNext"), value: upNext },
+      );
 
     if (queue && !queue.isEmpty) {
-      queue.list.forEach((track, i) => {
-        lines.push(
-          t("music.queueEntry", {
-            position: i + 1,
-            title: track.title,
-            requestedBy: track.requestedBy,
-          }),
-        );
-      });
-    } else {
-      lines.push(t("music.emptyQueue"));
+      card.setFooter({ text: t("music.queueFooter", { count: queue.list.length }) });
     }
 
-    await reply(lines.join("\n"));
+    await reply({ embeds: [card] });
   })
   .build();

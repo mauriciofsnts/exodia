@@ -51,6 +51,23 @@ export class EventRepository {
         created_at       TIMESTAMPTZ NOT NULL DEFAULT now()
       )
     `);
+    // listUpcoming: WHERE guild_id = $1 AND start_at >= now() ORDER BY start_at.
+    await this.db.execute(
+      `CREATE INDEX IF NOT EXISTS idx_guild_events_guild_start
+         ON guild_events (guild_id, start_at)`,
+    );
+    // The scheduler scans these every minute — partial indexes keep them tiny by
+    // covering only the rows still pending work.
+    await this.db.execute(
+      `CREATE INDEX IF NOT EXISTS idx_guild_events_pending_discord
+         ON guild_events (start_at)
+         WHERE discord_event_id IS NULL`,
+    );
+    await this.db.execute(
+      `CREATE INDEX IF NOT EXISTS idx_guild_events_unannounced
+         ON guild_events (start_at)
+         WHERE announced = FALSE`,
+    );
   }
 
   async create(guildId: string, name: string, startAt: Date): Promise<void> {
