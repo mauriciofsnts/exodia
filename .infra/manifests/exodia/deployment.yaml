@@ -19,6 +19,8 @@ spec:
         - name: exodia
           image: harbor.mrzt.dev/mrzt/exodia:master
           env:
+            - name: DISCORD_CLIENT_ID
+              value: "940420668275695636"
             - name: PREFIX
               value: "."
             - name: LOG_LEVEL
