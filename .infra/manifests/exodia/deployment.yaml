@@ -20,7 +20,7 @@ spec:
           image: harbor.mrzt.dev/mrzt/exodia:master
           env:
             - name: PREFIX
-              value: "!"
+              value: "."
             - name: LOG_LEVEL
               value: info
             - name: PLAYER_IDLE_TIMEOUT_MS
