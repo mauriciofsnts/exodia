@@ -1,6 +1,6 @@
 FROM node:22-slim AS base
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ffmpeg ca-certificates \
+  && apt-get install -y --no-install-recommends ffmpeg ca-certificates python3 python-is-python3 \
   && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
