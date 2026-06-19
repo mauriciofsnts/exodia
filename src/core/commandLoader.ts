@@ -75,7 +75,7 @@ export class CommandLoader {
         const command = this.commands.get(interaction.commandName);
         if (!command) return;
 
-        // Stored /setlang preference wins; Discord's locale is only the fallback.
+        // Stored /setup language preference wins; Discord's locale is only the fallback.
         const locale = await resolveLocale(
           ctx,
           interaction.guildId,

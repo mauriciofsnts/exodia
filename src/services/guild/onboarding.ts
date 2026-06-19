@@ -1,52 +1,33 @@
 import {
   ChannelType,
-  EmbedBuilder,
   type Guild,
   PermissionFlagsBits,
   type SendableChannels,
   type TextChannel,
 } from "discord.js";
 import type { BotContext } from "@/core/context.js";
+import { languageStep } from "@/services/guild/onboardingWizard.js";
 
 export const CONFIG_CHANNEL_NAME = "exodia-config";
-const EMBED_COLOR = 0x5865f2;
 
 // Runs when the bot joins a guild: set up a config channel and post the setup
-// guide. If the channel can't be created (missing Manage Channels), fall back to
-// any channel we can talk in and tell an admin to run `config resume`.
+// wizard. If the channel can't be created (missing Manage Channels), fall back
+// to any channel we can talk in and tell an admin to run `/setup`.
 export async function onboardGuild(guild: Guild, ctx: BotContext): Promise<void> {
-  const prefix = await ctx.guildConfig.resolvePrefix(guild.id);
   const channel = await ensureConfigChannel(guild).catch(() => null);
 
   if (channel) {
-    await postGuide(channel, ctx, guild, prefix);
-    await ctx.guildConfig.update(guild.id, { configured: true });
+    await postGuide(channel, ctx, guild);
     return;
   }
 
   const fallback = fallbackChannel(guild);
   if (fallback) {
     const t = ctx.i18n.bind(ctx.i18n.resolveLocale(guild.preferredLocale));
-    await fallback.send(t("onboarding.cantCreateChannel", { prefix })).catch(() => {});
+    await fallback.send(t("onboarding.cantCreateChannel")).catch(() => {});
   } else {
     ctx.logger.warn({ guildId: guild.id }, "Joined guild with nowhere to post onboarding");
   }
-}
-
-// Used by `config resume`: ensure the config channel (create or reuse) and post
-// the guide there; if that's impossible, post in `here` (where resume was run).
-// Returns the dedicated channel when one exists, else null.
-export async function resumeOnboarding(
-  guild: Guild,
-  ctx: BotContext,
-  here: SendableChannels,
-): Promise<TextChannel | null> {
-  const prefix = await ctx.guildConfig.resolvePrefix(guild.id);
-  const channel = await ensureConfigChannel(guild).catch(() => null);
-
-  await postGuide(channel ?? here, ctx, guild, prefix);
-  await ctx.guildConfig.update(guild.id, { configured: true });
-  return channel;
 }
 
 async function ensureConfigChannel(guild: Guild): Promise<TextChannel> {
@@ -63,18 +44,12 @@ async function ensureConfigChannel(guild: Guild): Promise<TextChannel> {
   });
 }
 
-async function postGuide(
-  channel: SendableChannels,
-  ctx: BotContext,
-  guild: Guild,
-  prefix: string,
-): Promise<void> {
+async function postGuide(channel: SendableChannels, ctx: BotContext, guild: Guild): Promise<void> {
   const t = ctx.i18n.bind(ctx.i18n.resolveLocale(guild.preferredLocale));
-  const embed = new EmbedBuilder()
-    .setColor(EMBED_COLOR)
-    .setTitle(t("onboarding.welcome", { guild: guild.name }))
-    .setDescription(t("onboarding.guide", { prefix }));
-  await channel.send({ embeds: [embed] });
+  await channel.send({
+    content: t("onboarding.welcome", { guild: guild.name }),
+    ...languageStep(t),
+  });
 }
 
 function fallbackChannel(guild: Guild): SendableChannels | null {

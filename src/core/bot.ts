@@ -6,6 +6,7 @@ import { EventScheduler } from "@/services/events/eventScheduler.js";
 import { onboardGuild } from "@/services/guild/onboarding.js";
 import type { Middleware } from "./commandBuilder.js";
 import { CommandLoader } from "./commandLoader.js";
+import { ensureGuildCommandsSynced, recordGlobalCommandCount } from "./commandSync/sync.js";
 import type { BotContext } from "./context.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -39,6 +40,11 @@ export class Bot {
     await this.loader.load(resolve(__dirname, "../commands"));
 
     const ctx: BotContext = { ...this.ctx, client: this.client, commands: this.loader.all };
+
+    // Source of truth every guild's synced command count is compared against.
+    recordGlobalCommandCount(ctx).catch((err) =>
+      ctx.logger.error({ err }, "Failed to record global command count"),
+    );
 
     // Detached playback errors (audio player / yt-dlp streaming) fire outside any
     // command, so route them to the admin notifier explicitly.
@@ -76,6 +82,11 @@ export class Bot {
       // Start polling guild_events once guilds are cached (no-op without a db).
       this.scheduler = new EventScheduler(ctx);
       this.scheduler.start();
+
+      // Catch up guilds that already finished setup but fell behind on synced
+      // commands (e.g. a command was added after they ran setup). Guilds that
+      // haven't finished setup get synced when their wizard completes instead.
+      void syncConfiguredGuilds(c, ctx);
     });
 
     // Onboard each newly joined guild: create a config channel and post the guide.
@@ -119,5 +130,22 @@ export class Bot {
       ctx.logger.error({ err }, "Uncaught exception");
       shutdown("uncaughtException").catch(() => process.exit(1));
     });
+  }
+}
+
+// Sequential on purpose: a guild.commands.set() call per already-configured
+// guild, run once at startup — no need to race Discord's rate limits for a
+// background catch-up sync.
+async function syncConfiguredGuilds(client: Client, ctx: BotContext): Promise<void> {
+  if (!ctx.commandSync) return;
+
+  for (const guild of client.guilds.cache.values()) {
+    try {
+      const cfg = await ctx.guildConfig.get(guild.id);
+      if (!cfg.configured) continue;
+      await ensureGuildCommandsSynced(guild, ctx);
+    } catch (err) {
+      ctx.logger.error({ err, guildId: guild.id }, "Guild command sync catch-up failed");
+    }
   }
 }

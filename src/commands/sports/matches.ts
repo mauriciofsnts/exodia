@@ -3,8 +3,8 @@ import { createCommand } from "@/core/commandBuilder.js";
 import { EmbedColor, embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
 import { cached } from "@/services/cache/cached.js";
-import { LEAGUES } from "@/services/football/leagues.js";
-import { TheSportsDbProvider } from "@/services/football/theSportsDbProvider.js";
+import { LEAGUES } from "@/services/sports/leagues/football.js";
+import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider.js";
 
 const LIMIT = 8;
 const CACHE_TTL = 300; // 5 minutes

@@ -5,6 +5,9 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import type { BotContext } from "@/core/context.js";
+import { EmbedColor, embed } from "@/lib/embeds.js";
+import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider.js";
+import { SportsImporter } from "@/services/sports/sportsImporter.js";
 import type { EventRepository, GuildEvent } from "./eventRepository.js";
 
 const TICK_PATTERN = "* * * * *"; // every minute
@@ -15,8 +18,19 @@ const EXTERNAL_LOCATION = "Online";
 // announces them in the configured channel when they start.
 export class EventScheduler {
   private job: Cron | null = null;
+  private readonly sportsImporter: SportsImporter | null;
 
-  constructor(private readonly ctx: BotContext) {}
+  constructor(private readonly ctx: BotContext) {
+    this.sportsImporter = ctx.events
+      ? new SportsImporter(
+          ctx.guildConfig,
+          ctx.events,
+          new TheSportsDbProvider(ctx.config.SPORTSDB_API_KEY),
+          ctx.cache,
+          ctx.logger,
+        )
+      : null;
+  }
 
   start(): void {
     if (!this.ctx.events || this.job) return;
@@ -39,6 +53,9 @@ export class EventScheduler {
   private async tick(): Promise<void> {
     const events = this.ctx.events;
     if (!events) return;
+    // The fetch itself is cache-throttled (30 min) — running this every tick
+    // just lets newly-subscribed guilds pick up fixtures within a minute.
+    await this.sportsImporter?.run(this.ctx.client.guilds.cache.keys());
     await this.syncDiscordEvents(events);
     await this.announceDueEvents(events);
   }
@@ -47,6 +64,9 @@ export class EventScheduler {
     for (const ev of await events.pendingDiscordCreation()) {
       const cfg = await this.ctx.guildConfig.get(ev.guildId);
       if (!cfg.eventsEnabled) continue;
+      // "embed" mode only ever wants the channel announcement below — leave
+      // discord_event_id null so this guild's events keep skipping this loop.
+      if (cfg.eventsMode === "embed") continue;
 
       const guild = this.ctx.client.guilds.cache.get(ev.guildId);
       if (!guild) continue; // not ready yet or bot was removed — retry next tick
@@ -83,6 +103,9 @@ export class EventScheduler {
 
   private async announce(ev: GuildEvent): Promise<void> {
     const cfg = await this.ctx.guildConfig.get(ev.guildId);
+    // "discord" mode relies on the native scheduled event to notify people —
+    // no channel message to send.
+    if (cfg.eventsMode === "discord") return;
     if (!cfg.eventsChannelId) return; // nothing configured — mark announced and move on
 
     const guild = this.ctx.client.guilds.cache.get(ev.guildId);
@@ -93,6 +116,15 @@ export class EventScheduler {
       await this.ctx.guildConfig.resolveLocale(ev.guildId),
     );
     const t = this.ctx.i18n.bind(locale);
-    await channel.send(t("events.starting", { name: ev.name }));
+
+    const card = embed(EmbedColor.primary)
+      .setTitle(t("events.startingTitle"))
+      .setDescription(t("events.starting", { name: ev.name }));
+
+    await channel.send({
+      content: cfg.eventsMentionEveryone ? "@everyone" : undefined,
+      embeds: [card],
+      allowedMentions: { parse: cfg.eventsMentionEveryone ? ["everyone"] : [] },
+    });
   }
 }

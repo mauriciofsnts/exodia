@@ -1,12 +1,20 @@
 import type { Redis } from "ioredis";
 import type { Locale } from "@/i18n/index.js";
 
+// How a guild wants to be notified when a guild_events row starts:
+// "embed" posts a rich embed in `eventsChannelId`; "discord" creates a native
+// Discord scheduled event instead and skips the channel message entirely.
+export type EventsMode = "embed" | "discord";
+
 export interface GuildConfig {
   prefix?: string;
   locale?: Locale;
   configured?: boolean; // onboarding completed (config channel set up)
   eventsEnabled?: boolean; // auto-create Discord scheduled events from guild_events
-  eventsChannelId?: string; // where to announce events when they start
+  eventsMode?: EventsMode; // defaults to "discord" when unset (legacy behavior)
+  eventsChannelId?: string; // where to post the embed when eventsMode is "embed"
+  eventsMentionEveryone?: boolean; // prefix the embed announcement with @everyone
+  sportsSubscriptions?: string[]; // SPORTS_CATALOG keys (e.g. "football:premier") to auto-import as events
 }
 
 const configKey = (guildId: string) => `guild:${guildId}:config`;

@@ -1,20 +1,38 @@
+import { ApplicationCommandOptionType } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
 import { embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
 import { guildOnly } from "@/middlewares/guildOnly.js";
 
+const LIST_LIMIT = 20;
+
 export default createCommand()
   .setName("events")
   .setDescription("List upcoming events")
   .setPrefix("events")
+  .addOption({
+    name: "scope",
+    description: "Which events to show",
+    type: ApplicationCommandOptionType.String,
+    required: false,
+    choices: [
+      { name: "this week", value: "week" },
+      { name: "all upcoming", value: "all" },
+    ],
+  })
   .use(guildOnly)
-  .execute(async ({ bot, guildId, reply, t }) => {
+  .execute(async ({ bot, args, guildId, reply, t }) => {
     if (!guildId) throw new CommandError(t("errors.guildOnly"));
     if (!bot.events) throw new CommandError(t("errors.dbRequired"));
 
-    const upcoming = await bot.events.listUpcoming(guildId, 10);
+    const scope = args.scope ?? "week";
+    const upcoming =
+      scope === "all"
+        ? await bot.events.listUpcoming(guildId, LIST_LIMIT)
+        : await bot.events.listThisWeek(guildId, LIST_LIMIT);
+
     if (upcoming.length === 0) {
-      await reply(t("events.listEmpty"));
+      await reply(scope === "all" ? t("events.listEmpty") : t("events.listEmptyWeek"));
       return;
     }
 
@@ -24,7 +42,7 @@ export default createCommand()
     });
 
     const card = embed()
-      .setTitle(t("events.listTitle"))
+      .setTitle(scope === "all" ? t("events.listTitle") : t("events.listTitleWeek"))
       .setDescription(lines.join("\n"))
       .setFooter({ text: t("events.listFooter", { count: upcoming.length }) });
 

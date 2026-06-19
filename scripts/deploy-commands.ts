@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { REST, Routes } from "discord.js";
 import { config } from "@/config/index.js";
 import type { CommandDefinition } from "@/core/commandBuilder.js";
+import { buildCommandPayloads } from "@/core/commandSync/payload.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -36,18 +37,7 @@ async function deploy() {
   const commands = await collectCommands();
   const rest = new REST().setToken(config.DISCORD_TOKEN);
 
-  const body = commands.map((cmd) => ({
-    name: cmd.name,
-    description: cmd.description,
-    options: cmd.options.map((opt) => ({
-      name: opt.name,
-      description: opt.description,
-      type: opt.type,
-      required: opt.required ?? false,
-      // autocomplete and choices are mutually exclusive on Discord's side.
-      ...(opt.autocomplete ? { autocomplete: true } : opt.choices ? { choices: opt.choices } : {}),
-    })),
-  }));
+  const body = buildCommandPayloads(commands);
 
   if (config.DISCORD_GUILD_ID) {
     // dev: deploy to a single guild (instant)

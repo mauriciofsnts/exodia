@@ -9,6 +9,7 @@ import type { TrackSearchCache } from "@/services/music/searchCache.js";
 import type { VoteRepository } from "@/services/music/voteRepository.js";
 import type { PlayerManager } from "@/services/player/playerManager.js";
 import type { CommandDefinition } from "./commandBuilder.js";
+import type { CommandSyncRepository } from "./commandSync/repository.js";
 import type { Database } from "./database.js";
 
 export interface BotContext {
@@ -23,5 +24,6 @@ export interface BotContext {
   trackCache: TrackSearchCache | null; // query→track persistence; null when db is off
   votes: VoteRepository | null; // play-card reaction votes; null when db is off
   events: EventRepository | null; // scheduled guild events; null when db is off
+  commandSync: CommandSyncRepository | null; // per-guild slash command sync state; null when db is off
   commands: CommandDefinition[]; // all loaded commands — populated by Bot after load (for /help)
 }

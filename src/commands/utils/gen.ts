@@ -2,7 +2,13 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { createCommand } from "@/core/commandBuilder.js";
 import { embed } from "@/lib/embeds.js";
 import { CommandError } from "@/lib/errors.js";
-import { generateCard, generateCep, generateCnpj, generateCpf, generateRg } from "./generators.js";
+import {
+  generateCard,
+  generateCep,
+  generateCnpj,
+  generateCpf,
+  generateRg,
+} from "@/lib/fakeData.js";
 
 const GENERATORS = new Map<string, () => string>([
   ["cpf", generateCpf],
