@@ -213,9 +213,11 @@ export class PlayerManager {
       selfMute: false, // must be false to transmit
     });
 
-    // Surfaces where a handshake hangs (run with LOG_LEVEL=debug to diagnose).
+    // Surfaces where a handshake hangs or a connection drops after the fact —
+    // useful at info level since "plays locally but not on a server" often
+    // traces back to a voice connection that never reaches Ready, or flaps.
     connection.on("stateChange", (oldState, newState) => {
-      this.logger.debug({ guildId, from: oldState.status, to: newState.status }, "Voice state");
+      this.logger.info({ guildId, from: oldState.status, to: newState.status }, "Voice state");
     });
     connection.on("error", (err) => {
       this.logger.error({ err, guildId }, "Voice connection error");
@@ -223,7 +225,23 @@ export class PlayerManager {
 
     // Keep playing while the connection (re)negotiates instead of auto-pausing.
     const player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
-    connection.subscribe(player);
+    const subscription = connection.subscribe(player);
+    this.logger.info(
+      { guildId, subscribed: subscription != null },
+      "Player subscribed to connection",
+    );
+
+    // Surfaces silent playback failures (e.g. audio plays locally but not on a
+    // deployed host) — Idle with ~0ms playbackDuration means the resource never
+    // actually produced audible audio even though no error fired.
+    player.on("stateChange", (oldState, newState) => {
+      const playbackDuration =
+        "resource" in newState ? newState.resource.playbackDuration : undefined;
+      this.logger.info(
+        { guildId, from: oldState.status, to: newState.status, playbackDuration },
+        "Audio player state",
+      );
+    });
 
     // Without an error listener a resource failure crashes the process — log and
     // let the Idle handler advance the queue.
@@ -377,18 +395,45 @@ export class PlayerManager {
         quiet: true,
         noWarnings: true,
       });
-      // yt-dlp rejects when its stdout closes early (skip/stop) — swallow it.
-      subprocess.catch(() => {});
+      // yt-dlp rejects when its stdout closes early (skip/stop) — that's expected
+      // on skip/stop, but log it so a real failure (e.g. blocked on the server's
+      // IP, missing cookies) isn't silently lost.
+      subprocess.catch((err) => {
+        this.logger.warn({ err, guildId, url: track.url }, "yt-dlp process exited");
+      });
+
+      let stderr = "";
+      subprocess.stderr?.on("data", (chunk) => {
+        stderr += chunk.toString();
+      });
+      subprocess.stderr?.on("error", () => {});
 
       const audioStream = subprocess.stdout;
       if (!audioStream) throw new PlayerError("yt-dlp produced no audio stream");
-      audioStream.on("error", () => {}); // avoid crashing on broken-pipe teardown
+      let bytesReceived = 0;
+      audioStream.on("data", (chunk) => {
+        bytesReceived += chunk.length;
+      });
+      audioStream.on("error", (err) => {
+        // Broken-pipe on teardown (skip/stop) is expected — still log it, since on
+        // a server this can also fire for a genuine network/extraction failure.
+        this.logger.warn(
+          { err, guildId, url: track.url, bytesReceived, stderr: stderr.slice(0, 2000) },
+          "yt-dlp audio stream error",
+        );
+      });
 
       // `readable` = first bytes decoded (cold start done); `close` is the safety
       // net if the stream errors out before producing anything. release() is
       // idempotent, so whichever fires first wins.
       audioStream.once("readable", release);
-      audioStream.once("close", release);
+      audioStream.once("close", () => {
+        release();
+        this.logger.info(
+          { guildId, url: track.url, bytesReceived, stderr: stderr.slice(0, 2000) },
+          "yt-dlp stream closed",
+        );
+      });
 
       const resource = createAudioResource(audioStream, {
         inputType: StreamType.WebmOpus,

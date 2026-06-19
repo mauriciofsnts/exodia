@@ -19,8 +19,6 @@ spec:
         - name: exodia
           image: harbor.mrzt.dev/mrzt/exodia:master
           env:
-            - name: DISCORD_CLIENT_ID
-              value: "940420668275695636"
             - name: PREFIX
               value: "."
             - name: LOG_LEVEL
@@ -29,6 +27,16 @@ spec:
               value: "300000"
             - name: SPORTSDB_API_KEY
               value: "3"
+            - name: ADMIN_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: exodia-secret
+                  key: admin-user-id
+            - name: DISCORD_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: exodia-secret
+                  key: discord-client-id
             - name: DISCORD_TOKEN
               valueFrom:
                 secretKeyRef:
