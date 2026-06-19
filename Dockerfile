@@ -10,6 +10,8 @@ RUN npm install -g pnpm@9 && pnpm install --frozen-lockfile
 
 FROM base AS runner
 ENV NODE_ENV=production
+ARG GIT_COMMIT=unknown
+ENV GIT_COMMIT=${GIT_COMMIT}
 RUN groupadd --system --gid 1001 exodia && useradd --system --uid 1001 --gid exodia exodia
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .

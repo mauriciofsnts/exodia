@@ -28,6 +28,8 @@ jobs:
           file: Dockerfile
           context: .
           push: true
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
           tags: harbor.mrzt.dev/mrzt/exodia:${{ github.ref_name }}
           cache-from: type=registry,ref=harbor.mrzt.dev/mrzt/exodia:buildcache
           cache-to: type=registry,ref=harbor.mrzt.dev/mrzt/exodia:buildcache,mode=max

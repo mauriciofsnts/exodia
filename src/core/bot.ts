@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
+import { getCommitHash } from "@/lib/version";
 import { notifyAdmin } from "@/middlewares/adminErrorNotifier";
 import { EventScheduler } from "@/services/events/eventScheduler";
 import { onboardGuild } from "@/services/guild/onboarding";
@@ -62,7 +63,7 @@ export class Bot {
     this.loader.registerReactionHandler(this.client, ctx);
 
     this.client.once("ready", (c) => {
-      ctx.logger.info(`Bot online: ${c.user.tag}`);
+      ctx.logger.info({ commit: getCommitHash() }, `Bot online: ${c.user.tag}`);
 
       // Fetch and log the admin user configured via ADMIN_USER_ID in .env.
       const adminId = ctx.config.ADMIN_USER_ID;
