@@ -1,10 +1,10 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { createCommand } from "@/core/commandBuilder.js";
-import { EmbedColor, embed } from "@/lib/embeds.js";
-import { CommandError } from "@/lib/errors.js";
-import { cached } from "@/services/cache/cached.js";
-import { LEAGUES } from "@/services/sports/leagues/football.js";
-import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider.js";
+import { createCommand } from "@/core/commandBuilder";
+import { EmbedColor, embed } from "@/lib/embeds";
+import { CommandError } from "@/lib/errors";
+import { cached } from "@/services/cache/cached";
+import { LEAGUES } from "@/services/sports/leagues/football";
+import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider";
 
 const LIMIT = 8;
 const CACHE_TTL = 300; // 5 minutes

@@ -1,10 +1,10 @@
 import type { Redis } from "ioredis";
-import type { Logger } from "@/lib/logger.js";
-import { cached } from "@/services/cache/cached.js";
-import type { EventRepository } from "@/services/events/eventRepository.js";
-import type { GuildConfigService } from "@/services/guild/guildConfig.js";
-import { SPORTS_CATALOG } from "./catalog.js";
-import type { Match, MatchProvider } from "./provider/types.js";
+import type { Logger } from "@/lib/logger";
+import { cached } from "@/services/cache/cached";
+import type { EventRepository } from "@/services/events/eventRepository";
+import type { GuildConfigService } from "@/services/guild/guildConfig";
+import { SPORTS_CATALOG } from "./catalog";
+import type { Match, MatchProvider } from "./provider/types";
 
 const FIXTURES_PER_LEAGUE = 20; // headroom over the /matches display limit
 const FETCH_CACHE_TTL = 1800; // 30 min — how often each league is actually fetched

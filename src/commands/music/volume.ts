@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { createCommand } from "@/core/commandBuilder.js";
-import { CommandError } from "@/lib/errors.js";
+import { createCommand } from "@/core/commandBuilder";
+import { CommandError } from "@/lib/errors";
 
 export default createCommand()
   .setName("volume")

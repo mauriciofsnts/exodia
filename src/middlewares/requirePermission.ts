@@ -1,7 +1,7 @@
 import type { PermissionResolvable } from "discord.js";
-import type { Middleware } from "@/core/commandBuilder.js";
-import type { TranslationKey } from "@/i18n/index.js";
-import { CommandError } from "@/lib/errors.js";
+import type { Middleware } from "@/core/commandBuilder";
+import type { TranslationKey } from "@/i18n/index";
+import { CommandError } from "@/lib/errors";
 
 // Guards a command behind a Discord permission. Pass a custom i18n key to
 // override the generic "no permission" message.

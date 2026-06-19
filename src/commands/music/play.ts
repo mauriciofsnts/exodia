@@ -10,23 +10,23 @@ import {
   type ComponentExecutionContext,
   createCommand,
   type ReactionExecutionContext,
-} from "@/core/commandBuilder.js";
-import type { TFunction } from "@/i18n/index.js";
-import { EmbedColor, embed } from "@/lib/embeds.js";
-import { CommandError, PlayerError } from "@/lib/errors.js";
-import { cooldown } from "@/middlewares/cooldown.js";
-import { guildOnly } from "@/middlewares/guildOnly.js";
-import { cached } from "@/services/cache/cached.js";
-import { VOTE_EMOJIS } from "@/services/music/voteRepository.js";
-import { formatDuration, playCard, seedVotes } from "@/services/player/playCard.js";
-import type { PlayerNotifier } from "@/services/player/playerManager.js";
-import type { Track } from "@/services/player/track.js";
+} from "@/core/commandBuilder";
+import type { TFunction } from "@/i18n/index";
+import { EmbedColor, embed } from "@/lib/embeds";
+import { CommandError, PlayerError } from "@/lib/errors";
+import { cooldown } from "@/middlewares/cooldown";
+import { guildOnly } from "@/middlewares/guildOnly";
+import { cached } from "@/services/cache/cached";
+import { VOTE_EMOJIS } from "@/services/music/voteRepository";
+import { formatDuration, playCard, seedVotes } from "@/services/player/playCard";
+import type { PlayerNotifier } from "@/services/player/playerManager";
+import type { Track } from "@/services/player/track";
 import {
   type SearchResult,
   searchYouTube,
   searchYouTubeMany,
-} from "@/services/player/youtubeSearch.js";
-import { youtubeSuggest } from "@/services/player/youtubeSuggest.js";
+} from "@/services/player/youtubeSearch";
+import { youtubeSuggest } from "@/services/player/youtubeSuggest";
 
 const SEARCH_RESULTS = 5; // options shown in the picker
 const SEARCH_TTL = 120; // seconds a pending search stays selectable

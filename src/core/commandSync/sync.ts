@@ -1,7 +1,7 @@
 import type { Guild } from "discord.js";
-import type { BotContext } from "@/core/context.js";
-import { buildCommandPayloads } from "./payload.js";
-import { GLOBAL_SCOPE } from "./repository.js";
+import type { BotContext } from "@/core/context";
+import { buildCommandPayloads } from "./payload";
+import { GLOBAL_SCOPE } from "./repository";
 
 // Records how many commands this process currently defines — the source of
 // truth every guild's sync state is compared against. Call once at startup.

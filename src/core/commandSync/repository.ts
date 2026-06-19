@@ -1,4 +1,4 @@
-import type { Database } from "@/core/database.js";
+import type { Database } from "@/core/database";
 
 // Scope key for the bot's own command count — what every guild's count is
 // compared against. Per-guild rows use the guild id as the scope.

@@ -1,8 +1,8 @@
-import { CommandSyncRepository } from "@/core/commandSync/repository.js";
-import type { Database } from "@/core/database.js";
-import { EventRepository } from "./events/eventRepository.js";
-import { TrackSearchCache } from "./music/searchCache.js";
-import { VoteRepository } from "./music/voteRepository.js";
+import { CommandSyncRepository } from "@/core/commandSync/repository";
+import type { Database } from "@/core/database";
+import { EventRepository } from "./events/eventRepository";
+import { TrackSearchCache } from "./music/searchCache";
+import { VoteRepository } from "./music/voteRepository";
 
 // Services backed by the optional Postgres database — all null when DATABASE_URL
 // is unset, so the bot runs fine without persistence.

@@ -1,9 +1,9 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { createCommand } from "@/core/commandBuilder.js";
-import { embed } from "@/lib/embeds.js";
-import { CommandError } from "@/lib/errors.js";
-import { cached } from "@/services/cache/cached.js";
-import { NEWS_CATEGORIES, newsProviders } from "@/services/news/index.js";
+import { createCommand } from "@/core/commandBuilder";
+import { embed } from "@/lib/embeds";
+import { CommandError } from "@/lib/errors";
+import { cached } from "@/services/cache/cached";
+import { NEWS_CATEGORIES, newsProviders } from "@/services/news/index";
 
 const LIMIT = 5;
 const CACHE_TTL = 300; // 5 minutes

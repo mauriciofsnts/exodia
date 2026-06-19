@@ -1,4 +1,4 @@
-import type { Middleware } from "@/core/commandBuilder.js";
+import type { Middleware } from "@/core/commandBuilder";
 
 // Increments a Redis counter for each command executed.
 // Keys: `stats:commands:total` and `stats:commands:<name>` — the canonical command

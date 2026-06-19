@@ -11,12 +11,12 @@ import {
   PermissionFlagsBits,
   StringSelectMenuBuilder,
 } from "discord.js";
-import type { ComponentExecutionContext } from "@/core/commandBuilder.js";
-import { ensureGuildCommandsSynced } from "@/core/commandSync/sync.js";
-import type { BotContext } from "@/core/context.js";
-import { type Locale, SUPPORTED_LOCALES, type TFunction } from "@/i18n/index.js";
-import { EmbedColor, embed } from "@/lib/embeds.js";
-import type { EventsMode, GuildConfig } from "./guildConfig.js";
+import type { ComponentExecutionContext } from "@/core/commandBuilder";
+import { ensureGuildCommandsSynced } from "@/core/commandSync/sync";
+import type { BotContext } from "@/core/context";
+import { type Locale, SUPPORTED_LOCALES, type TFunction } from "@/i18n/index";
+import { EmbedColor, embed } from "@/lib/embeds";
+import type { EventsMode, GuildConfig } from "./guildConfig";
 
 const PREFIX_CHOICES = ["!", "?", ".", "$", ">"];
 const LOCALE_LABELS: Record<Locale, string> = { "en-US": "English", "pt-BR": "Português" };

@@ -1,5 +1,5 @@
-import type { Database } from "@/core/database.js";
-import type { Track } from "@/services/player/track.js";
+import type { Database } from "@/core/database";
+import type { Track } from "@/services/player/track";
 
 // A resolved track without the per-request "requestedBy" field — that's filled
 // in by whoever played it, not by what was cached.

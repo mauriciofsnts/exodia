@@ -1,13 +1,9 @@
 import { PermissionFlagsBits } from "discord.js";
-import { createCommand } from "@/core/commandBuilder.js";
-import { CommandError } from "@/lib/errors.js";
-import { guildOnly } from "@/middlewares/guildOnly.js";
-import { requirePermission } from "@/middlewares/requirePermission.js";
-import {
-  doneStep,
-  handleOnboardComponent,
-  languageStep,
-} from "@/services/guild/onboardingWizard.js";
+import { createCommand } from "@/core/commandBuilder";
+import { CommandError } from "@/lib/errors";
+import { guildOnly } from "@/middlewares/guildOnly";
+import { requirePermission } from "@/middlewares/requirePermission";
+import { doneStep, handleOnboardComponent, languageStep } from "@/services/guild/onboardingWizard";
 
 export default createCommand()
   .setName("setup")

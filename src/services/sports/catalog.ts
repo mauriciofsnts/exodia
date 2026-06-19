@@ -1,6 +1,6 @@
-import { LEAGUES as BASKETBALL_LEAGUES } from "./leagues/basketball.js";
-import { LEAGUES as F1_LEAGUES } from "./leagues/f1.js";
-import { LEAGUES as FOOTBALL_LEAGUES } from "./leagues/football.js";
+import { LEAGUES as BASKETBALL_LEAGUES } from "./leagues/basketball";
+import { LEAGUES as F1_LEAGUES } from "./leagues/f1";
+import { LEAGUES as FOOTBALL_LEAGUES } from "./leagues/football";
 
 export type Sport = "football" | "basketball" | "f1";
 

@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, type EmbedBuilder } from "discord.js";
-import { type CommandDefinition, createCommand } from "@/core/commandBuilder.js";
-import type { TFunction } from "@/i18n/index.js";
-import { embed } from "@/lib/embeds.js";
+import { type CommandDefinition, createCommand } from "@/core/commandBuilder";
+import type { TFunction } from "@/i18n/index";
+import { embed } from "@/lib/embeds";
 
 const TYPE_LABELS: Partial<Record<ApplicationCommandOptionType, string>> = {
   [ApplicationCommandOptionType.String]: "text",

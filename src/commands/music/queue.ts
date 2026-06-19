@@ -1,6 +1,6 @@
-import { createCommand } from "@/core/commandBuilder.js";
-import { EmbedColor, embed } from "@/lib/embeds.js";
-import { CommandError } from "@/lib/errors.js";
+import { createCommand } from "@/core/commandBuilder";
+import { EmbedColor, embed } from "@/lib/embeds";
+import { CommandError } from "@/lib/errors";
 
 export default createCommand()
   .setName("queue")

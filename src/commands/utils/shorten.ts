@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
 import { ApplicationCommandOptionType } from "discord.js";
-import { createCommand } from "@/core/commandBuilder.js";
-import { CommandError } from "@/lib/errors.js";
-import { cached } from "@/services/cache/cached.js";
-import { createShortener } from "@/services/shortener/index.js";
+import { createCommand } from "@/core/commandBuilder";
+import { CommandError } from "@/lib/errors";
+import { cached } from "@/services/cache/cached";
+import { createShortener } from "@/services/shortener/index";
 
 const CACHE_TTL = 3600; // 1 hour — a long→short mapping is stable
 

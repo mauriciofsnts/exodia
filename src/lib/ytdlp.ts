@@ -1,4 +1,4 @@
-import { Limiter } from "./limiter.js";
+import { Limiter } from "./limiter";
 
 // Every yt-dlp call spawns a Python subprocess; bursts of them (many guilds
 // starting playback at once, plus a search spawn per cold query) can exhaust CPU

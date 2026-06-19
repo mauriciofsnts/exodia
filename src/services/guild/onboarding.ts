@@ -5,8 +5,8 @@ import {
   type SendableChannels,
   type TextChannel,
 } from "discord.js";
-import type { BotContext } from "@/core/context.js";
-import { languageStep } from "@/services/guild/onboardingWizard.js";
+import type { BotContext } from "@/core/context";
+import { languageStep } from "@/services/guild/onboardingWizard";
 
 export const CONFIG_CHANNEL_NAME = "exodia-config";
 

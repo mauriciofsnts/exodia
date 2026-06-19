@@ -1,7 +1,7 @@
 import { randomInt } from "node:crypto";
 import { ApplicationCommandOptionType } from "discord.js";
-import { createCommand } from "@/core/commandBuilder.js";
-import { cooldown } from "@/middlewares/cooldown.js";
+import { createCommand } from "@/core/commandBuilder";
+import { cooldown } from "@/middlewares/cooldown";
 
 const MIN_LENGTH = 8;
 const MAX_LENGTH = 128;

@@ -1,6 +1,6 @@
-import type { Config } from "@/config/index.js";
-import { HttpShortenerProvider } from "./httpShortenerProvider.js";
-import type { ShortenerProvider } from "./types.js";
+import type { Config } from "@/config/index";
+import { HttpShortenerProvider } from "./httpShortenerProvider";
+import type { ShortenerProvider } from "./types";
 
 // Plug any GET-based shortener via SHORTENER_ENDPOINT (use `{url}` as the
 // placeholder); defaults to is.gd. For non-GET / JSON shorteners, implement

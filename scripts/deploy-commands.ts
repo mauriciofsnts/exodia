@@ -2,9 +2,9 @@ import { readdirSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { REST, Routes } from "discord.js";
-import { config } from "@/config/index.js";
-import type { CommandDefinition } from "@/core/commandBuilder.js";
-import { buildCommandPayloads } from "@/core/commandSync/payload.js";
+import { config } from "@/config/index";
+import type { CommandDefinition } from "@/core/commandBuilder";
+import { buildCommandPayloads } from "@/core/commandSync/payload";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 

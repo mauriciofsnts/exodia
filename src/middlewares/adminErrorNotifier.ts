@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 import { EmbedBuilder } from "discord.js";
-import type { Middleware } from "@/core/commandBuilder.js";
-import type { BotContext } from "@/core/context.js";
-import { CommandError, PlayerError } from "@/lib/errors.js";
+import type { Middleware } from "@/core/commandBuilder";
+import type { BotContext } from "@/core/context";
+import { CommandError, PlayerError } from "@/lib/errors";
 
 // How long an identical error signature is suppressed after one DM, so a
 // recurring fault (e.g. YouTube down, a broken track on repeat) can't storm the

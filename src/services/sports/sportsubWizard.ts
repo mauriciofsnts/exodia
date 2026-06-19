@@ -8,10 +8,10 @@ import {
   PermissionFlagsBits,
   StringSelectMenuBuilder,
 } from "discord.js";
-import type { ComponentExecutionContext } from "@/core/commandBuilder.js";
-import type { TFunction } from "@/i18n/index.js";
-import { EmbedColor, embed } from "@/lib/embeds.js";
-import { SPORTS_CATALOG, type Sport } from "./catalog.js";
+import type { ComponentExecutionContext } from "@/core/commandBuilder";
+import type { TFunction } from "@/i18n/index";
+import { EmbedColor, embed } from "@/lib/embeds";
+import { SPORTS_CATALOG, type Sport } from "./catalog";
 
 const SPORTS: Sport[] = ["football", "basketball", "f1"];
 

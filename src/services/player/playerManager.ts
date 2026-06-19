@@ -15,11 +15,11 @@ import {
 } from "@discordjs/voice";
 import type { VoiceBasedChannel } from "discord.js";
 import youtubeDl from "youtube-dl-exec";
-import { PlayerError } from "@/lib/errors.js";
-import type { Logger } from "@/lib/logger.js";
-import { ytdlpLimiter } from "@/lib/ytdlp.js";
-import { Queue } from "./queue.js";
-import type { Track } from "./track.js";
+import { PlayerError } from "@/lib/errors";
+import type { Logger } from "@/lib/logger";
+import { ytdlpLimiter } from "@/lib/ytdlp";
+import { Queue } from "./queue";
+import type { Track } from "./track";
 
 // Short jingle played once per session (right after joining) to cover the delay
 // while yt-dlp resolves and buffers the first track. Optional — skipped if absent.

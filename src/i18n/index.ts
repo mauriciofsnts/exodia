@@ -1,6 +1,6 @@
-import type { enUS } from "./locales/en-US.js";
-import { enUS as enUSLocale } from "./locales/en-US.js";
-import { ptBR } from "./locales/pt-BR.js";
+import type { enUS } from "./locales/en-US";
+import { enUS as enUSLocale } from "./locales/en-US";
+import { ptBR } from "./locales/pt-BR";
 
 export type Locale = "en-US" | "pt-BR";
 export const SUPPORTED_LOCALES: Locale[] = ["en-US", "pt-BR"];

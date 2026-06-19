@@ -1,4 +1,4 @@
-import type { Match, MatchList, MatchProvider } from "./types.js";
+import type { Match, MatchList, MatchProvider } from "./types";
 
 interface SdbEvent {
   idEvent: string;

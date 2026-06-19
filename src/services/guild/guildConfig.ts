@@ -1,5 +1,5 @@
 import type { Redis } from "ioredis";
-import type { Locale } from "@/i18n/index.js";
+import type { Locale } from "@/i18n/index";
 
 // How a guild wants to be notified when a guild_events row starts:
 // "embed" posts a rich embed in `eventsChannelId`; "discord" creates a native

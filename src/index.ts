@@ -1,14 +1,14 @@
-import { config } from "./config/index.js";
-import { Bot } from "./core/bot.js";
-import { I18n } from "./i18n/index.js";
-import { logger } from "./lib/logger.js";
-import { adminErrorNotifier } from "./middlewares/adminErrorNotifier.js";
-import { commandCounter } from "./middlewares/commandCounter.js";
-import { createCache } from "./services/cache/index.js";
-import { createDatabase } from "./services/db/postgres.js";
-import { GuildConfigService } from "./services/guild/guildConfig.js";
-import { createPersistence } from "./services/persistence.js";
-import { PlayerManager } from "./services/player/playerManager.js";
+import { config } from "./config/index";
+import { Bot } from "./core/bot";
+import { I18n } from "./i18n/index";
+import { logger } from "./lib/logger";
+import { adminErrorNotifier } from "./middlewares/adminErrorNotifier";
+import { commandCounter } from "./middlewares/commandCounter";
+import { createCache } from "./services/cache/index";
+import { createDatabase } from "./services/db/postgres";
+import { GuildConfigService } from "./services/guild/guildConfig";
+import { createPersistence } from "./services/persistence";
+import { PlayerManager } from "./services/player/playerManager";
 
 async function main() {
   const cache = createCache(config, logger);

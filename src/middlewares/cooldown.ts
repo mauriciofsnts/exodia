@@ -1,5 +1,5 @@
-import type { Middleware } from "@/core/commandBuilder.js";
-import { CommandError } from "@/lib/errors.js";
+import type { Middleware } from "@/core/commandBuilder";
+import { CommandError } from "@/lib/errors";
 
 // Per-user, per-command cooldown backed by Redis, so it survives restarts and
 // holds across shards. Uses SET NX EX for an atomic claim of the window.

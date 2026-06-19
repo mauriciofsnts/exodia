@@ -1,10 +1,10 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { createCommand } from "@/core/commandBuilder.js";
-import { EmbedColor, embed } from "@/lib/embeds.js";
-import { CommandError } from "@/lib/errors.js";
-import { cooldown } from "@/middlewares/cooldown.js";
-import { guildOnly } from "@/middlewares/guildOnly.js";
-import type { Track } from "@/services/player/track.js";
+import { createCommand } from "@/core/commandBuilder";
+import { EmbedColor, embed } from "@/lib/embeds";
+import { CommandError } from "@/lib/errors";
+import { cooldown } from "@/middlewares/cooldown";
+import { guildOnly } from "@/middlewares/guildOnly";
+import type { Track } from "@/services/player/track";
 
 const DEFAULT_COUNT = 10;
 const MAX_COUNT = 25;

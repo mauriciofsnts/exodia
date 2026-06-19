@@ -1,4 +1,4 @@
-import type { NewsItem, NewsProvider } from "./types.js";
+import type { NewsItem, NewsProvider } from "./types";
 
 // Headlines from Google News RSS for an arbitrary query (free, no key). One
 // instance per category — the query/locale parameterizes the feed.

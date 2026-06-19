@@ -1,4 +1,4 @@
-import { createCommand } from "@/core/commandBuilder.js";
+import { createCommand } from "@/core/commandBuilder";
 
 export default createCommand()
   .setName("ping")

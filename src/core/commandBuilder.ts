@@ -12,8 +12,8 @@ import type {
   VoiceBasedChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
-import type { Locale, TFunction } from "@/i18n/index.js";
-import type { BotContext } from "./context.js";
+import type { Locale, TFunction } from "@/i18n/index";
+import type { BotContext } from "./context";
 
 // Supported option types (excludes subcommands/groups)
 export type SimpleOptionType =

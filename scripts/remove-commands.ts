@@ -1,5 +1,5 @@
 import { REST, Routes } from "discord.js";
-import { config } from "@/config/index.js";
+import { config } from "@/config/index";
 
 // Mirrors deploy-commands.ts's scope logic: PUTting an empty array wipes every
 // command Discord has registered for that scope (guild or global) — handy

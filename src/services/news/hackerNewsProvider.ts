@@ -1,4 +1,4 @@
-import type { NewsItem, NewsProvider } from "./types.js";
+import type { NewsItem, NewsProvider } from "./types";
 
 interface HnHit {
   title: string | null;

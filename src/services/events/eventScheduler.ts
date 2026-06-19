@@ -4,11 +4,11 @@ import {
   GuildScheduledEventPrivacyLevel,
   PermissionFlagsBits,
 } from "discord.js";
-import type { BotContext } from "@/core/context.js";
-import { EmbedColor, embed } from "@/lib/embeds.js";
-import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider.js";
-import { SportsImporter } from "@/services/sports/sportsImporter.js";
-import type { EventRepository, GuildEvent } from "./eventRepository.js";
+import type { BotContext } from "@/core/context";
+import { EmbedColor, embed } from "@/lib/embeds";
+import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider";
+import { SportsImporter } from "@/services/sports/sportsImporter";
+import type { EventRepository, GuildEvent } from "./eventRepository";
 
 const TICK_PATTERN = "* * * * *"; // every minute
 const DEFAULT_DURATION_MS = 2 * 60 * 60_000; // External events need an end time

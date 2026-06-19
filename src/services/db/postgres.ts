@@ -1,6 +1,6 @@
 import { Pool, type PoolClient } from "pg";
-import type { Database } from "@/core/database.js";
-import type { Logger } from "@/lib/logger.js";
+import type { Database } from "@/core/database";
+import type { Logger } from "@/lib/logger";
 
 // Both Pool and a checked-out PoolClient expose `.query`, so the same logic
 // serves pooled calls and transaction-scoped calls.

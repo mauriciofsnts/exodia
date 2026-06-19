@@ -1,10 +1,10 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type Message } from "discord.js";
-import type { BotContext } from "@/core/context.js";
-import type { TFunction } from "@/i18n/index.js";
-import { EmbedColor, embed } from "@/lib/embeds.js";
-import { VOTE_EMOJIS } from "@/services/music/voteRepository.js";
-import type { Track } from "./track.js";
-import { youtubeThumbnail } from "./youtubeSearch.js";
+import type { BotContext } from "@/core/context";
+import type { TFunction } from "@/i18n/index";
+import { EmbedColor, embed } from "@/lib/embeds";
+import { VOTE_EMOJIS } from "@/services/music/voteRepository";
+import type { Track } from "./track";
+import { youtubeThumbnail } from "./youtubeSearch";
 
 const NEXT_PREVIEW = 3; // upcoming tracks shown before the "+N more" line
 

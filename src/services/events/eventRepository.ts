@@ -1,4 +1,4 @@
-import type { Database } from "@/core/database.js";
+import type { Database } from "@/core/database";
 
 export interface GuildEvent {
   id: string;

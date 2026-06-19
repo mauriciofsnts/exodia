@@ -1,6 +1,6 @@
-import { createCommand } from "@/core/commandBuilder.js";
-import { CommandError } from "@/lib/errors.js";
-import { playCard, seedVotes } from "@/services/player/playCard.js";
+import { createCommand } from "@/core/commandBuilder";
+import { CommandError } from "@/lib/errors";
+import { playCard, seedVotes } from "@/services/player/playCard";
 
 export default createCommand()
   .setName("nowplaying")

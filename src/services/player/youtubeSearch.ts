@@ -1,5 +1,5 @@
 import youtubeDl from "youtube-dl-exec";
-import { ytdlpLimiter } from "@/lib/ytdlp.js";
+import { ytdlpLimiter } from "@/lib/ytdlp";
 
 // The default export is callable at runtime, but under NodeNext its type loses
 // the call signature (it keeps only { exec, create }) — cast to the callable form.

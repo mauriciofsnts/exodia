@@ -17,9 +17,9 @@ import type {
   VoiceBasedChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType, GuildMember, MessageFlags } from "discord.js";
-import type { Locale } from "@/i18n/index.js";
-import { CommandError, PlayerError } from "@/lib/errors.js";
-import { notifyAdmin } from "@/middlewares/adminErrorNotifier.js";
+import type { Locale } from "@/i18n/index";
+import { CommandError, PlayerError } from "@/lib/errors";
+import { notifyAdmin } from "@/middlewares/adminErrorNotifier";
 import type {
   CommandDefinition,
   CommandExecutionContext,
@@ -27,9 +27,9 @@ import type {
   Middleware,
   OptionDef,
   ReactionHandlerDef,
-} from "./commandBuilder.js";
-import { composeMiddlewares } from "./commandBuilder.js";
-import type { BotContext } from "./context.js";
+} from "./commandBuilder";
+import { composeMiddlewares } from "./commandBuilder";
+import type { BotContext } from "./context";
 
 export class CommandLoader {
   private commands = new Map<string, CommandDefinition>();

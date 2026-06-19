@@ -1,16 +1,16 @@
 import type { Client } from "discord.js";
 import type { Redis } from "ioredis";
-import type { Config } from "@/config/index.js";
-import type { I18n } from "@/i18n/index.js";
-import type { Logger } from "@/lib/logger.js";
-import type { EventRepository } from "@/services/events/eventRepository.js";
-import type { GuildConfigService } from "@/services/guild/guildConfig.js";
-import type { TrackSearchCache } from "@/services/music/searchCache.js";
-import type { VoteRepository } from "@/services/music/voteRepository.js";
-import type { PlayerManager } from "@/services/player/playerManager.js";
-import type { CommandDefinition } from "./commandBuilder.js";
-import type { CommandSyncRepository } from "./commandSync/repository.js";
-import type { Database } from "./database.js";
+import type { Config } from "@/config/index";
+import type { I18n } from "@/i18n/index";
+import type { Logger } from "@/lib/logger";
+import type { EventRepository } from "@/services/events/eventRepository";
+import type { GuildConfigService } from "@/services/guild/guildConfig";
+import type { TrackSearchCache } from "@/services/music/searchCache";
+import type { VoteRepository } from "@/services/music/voteRepository";
+import type { PlayerManager } from "@/services/player/playerManager";
+import type { CommandDefinition } from "./commandBuilder";
+import type { CommandSyncRepository } from "./commandSync/repository";
+import type { Database } from "./database";
 
 export interface BotContext {
   client: Client;

@@ -1,5 +1,5 @@
 import type { ApplicationCommandDataResolvable } from "discord.js";
-import type { CommandDefinition } from "@/core/commandBuilder.js";
+import type { CommandDefinition } from "@/core/commandBuilder";
 
 // Shared between the deploy script (global/dev-guild REST PUT) and the runtime
 // command-sync service (per-guild `guild.commands.set`) so both register the

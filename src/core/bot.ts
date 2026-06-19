@@ -1,13 +1,13 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
-import { notifyAdmin } from "@/middlewares/adminErrorNotifier.js";
-import { EventScheduler } from "@/services/events/eventScheduler.js";
-import { onboardGuild } from "@/services/guild/onboarding.js";
-import type { Middleware } from "./commandBuilder.js";
-import { CommandLoader } from "./commandLoader.js";
-import { ensureGuildCommandsSynced, recordGlobalCommandCount } from "./commandSync/sync.js";
-import type { BotContext } from "./context.js";
+import { notifyAdmin } from "@/middlewares/adminErrorNotifier";
+import { EventScheduler } from "@/services/events/eventScheduler";
+import { onboardGuild } from "@/services/guild/onboarding";
+import type { Middleware } from "./commandBuilder";
+import { CommandLoader } from "./commandLoader";
+import { ensureGuildCommandsSynced, recordGlobalCommandCount } from "./commandSync/sync";
+import type { BotContext } from "./context";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 

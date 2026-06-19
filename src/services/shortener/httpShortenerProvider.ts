@@ -1,4 +1,4 @@
-import type { ShortenerProvider } from "./types.js";
+import type { ShortenerProvider } from "./types";
 
 // TinyURL returns the short link as plain text and needs no key.
 const DEFAULT_ENDPOINT = "https://tinyurl.com/api-create.php?url={url}";
