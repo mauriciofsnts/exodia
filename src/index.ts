@@ -19,7 +19,7 @@ async function main() {
   const db = config.DATABASE_URL ? await createDatabase(config.DATABASE_URL, logger) : null;
   const { trackCache, votes, events, commandSync } = await createPersistence(db);
 
-  const player = new PlayerManager(logger, config.PLAYER_IDLE_TIMEOUT_MS);
+  const player = new PlayerManager(logger, config);
   const i18n = new I18n();
   const guildConfig = new GuildConfigService(cache, config.PREFIX);
 

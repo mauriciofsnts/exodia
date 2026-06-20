@@ -21,11 +21,7 @@ import { VOTE_EMOJIS } from "@/services/music/voteRepository";
 import { formatDuration, playCard, seedVotes } from "@/services/player/playCard";
 import type { PlayerNotifier } from "@/services/player/playerManager";
 import type { Track } from "@/services/player/track";
-import {
-  type SearchResult,
-  searchYouTube,
-  searchYouTubeMany,
-} from "@/services/player/youtubeSearch";
+import type { SearchResult } from "@/services/player/youtubeSearch";
 import { youtubeSuggest } from "@/services/player/youtubeSuggest";
 
 const SEARCH_RESULTS = 5; // options shown in the picker
@@ -238,7 +234,7 @@ export default createCommand()
         if (cachedTrack) {
           track = { ...cachedTrack, requestedBy: displayName };
         } else {
-          const result = await searchYouTube(args.query);
+          const result = await bot.player.search(args.query);
           if (!result) throw new CommandError(t("errors.noResults"));
           track = { ...result, requestedBy: displayName };
           await bot.trackCache?.save(guildId, args.query, track);
@@ -252,7 +248,7 @@ export default createCommand()
       }
 
       // Free-text search → let the user choose from a few candidates.
-      const results = await searchYouTubeMany(args.query, SEARCH_RESULTS);
+      const results = await bot.player.searchMany(args.query, SEARCH_RESULTS);
       if (results.length === 0) throw new CommandError(t("errors.noResults"));
 
       const token = randomUUID();

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lavalink
+  namespace: exodia
+  labels:
+    app: lavalink
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lavalink
+  template:
+    metadata:
+      labels:
+        app: lavalink
+    spec:
+      containers:
+        - name: lavalink
+          image: ghcr.io/lavalink-devs/lavalink:4
+          ports:
+            - name: http
+              containerPort: 2333
+          env:
+            # Lavalink downloads the configured plugins on first boot, so the pod
+            # needs egress + a writable plugins dir (the mounted emptyDir below).
+            - name: SERVER_PORT
+              value: "2333"
+            - name: JAVA_OPTS
+              value: "-Xmx512m"
+            - name: LAVALINK_SERVER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: exodia-secret
+                  key: lavalink-password
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          volumeMounts:
+            - name: config
+              mountPath: /opt/Lavalink/application.yml
+              subPath: application.yml
+            - name: plugins
+              mountPath: /opt/Lavalink/plugins
+          readinessProbe:
+            httpGet:
+              path: /version
+              port: http
+              httpHeaders:
+                - name: Authorization
+                  value: youshallnotpass
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /version
+              port: http
+              httpHeaders:
+                - name: Authorization
+                  value: youshallnotpass
+            initialDelaySeconds: 40
+            periodSeconds: 20
+      volumes:
+        - name: config
+          configMap:
+            name: lavalink-config
+        - name: plugins
+          emptyDir: {}

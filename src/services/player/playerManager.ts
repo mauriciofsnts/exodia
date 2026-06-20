@@ -1,30 +1,11 @@
-import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import {
-  type AudioPlayer,
-  AudioPlayerStatus,
-  type AudioResource,
-  createAudioPlayer,
-  createAudioResource,
-  entersState,
-  joinVoiceChannel,
-  NoSubscriberBehavior,
-  StreamType,
-  type VoiceConnection,
-  VoiceConnectionStatus,
-} from "@discordjs/voice";
-import type { VoiceBasedChannel } from "discord.js";
-import youtubeDl from "youtube-dl-exec";
+import type { Client, VoiceBasedChannel } from "discord.js";
+import { Connectors, type Track as LavalinkTrack, LoadType, type Player, Shoukaku } from "shoukaku";
+import type { Config } from "@/config/index";
 import { PlayerError } from "@/lib/errors";
 import type { Logger } from "@/lib/logger";
-import { ytdlpLimiter } from "@/lib/ytdlp";
 import { Queue } from "./queue";
 import type { Track } from "./track";
-
-// Short jingle played once per session (right after joining) to cover the delay
-// while yt-dlp resolves and buffers the first track. Optional — skipped if absent.
-const INTRO_PATH = fileURLToPath(new URL("../../../assets/intro.mp3", import.meta.url));
-const HAS_INTRO = existsSync(INTRO_PATH);
+import { type SearchResult, toSearchResult } from "./youtubeSearch";
 
 // Lets the command layer react to playback events (announce in a text channel,
 // report a broken track, etc.) without coupling the player to discord.js text APIs.
@@ -33,9 +14,9 @@ export interface PlayerNotifier {
   trackError(track: Track): void;
 }
 
-// Detached playback errors (audio player faults, yt-dlp streaming failures) fire
-// outside any command, so they bypass the command middleware. A reporter lets the
-// host wire them to the admin notifier without coupling the player to discord.js.
+// Detached playback errors (Lavalink node faults, track exceptions) fire outside
+// any command, so they bypass the command middleware. A reporter lets the host
+// wire them to the admin notifier without coupling the player to discord.js.
 export interface PlayerErrorReport {
   guildId: string;
   stage: "player" | "stream";
@@ -43,45 +24,123 @@ export interface PlayerErrorReport {
 }
 export type PlayerErrorReporter = (err: unknown, report: PlayerErrorReport) => void;
 
-interface PreparedTrack {
-  track: Track;
-  resource: AudioResource;
-}
-
 interface GuildPlayer {
-  connection: VoiceConnection;
-  player: AudioPlayer;
+  player: Player; // Shoukaku player (voice connection + remote audio player)
   queue: Queue;
   current: Track | null;
+  currentEncoded: string | null; // dedupes end/stuck events against the live track
   notifier: PlayerNotifier | null;
   idleTimer: NodeJS.Timeout | null;
-  introPending: boolean; // play the intro before the first track of this session
-  pending: PreparedTrack | null; // a buffered track to play on next Idle (e.g. after the intro)
 }
 
 const DEFAULT_IDLE_TIMEOUT_MS = 5 * 60_000;
-const READY_TIMEOUT_MS = 20_000; // how long to wait for the voice connection to come up
 
-const DEFAULT_VOLUME = 1; // 1.0 = 100%
-const MAX_VOLUME = 2; // 200% — guard against blown-out audio
+const DEFAULT_VOLUME = 100; // percent — Lavalink's 100 == original loudness
+const MAX_VOLUME = 200; // 200% — guard against blown-out audio
 
 export class PlayerManager {
   private guilds = new Map<string, GuildPlayer>();
-  // Per-guild playback volume (a gain multiplier), kept off GuildPlayer so it
-  // survives a voice reconnect that rebuilds the GuildPlayer. Applied to each new
-  // track resource and, live, to the one currently playing.
+  // Per-guild playback volume (percent), kept off GuildPlayer so it survives a
+  // voice reconnect that rebuilds the GuildPlayer. Applied to each new track and,
+  // live, to the one currently playing.
   private volumes = new Map<string, number>();
   // Optional sink for detached playback errors (see PlayerErrorReporter).
   private errorReporter: PlayerErrorReporter | null = null;
+  private shoukaku: Shoukaku | null = null;
+  private idleTimeoutMs: number;
+
+  constructor(
+    private logger: Logger,
+    private config: Config,
+  ) {
+    this.idleTimeoutMs = config.PLAYER_IDLE_TIMEOUT_MS ?? DEFAULT_IDLE_TIMEOUT_MS;
+  }
 
   setErrorReporter(reporter: PlayerErrorReporter): void {
     this.errorReporter = reporter;
   }
 
-  constructor(
-    private logger: Logger,
-    private idleTimeoutMs: number = DEFAULT_IDLE_TIMEOUT_MS,
-  ) {}
+  // Builds the Shoukaku client and binds it to the discord.js gateway. Must run
+  // before login so the DiscordJS connector catches voice state/server updates.
+  connect(client: Client): void {
+    const node = {
+      name: "main",
+      url: `${this.config.LAVALINK_HOST}:${this.config.LAVALINK_PORT}`,
+      auth: this.config.LAVALINK_PASSWORD,
+      secure: this.config.LAVALINK_SECURE,
+    };
+    this.shoukaku = new Shoukaku(new Connectors.DiscordJS(client), [node], {
+      moveOnDisconnect: false,
+      resume: false,
+    });
+    this.shoukaku.on("ready", (name) => this.logger.info({ node: name }, "Lavalink node ready"));
+    this.shoukaku.on("error", (name, err) => {
+      this.logger.error({ err, node: name }, "Lavalink node error");
+      this.errorReporter?.(err, { guildId: "-", stage: "player" });
+    });
+    this.shoukaku.on("close", (name, code, reason) =>
+      this.logger.warn({ node: name, code, reason }, "Lavalink node closed"),
+    );
+  }
+
+  private requireShoukaku(): Shoukaku {
+    if (!this.shoukaku) throw new PlayerError("O player de música ainda não está pronto.");
+    return this.shoukaku;
+  }
+
+  private node() {
+    const node = this.requireShoukaku().getIdealNode();
+    if (!node) throw new PlayerError("Nenhum servidor de música disponível no momento.");
+    return node;
+  }
+
+  private isUrl(query: string): boolean {
+    return /^https?:\/\//i.test(query.trim());
+  }
+
+  // Resolves one playable Lavalink track from a free-text query or direct URL.
+  private async resolveTrack(query: string): Promise<LavalinkTrack | null> {
+    const identifier = this.isUrl(query) ? query.trim() : `ytsearch:${query}`;
+    const res = await this.node().rest.resolve(identifier);
+    if (!res) return null;
+    switch (res.loadType) {
+      case LoadType.TRACK:
+        return res.data;
+      case LoadType.SEARCH:
+        return res.data[0] ?? null;
+      case LoadType.PLAYLIST:
+        return res.data.tracks[0] ?? null;
+      default:
+        return null;
+    }
+  }
+
+  // Resolves a single track for the command layer (URL or best search match).
+  async search(query: string): Promise<SearchResult | null> {
+    const track = await this.resolveTrack(query);
+    return track ? toSearchResult(track) : null;
+  }
+
+  // Returns up to `limit` candidates for a free-text query, for a selection menu.
+  async searchMany(query: string, limit: number): Promise<SearchResult[]> {
+    const identifier = this.isUrl(query) ? query.trim() : `ytsearch:${query}`;
+    const res = await this.node().rest.resolve(identifier);
+    if (!res) return [];
+
+    const tracks =
+      res.loadType === LoadType.SEARCH
+        ? res.data
+        : res.loadType === LoadType.TRACK
+          ? [res.data]
+          : res.loadType === LoadType.PLAYLIST
+            ? res.data.tracks
+            : [];
+
+    return tracks
+      .map(toSearchResult)
+      .filter((r): r is SearchResult => r !== null)
+      .slice(0, limit);
+  }
 
   async play(channel: VoiceBasedChannel, track: Track, notifier?: PlayerNotifier): Promise<void> {
     const guildPlayer = await this.ensureReady(channel);
@@ -89,83 +148,64 @@ export class PlayerManager {
     guildPlayer.queue.enqueue(track);
     this.clearIdleTimer(guildPlayer);
 
-    if (guildPlayer.player.state.status === AudioPlayerStatus.Idle) {
+    if (!guildPlayer.current) {
       await this.processQueue(channel.guild.id);
     }
   }
 
-  // Connects to the voice channel without queuing anything, playing the intro (if
-  // present) to signal a successful connection. Used by the search flow so the
-  // bot is already in the channel — intro covering the wait — while the user
-  // picks a track. A later play() won't replay the intro (consumed here); if
+  // Connects to the voice channel without queuing anything. Used by the search
+  // flow so the bot is already in the channel while the user picks a track; if
   // nothing gets queued, the idle disconnect leaves the channel on its own.
   async join(channel: VoiceBasedChannel): Promise<void> {
     const guildPlayer = await this.ensureReady(channel);
-    if (guildPlayer.player.state.status !== AudioPlayerStatus.Idle) return;
-
-    if (guildPlayer.introPending && HAS_INTRO) {
-      guildPlayer.introPending = false;
-      this.clearIdleTimer(guildPlayer);
-      // When the intro ends the Idle handler runs processQueue, which arms the
-      // idle disconnect if still nothing is queued.
-      guildPlayer.player.play(createAudioResource(INTRO_PATH, { inputType: StreamType.Arbitrary }));
-    } else if (guildPlayer.queue.isEmpty) {
+    if (!guildPlayer.current && guildPlayer.queue.isEmpty) {
       this.scheduleIdleDisconnect(channel.guild.id);
     }
   }
 
   skip(guildId: string): void {
-    const guildPlayer = this.requireGuild(guildId);
-    guildPlayer.pending = null; // drop a track waiting behind the intro, if any
-    guildPlayer.player.stop();
+    void this.requireGuild(guildId).player.stopTrack();
   }
 
   stop(guildId: string): void {
     const guildPlayer = this.requireGuild(guildId);
-    guildPlayer.pending = null;
     guildPlayer.queue.clear();
-    guildPlayer.player.stop();
+    void guildPlayer.player.stopTrack();
   }
 
   pause(guildId: string): void {
-    this.requireGuild(guildId).player.pause();
+    void this.requireGuild(guildId).player.setPaused(true);
   }
 
   resume(guildId: string): void {
-    this.requireGuild(guildId).player.unpause();
+    void this.requireGuild(guildId).player.setPaused(false);
   }
 
   // Toggles pause/resume. Returns true when the player is now paused.
   togglePause(guildId: string): boolean {
     const guildPlayer = this.requireGuild(guildId);
-    if (guildPlayer.player.state.status === AudioPlayerStatus.Paused) {
-      guildPlayer.player.unpause();
-      return false;
-    }
-    guildPlayer.player.pause();
-    return true;
+    const next = !guildPlayer.player.paused;
+    void guildPlayer.player.setPaused(next);
+    return next;
   }
 
   shuffle(guildId: string): void {
     this.requireGuild(guildId).queue.shuffle();
   }
 
-  // Current volume as a percentage (100 = original). Reflects the saved gain even
+  // Current volume as a percentage (100 = original). Reflects the saved value even
   // before anything plays.
   getVolume(guildId: string): number {
-    return Math.round((this.volumes.get(guildId) ?? DEFAULT_VOLUME) * 100);
+    return Math.round(this.volumes.get(guildId) ?? DEFAULT_VOLUME);
   }
 
   // Sets volume (in percent, clamped to 0–200), applying it live to the playing
   // track and to every track queued afterwards. Returns the applied percentage.
   setVolume(guildId: string, percent: number): number {
     const guildPlayer = this.requireGuild(guildId);
-    const clamped = Math.min(Math.max(Math.round(percent), 0), MAX_VOLUME * 100);
-    const gain = clamped / 100;
-    this.volumes.set(guildId, gain);
-
-    const state = guildPlayer.player.state;
-    if ("resource" in state) state.resource.volume?.setVolume(gain);
+    const clamped = Math.min(Math.max(Math.round(percent), 0), MAX_VOLUME);
+    this.volumes.set(guildId, clamped);
+    void guildPlayer.player.setGlobalVolume(clamped);
     return clamped;
   }
 
@@ -187,103 +227,21 @@ export class PlayerManager {
     const guildPlayer = this.guilds.get(guildId);
     if (!guildPlayer) return;
     this.clearIdleTimer(guildPlayer);
-    guildPlayer.player.stop();
-    try {
-      guildPlayer.connection.destroy();
-    } catch {
-      // connection may already be destroyed (e.g. after a failed reconnect)
-    }
+    // Delete first so the player's "closed" event (fired by leaving) is a no-op.
     this.guilds.delete(guildId);
     this.volumes.delete(guildId); // reset gain to default for the next session
+    this.shoukaku?.leaveVoiceChannel(guildId).catch((err) => {
+      this.logger.warn({ err, guildId }, "Failed to leave voice channel");
+    });
   }
 
   destroyAll(): void {
-    for (const guildId of this.guilds.keys()) {
+    for (const guildId of [...this.guilds.keys()]) {
       this.destroy(guildId);
     }
   }
 
-  private createGuildPlayer(channel: VoiceBasedChannel): GuildPlayer {
-    const guildId = channel.guild.id;
-    const connection = joinVoiceChannel({
-      channelId: channel.id,
-      guildId,
-      adapterCreator: channel.guild.voiceAdapterCreator,
-      selfDeaf: true, // bot doesn't need to receive audio
-      selfMute: false, // must be false to transmit
-    });
-
-    // Surfaces where a handshake hangs or a connection drops after the fact —
-    // useful at info level since "plays locally but not on a server" often
-    // traces back to a voice connection that never reaches Ready, or flaps.
-    connection.on("stateChange", (oldState, newState) => {
-      this.logger.info({ guildId, from: oldState.status, to: newState.status }, "Voice state");
-    });
-    connection.on("error", (err) => {
-      this.logger.error({ err, guildId }, "Voice connection error");
-    });
-
-    // Keep playing while the connection (re)negotiates instead of auto-pausing.
-    const player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
-    const subscription = connection.subscribe(player);
-    this.logger.info(
-      { guildId, subscribed: subscription != null },
-      "Player subscribed to connection",
-    );
-
-    // Surfaces silent playback failures (e.g. audio plays locally but not on a
-    // deployed host) — Idle with ~0ms playbackDuration means the resource never
-    // actually produced audible audio even though no error fired.
-    player.on("stateChange", (oldState, newState) => {
-      const playbackDuration =
-        "resource" in newState ? newState.resource.playbackDuration : undefined;
-      this.logger.info(
-        { guildId, from: oldState.status, to: newState.status, playbackDuration },
-        "Audio player state",
-      );
-    });
-
-    // Without an error listener a resource failure crashes the process — log and
-    // let the Idle handler advance the queue.
-    player.on("error", (error) => {
-      this.logger.error({ err: error, guildId }, "Audio player error");
-      this.errorReporter?.(error, { guildId, stage: "player" });
-    });
-
-    const guildPlayer: GuildPlayer = {
-      connection,
-      player,
-      queue: new Queue(),
-      current: null,
-      notifier: null,
-      idleTimer: null,
-      introPending: HAS_INTRO,
-      pending: null,
-    };
-
-    player.on(AudioPlayerStatus.Idle, () => {
-      this.processQueue(guildId).catch((err) => {
-        this.logger.error({ err, guildId }, "processQueue failed");
-      });
-    });
-
-    connection.on(VoiceConnectionStatus.Disconnected, async () => {
-      // Could be a move to another channel (recoverable) or a real disconnect.
-      try {
-        await Promise.race([
-          entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
-          entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
-        ]);
-      } catch {
-        this.destroy(guildId);
-      }
-    });
-
-    return guildPlayer;
-  }
-
-  // Returns a GuildPlayer whose voice connection is Ready. Reuses a healthy
-  // connection; otherwise (re)builds and, if it hangs, recovers via rejoin().
+  // Returns a connected GuildPlayer, joining the voice channel on first use.
   private async ensureReady(channel: VoiceBasedChannel): Promise<GuildPlayer> {
     const guildId = channel.guild.id;
 
@@ -294,156 +252,122 @@ export class PlayerManager {
     }
 
     const existing = this.guilds.get(guildId);
-    if (existing?.connection.state.status === VoiceConnectionStatus.Ready) {
-      return existing;
-    }
-    // Drop any stale / half-connected player before rebuilding.
-    if (existing) this.destroy(guildId);
+    if (existing) return existing;
 
-    const guildPlayer = this.createGuildPlayer(channel);
-    this.guilds.set(guildId, guildPlayer);
-
+    let player: Player;
     try {
-      await entersState(guildPlayer.connection, VoiceConnectionStatus.Ready, READY_TIMEOUT_MS);
-      return guildPlayer;
-    } catch {
-      // rejoin() re-sends the voice state to Discord — the canonical way to
-      // unstick a connection hanging in signalling/connecting.
-      this.logger.warn(
-        { guildId, state: guildPlayer.connection.state.status },
-        "Voice not ready — rejoining",
-      );
-      try {
-        guildPlayer.connection.rejoin();
-        await entersState(guildPlayer.connection, VoiceConnectionStatus.Ready, READY_TIMEOUT_MS);
-        return guildPlayer;
-      } catch {
-        this.destroy(guildId);
-        throw new PlayerError("Não consegui conectar ao canal de voz. Tente novamente.");
-      }
+      player = await this.requireShoukaku().joinVoiceChannel({
+        guildId,
+        channelId: channel.id,
+        shardId: channel.guild.shardId,
+        deaf: true,
+      });
+    } catch (err) {
+      this.logger.error({ err, guildId }, "Failed to join voice channel");
+      throw new PlayerError("Não consegui conectar ao canal de voz. Tente novamente.");
     }
+
+    const guildPlayer: GuildPlayer = {
+      player,
+      queue: new Queue(),
+      current: null,
+      currentEncoded: null,
+      notifier: null,
+      idleTimer: null,
+    };
+    this.guilds.set(guildId, guildPlayer);
+    this.attachEvents(guildId, player);
+    return guildPlayer;
+  }
+
+  private attachEvents(guildId: string, player: Player): void {
+    // 'replaced' fires when we deliberately swap tracks (we don't) and 'cleanup'
+    // when the player is torn down — neither should advance the queue.
+    player.on("end", (data) => {
+      if (data.reason === "replaced" || data.reason === "cleanup") return;
+      const errored = data.reason === "loadFailed";
+      this.onTrackOver(guildId, errored, data.track.encoded).catch((err) =>
+        this.logger.error({ err, guildId }, "onTrackOver (end) failed"),
+      );
+    });
+
+    player.on("stuck", (data) => {
+      this.logger.warn({ guildId, threshold: data.thresholdMs }, "Track stuck");
+      this.onTrackOver(guildId, true, data.track.encoded).catch((err) =>
+        this.logger.error({ err, guildId }, "onTrackOver (stuck) failed"),
+      );
+    });
+
+    // Lavalink emits a TrackEndEvent (reason "loadFailed") right after an
+    // exception, so the queue advances there — here we only log.
+    player.on("exception", (data) => {
+      this.logger.error({ guildId, exception: data.exception }, "Lavalink track exception");
+    });
+
+    player.on("closed", (data) => {
+      this.logger.warn(
+        { guildId, code: data.code, reason: data.reason },
+        "Voice connection closed",
+      );
+      this.destroy(guildId);
+    });
+  }
+
+  // Advances the queue when the current track finishes or fails. Idempotent: the
+  // `encoded` guard drops stale end/stuck events for a track we've already moved
+  // past (e.g. an exception's follow-up end after we already advanced).
+  private async onTrackOver(guildId: string, errored: boolean, encoded: string): Promise<void> {
+    const guildPlayer = this.guilds.get(guildId);
+    if (!guildPlayer?.current) return;
+    if (guildPlayer.currentEncoded && guildPlayer.currentEncoded !== encoded) return;
+
+    const ended = guildPlayer.current;
+    guildPlayer.current = null;
+    guildPlayer.currentEncoded = null;
+
+    if (errored) {
+      this.logger.error({ guildId, url: ended.url }, "Track failed — skipping");
+      this.errorReporter?.(new PlayerError("Track playback failed"), {
+        guildId,
+        stage: "stream",
+        url: ended.url,
+      });
+      guildPlayer.notifier?.trackError(ended);
+    }
+
+    await this.processQueue(guildId);
   }
 
   private async processQueue(guildId: string): Promise<void> {
     const guildPlayer = this.guilds.get(guildId);
     if (!guildPlayer) return;
 
-    // A resource prepared earlier (the track buffered behind the intro) takes
-    // priority over dequeuing a new one.
-    const prepared = guildPlayer.pending;
-    if (prepared) {
-      guildPlayer.pending = null;
-      guildPlayer.current = prepared.track;
-      guildPlayer.player.play(prepared.resource);
-      guildPlayer.notifier?.trackStart(prepared.track);
-      return;
-    }
-
     const track = guildPlayer.queue.dequeue();
-
     if (!track) {
       guildPlayer.current = null;
+      guildPlayer.currentEncoded = null;
       this.scheduleIdleDisconnect(guildId);
       return;
     }
 
-    guildPlayer.current = track;
-
     try {
-      // Spawning yt-dlp here starts the download immediately, so it buffers while
-      // the intro (if any) plays — minimizing the gap before the track is audible.
-      const resource = await this.createTrackResource(track, guildId);
+      const resolved = await this.resolveTrack(track.url);
+      if (!resolved) throw new PlayerError("Não consegui resolver essa faixa.");
 
-      if (guildPlayer.introPending && HAS_INTRO) {
-        guildPlayer.introPending = false;
-        // Hold the track; the Idle handler plays it when the intro ends. stop()/
-        // skip() clear `pending`, so they correctly cancel this handoff.
-        guildPlayer.pending = { track, resource };
-        guildPlayer.player.play(
-          createAudioResource(INTRO_PATH, { inputType: StreamType.Arbitrary }),
-        );
-      } else {
-        guildPlayer.player.play(resource);
-        guildPlayer.notifier?.trackStart(track);
-      }
+      guildPlayer.current = track;
+      guildPlayer.currentEncoded = resolved.encoded;
+      await guildPlayer.player.playTrack({ track: { encoded: resolved.encoded } });
+      await guildPlayer.player.setGlobalVolume(this.volumes.get(guildId) ?? DEFAULT_VOLUME);
+      guildPlayer.notifier?.trackStart(track);
     } catch (err) {
-      // A single broken track (removed video, geo-block, extractor hiccup) must
-      // not stall the whole queue — report it and move on to the next one.
-      this.logger.error({ err, guildId, url: track.url }, "Failed to stream track — skipping");
+      // A single broken track (removed video, geo-block, resolve hiccup) must not
+      // stall the whole queue — report it and move on to the next one.
+      this.logger.error({ err, guildId, url: track.url }, "Failed to play track — skipping");
       this.errorReporter?.(err, { guildId, stage: "stream", url: track.url });
       guildPlayer.notifier?.trackError(track);
+      guildPlayer.current = null;
+      guildPlayer.currentEncoded = null;
       await this.processQueue(guildId);
-    }
-  }
-
-  // Builds an audio resource from yt-dlp's stdout. The connection is ensured
-  // Ready in play() before this runs. Pure-JS extractors (play-dl/ytdl-core) can
-  // no longer decipher YouTube's player; yt-dlp does, and preferring Opus/WebM
-  // itags keeps the input compact. `inlineVolume` adds a PCM volume stage
-  // (decode → gain → re-encode via opusscript) so per-guild volume works — at the
-  // cost of the otherwise transcode-free passthrough.
-  private async createTrackResource(track: Track, guildId: string): Promise<AudioResource> {
-    // Bound concurrent yt-dlp cold-starts (see ytdlp.ts). The slot is freed once
-    // the stream is flowing or torn down — not held for the whole track — so the
-    // limiter throttles startup bursts without capping simultaneous playback.
-    const release = await ytdlpLimiter.acquire();
-    try {
-      // exec() spawns yt-dlp; stdout streams natively (no in-memory buffering).
-      const subprocess = youtubeDl.exec(track.url, {
-        output: "-",
-        format: "251/250/249/bestaudio[ext=webm]/bestaudio",
-        quiet: true,
-        noWarnings: true,
-      });
-      // yt-dlp rejects when its stdout closes early (skip/stop) — that's expected
-      // on skip/stop, but log it so a real failure (e.g. blocked on the server's
-      // IP, missing cookies) isn't silently lost.
-      subprocess.catch((err) => {
-        this.logger.warn({ err, guildId, url: track.url }, "yt-dlp process exited");
-      });
-
-      let stderr = "";
-      subprocess.stderr?.on("data", (chunk) => {
-        stderr += chunk.toString();
-      });
-      subprocess.stderr?.on("error", () => {});
-
-      const audioStream = subprocess.stdout;
-      if (!audioStream) throw new PlayerError("yt-dlp produced no audio stream");
-      let bytesReceived = 0;
-      audioStream.on("data", (chunk) => {
-        bytesReceived += chunk.length;
-      });
-      audioStream.on("error", (err) => {
-        // Broken-pipe on teardown (skip/stop) is expected — still log it, since on
-        // a server this can also fire for a genuine network/extraction failure.
-        this.logger.warn(
-          { err, guildId, url: track.url, bytesReceived, stderr: stderr.slice(0, 2000) },
-          "yt-dlp audio stream error",
-        );
-      });
-
-      // `readable` = first bytes decoded (cold start done); `close` is the safety
-      // net if the stream errors out before producing anything. release() is
-      // idempotent, so whichever fires first wins.
-      audioStream.once("readable", release);
-      audioStream.once("close", () => {
-        release();
-        this.logger.info(
-          { guildId, url: track.url, bytesReceived, stderr: stderr.slice(0, 2000) },
-          "yt-dlp stream closed",
-        );
-      });
-
-      const resource = createAudioResource(audioStream, {
-        inputType: StreamType.WebmOpus,
-        inlineVolume: true,
-      });
-      resource.volume?.setVolume(this.volumes.get(guildId) ?? DEFAULT_VOLUME);
-      return resource;
-    } catch (err) {
-      release();
-      throw err;
     }
   }
 
@@ -455,7 +379,7 @@ export class PlayerManager {
     guildPlayer.idleTimer = setTimeout(() => {
       const gp = this.guilds.get(guildId);
       // Only leave if still idle — a new track may have started in the meantime.
-      if (gp && gp.player.state.status === AudioPlayerStatus.Idle && gp.queue.isEmpty) {
+      if (gp && !gp.current && gp.queue.isEmpty) {
         this.logger.info({ guildId }, "Idle timeout reached — leaving voice channel");
         this.destroy(guildId);
       }

@@ -62,7 +62,7 @@ Intentionally thin: `query`, `execute`, `transaction`, `close`. Implement this i
 
 ### PlayerManager (`src/services/player/playerManager.ts`)
 
-Manages one `GuildPlayer` per guild (voice connection + audio player + `Queue`). Uses `@discordjs/voice` + `play-dl` for YouTube streaming. Reconnect logic is handled inside `PlayerManager` via `VoiceConnectionStatus.Disconnected` events.
+Manages one `GuildPlayer` per guild (Shoukaku voice player + `Queue`). Audio resolution and streaming are delegated to a **Lavalink** server (via [Shoukaku](https://github.com/shipgirlproject/Shoukaku)) with the youtube-source plugin — this avoids the datacenter-IP "Sign in to confirm you're not a bot" block that direct yt-dlp extraction hits. `PlayerManager.connect(client)` (called from `Bot.start()` before login) builds the Shoukaku client from the `LAVALINK_*` env vars. Search (`search`/`searchMany`) goes through Lavalink's REST `loadtracks`; only `youtubeSuggest` (autocomplete) still uses a plain HTTP call. The queue advances on the Shoukaku player's `end`/`stuck` events. Lavalink deployment manifests for k3s live in `deploy/lavalink/`.
 
 ### Adding a command
 

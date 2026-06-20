@@ -20,6 +20,13 @@ const schema = z.object({
   SHORTENER_ENDPOINT: z.string().optional(),
   // TheSportsDB API key — the public test key "3" works for upcoming fixtures.
   SPORTSDB_API_KEY: z.string().default("3"),
+  // Lavalink connection. Audio resolution + streaming is delegated to a Lavalink
+  // server (with the youtube-source plugin), which sidesteps the datacenter-IP
+  // "Sign in to confirm you're not a bot" block that yt-dlp hits from k8s.
+  LAVALINK_HOST: z.string().default("localhost"),
+  LAVALINK_PORT: z.coerce.number().int().positive().default(2333),
+  LAVALINK_PASSWORD: z.string().default("youshallnotpass"),
+  LAVALINK_SECURE: z.coerce.boolean().default(false),
 });
 
 const parsed = schema.safeParse(process.env);

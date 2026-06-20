@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lavalink-config
+  namespace: exodia
+  labels:
+    app: lavalink
+data:
+  # Lavalink v4 server config. The youtube plugin (lavalink-devs/youtube-source)
+  # replaces the built-in YouTube source and is what gets us around the
+  # datacenter-IP "Sign in to confirm you're not a bot" block.
+  application.yml: |
+    server:
+      port: 2333
+      address: 0.0.0.0
+    lavalink:
+      plugins:
+        - dependency: "dev.lavalink.youtube:youtube-plugin:1.13.5"
+          repository: "https://maven.lavalink.dev/releases"
+      server:
+        # password intentionally omitted — set via LAVALINK_SERVER_PASSWORD env
+        # (Spring relaxed binding) from the exodia-secret, see deployment.yaml.
+        sources:
+          # Disable the built-in YouTube source so the plugin handles it.
+          youtube: false
+          bandcamp: true
+          soundcloud: true
+          twitch: true
+          vimeo: true
+          http: true
+          local: false
+        bufferDurationMs: 400
+        frameBufferDurationMs: 5000
+        opusEncodingQuality: 10
+        resamplingQuality: LOW
+        trackStuckThresholdMs: 10000
+        useSeekGhosting: true
+        youtubePlaylistLoadLimit: 6
+        playerUpdateInterval: 5
+        youtubeSearchEnabled: true
+        soundcloudSearchEnabled: true
+    plugins:
+      youtube:
+        enabled: true
+        # Client rotation improves resilience against bot checks. WEB_EMBEDDED +
+        # the music/android clients are the most reliable from datacenter IPs.
+        clients:
+          - MUSIC
+          - WEB_EMBEDDED
+          - WEB
+          - ANDROID_VR
+          - TVHTML5EMBEDDED
+    logging:
+      level:
+        root: INFO
+        lavalink: INFO

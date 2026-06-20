@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lavalink
+  namespace: exodia
+  labels:
+    app: lavalink
+spec:
+  # ClusterIP only — Lavalink should never be exposed outside the cluster.
+  type: ClusterIP
+  selector:
+    app: lavalink
+  ports:
+    - name: http
+      port: 2333
+      targetPort: http

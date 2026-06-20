@@ -47,7 +47,11 @@ export class Bot {
       ctx.logger.error({ err }, "Failed to record global command count"),
     );
 
-    // Detached playback errors (audio player / yt-dlp streaming) fire outside any
+    // Bind Lavalink (via Shoukaku) to the gateway before login so the connector
+    // catches the voice state/server updates produced during login.
+    ctx.player.connect(this.client);
+
+    // Detached playback errors (Lavalink node / track exceptions) fire outside any
     // command, so route them to the admin notifier explicitly.
     ctx.player.setErrorReporter((err, report) => {
       notifyAdmin(ctx, err, {

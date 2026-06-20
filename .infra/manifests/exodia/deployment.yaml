@@ -52,6 +52,17 @@ spec:
                 secretKeyRef:
                   name: exodia-secret
                   key: redis-url
+            - name: LAVALINK_HOST
+              value: "lavalink"
+            - name: LAVALINK_PORT
+              value: "2333"
+            - name: LAVALINK_SECURE
+              value: "false"
+            - name: LAVALINK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: exodia-secret
+                  key: lavalink-password
           resources:
             requests:
               cpu: 100m
