@@ -26,7 +26,11 @@ const schema = z.object({
   LAVALINK_HOST: z.string().default("localhost"),
   LAVALINK_PORT: z.coerce.number().int().positive().default(2333),
   LAVALINK_PASSWORD: z.string().default("youshallnotpass"),
-  LAVALINK_SECURE: z.coerce.boolean().default(false),
+  // NOTE: z.coerce.boolean() is a footgun — Boolean("false") === true. Parse the
+  // literal string instead so only "true"/"1" enable TLS.
+  LAVALINK_SECURE: z
+    .preprocess((v) => (typeof v === "string" ? v === "true" || v === "1" : v), z.boolean())
+    .default(false),
 });
 
 const parsed = schema.safeParse(process.env);
