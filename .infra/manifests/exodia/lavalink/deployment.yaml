@@ -47,21 +47,13 @@ spec:
             - name: plugins
               mountPath: /opt/Lavalink/plugins
           readinessProbe:
-            httpGet:
-              path: /version
+            tcpSocket:
               port: http
-              httpHeaders:
-                - name: Authorization
-                  value: youshallnotpass
             initialDelaySeconds: 20
             periodSeconds: 10
           livenessProbe:
-            httpGet:
-              path: /version
+            tcpSocket:
               port: http
-              httpHeaders:
-                - name: Authorization
-                  value: youshallnotpass
             initialDelaySeconds: 40
             periodSeconds: 20
       volumes:
