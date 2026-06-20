@@ -102,7 +102,10 @@ export class PlayerManager {
   private async resolveTrack(query: string): Promise<LavalinkTrack | null> {
     const identifier = this.isUrl(query) ? query.trim() : `ytsearch:${query}`;
     const res = await this.node().rest.resolve(identifier);
-    if (!res) return null;
+    if (!res) {
+      this.logger.warn({ identifier }, "Lavalink resolve returned no response");
+      return null;
+    }
     switch (res.loadType) {
       case LoadType.TRACK:
         return res.data;
@@ -110,7 +113,15 @@ export class PlayerManager {
         return res.data[0] ?? null;
       case LoadType.PLAYLIST:
         return res.data.tracks[0] ?? null;
+      case LoadType.ERROR:
+        // The most useful signal when nothing plays: the plugin's own message
+        // (e.g. a YouTube source that failed to load, or a bot-check rejection).
+        this.logger.error({ identifier, exception: res.data }, "Lavalink resolve error");
+        return null;
       default:
+        // EMPTY — usually means no source matched the identifier (e.g. the
+        // youtube-source plugin didn't load, so YouTube URLs match nothing).
+        this.logger.warn({ identifier, loadType: res.loadType }, "Lavalink resolve empty");
         return null;
     }
   }
