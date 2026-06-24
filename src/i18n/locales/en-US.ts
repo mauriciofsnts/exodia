@@ -70,6 +70,7 @@ export const enUS = {
     news: {
       header: "📰 {category} — latest",
       footer: "{count} headline(s)",
+      pageFooter: "Page {page}/{pages} • {count} headline(s)",
       empty: "No headlines right now.",
       failed: "❌ Couldn't fetch the news right now.",
       unknown: "❌ Unknown category.",

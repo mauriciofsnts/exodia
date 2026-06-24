@@ -70,6 +70,7 @@ export const ptBR = {
     news: {
       header: "📰 {category} — mais recentes",
       footer: "{count} manchete(s)",
+      pageFooter: "Página {page}/{pages} • {count} manchete(s)",
       empty: "Sem manchetes no momento.",
       failed: "❌ Não consegui buscar as notícias agora.",
       unknown: "❌ Categoria desconhecida.",
