@@ -94,6 +94,14 @@ export default createCommand()
 
 After adding slash commands, run `pnpm deploy` to register them with Discord.
 
+### Keep `/help` in sync
+
+The `/help` command (`src/commands/general/help.ts`) is generated from the loaded command definitions — name, description, prefix, and options. So renaming a command, changing its description, or adding/removing/renaming options changes the help output automatically; no manual edit is needed there. **But** when a command changes, check whether anything `/help` (or other commands) relies on still lines up — in particular:
+
+- If a command's behavior changes, update its `.setDescription(...)` so the help listing stays accurate.
+- If you add/remove options, confirm the usage line and option list `/help <command>` renders still make sense.
+- If the change touches user-facing copy, update **both** locale files (`src/i18n/locales/en-US.ts` and `pt-BR.ts`) — they must stay structurally identical (en-US is the type source of truth; a missing key is a type error).
+
 ### Adding a global middleware
 
 Create a function matching `Middleware` and add it to the array in `src/index.ts`:

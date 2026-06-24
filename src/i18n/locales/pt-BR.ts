@@ -45,7 +45,13 @@ export const ptBR = {
   },
   commands: {
     ping: {
-      response: "Pong! Latência: **{latency}ms**",
+      title: "🏓 Pong!",
+      latency: "Latência",
+      database: "Banco de dados",
+      commit: "Último commit",
+      uptime: "No ar há",
+      dbPostgres: "PostgreSQL",
+      dbNone: "Nenhum (em memória)",
     },
     password: {
       sentToDm: "🔐 Te mandei uma senha nova no privado.",

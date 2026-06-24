@@ -45,7 +45,13 @@ export const enUS = {
   },
   commands: {
     ping: {
-      response: "Pong! Latency: **{latency}ms**",
+      title: "🏓 Pong!",
+      latency: "Latency",
+      database: "Database",
+      commit: "Last commit",
+      uptime: "Uptime",
+      dbPostgres: "PostgreSQL",
+      dbNone: "None (in-memory)",
     },
     password: {
       sentToDm: "🔐 Sent a fresh password to your DMs.",
