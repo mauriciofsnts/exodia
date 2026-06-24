@@ -37,6 +37,12 @@ function toEvent(row: EventRow): GuildEvent {
 const ANNOUNCE_BACKFILL = "1 hour";
 const ANNOUNCE_LEAD = "70 seconds";
 
+// Data aging: an event is kept only until it has occurred. Once its start time
+// is past the announce backfill window (so it has had its chance to fire), it's
+// no longer upcoming and gets pruned. The importer never re-imports past
+// fixtures, so this can't resurrect them.
+const EVENT_RETENTION = ANNOUNCE_BACKFILL; // prune once the event is over
+
 // Persisted, per-guild scheduled events. A background scheduler reads these to
 // create the matching Discord event and to announce when they start.
 export class EventRepository {
@@ -167,5 +173,32 @@ export class EventRepository {
 
   async markAnnounced(id: string): Promise<void> {
     await this.db.execute(`UPDATE guild_events SET announced = TRUE WHERE id = $1`, [id]);
+  }
+
+  // Number of auto-imported (sports) fixtures still upcoming. Zero means we have
+  // no fresh fixture data — the bootstrap path uses this to run an import on
+  // startup instead of waiting for the first scheduled one (cold DB, or every
+  // previously-imported fixture has already aged out).
+  async countUpcomingSportsEvents(): Promise<number> {
+    const rows = await this.db.query<{ count: number }>(
+      `SELECT count(*)::int AS count
+         FROM guild_events
+        WHERE source IS NOT NULL AND start_at >= now()`,
+    );
+    return rows[0]?.count ?? 0;
+  }
+
+  // Data aging: drop events that started more than EVENT_RETENTION ago. Returns
+  // how many rows were removed (for logging).
+  async deleteStale(): Promise<number> {
+    const rows = await this.db.query<{ count: number }>(
+      `WITH deleted AS (
+         DELETE FROM guild_events
+          WHERE start_at < now() - interval '${EVENT_RETENTION}'
+          RETURNING 1
+       )
+       SELECT count(*)::int AS count FROM deleted`,
+    );
+    return rows[0]?.count ?? 0;
   }
 }
