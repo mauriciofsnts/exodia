@@ -7,4 +7,5 @@ export const LEAGUES: Record<string, { id: string; label: string }> = {
   ligue1: { id: "4334", label: "Ligue 1" },
   brasileirao: { id: "4351", label: "Brasileirão Série A" },
   champions: { id: "4480", label: "UEFA Champions League" },
+  worldcup: { id: "4429", label: "FIFA World Cup" },
 };
