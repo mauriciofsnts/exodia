@@ -56,6 +56,17 @@ Passed to every command handler via `ctx.bot`. Contains:
 - `cache` — ioredis client
 - `player` — `PlayerManager` (one queue per guild)
 
+### Configuration & environment variables (`src/config/index.ts`)
+
+All runtime configuration comes from environment variables, validated **once at startup** by a single zod schema in `src/config/index.ts`. The parsed result is exported as `config` (and its inferred type `Config`); `BotContext.config` is this object, so every command/service reads typed, validated values — never `process.env` directly. Invalid env (missing required vars, bad types) fails fast: the schema logs the formatted error and calls `process.exit(1)`. `dotenv/config` is imported here, so a local `.env` is loaded automatically.
+
+To add a new env var:
+
+1. Add a field to the zod schema in `src/config/index.ts` with a comment. Use `.optional()` for optional values, `.default(...)` for defaults, and `z.coerce.number()` / a `preprocess` for non-string types (note: `z.coerce.boolean()` is a footgun — `Boolean("false") === true` — parse the literal string instead, as `LAVALINK_SECURE` does).
+2. Document it in **`.env.example`** (the source of truth for available vars, with an inline comment).
+3. If it must ship to production, also add it to the k8s Deployment env in `.infra/manifests/exodia/deployment.yaml` (note: optional vars aren't all mirrored there).
+4. Read it via `ctx.bot.config.MY_VAR` — never `process.env`.
+
 ### Database interface (`src/core/database.ts`)
 
 Intentionally thin: `query`, `execute`, `transaction`, `close`. Implement this interface and pass the instance as `db` in `src/index.ts`. Currently `null` — nothing in the codebase depends on it yet.
