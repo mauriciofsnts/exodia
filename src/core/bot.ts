@@ -7,7 +7,7 @@ import { EventScheduler } from "@/services/events/eventScheduler";
 import { onboardGuild } from "@/services/guild/onboarding";
 import type { Middleware } from "./commandBuilder";
 import { CommandLoader } from "./commandLoader";
-import { ensureGuildCommandsSynced, recordGlobalCommandCount } from "./commandSync/sync";
+import { ensureGuildCommandsSynced } from "./commandSync/sync";
 import type { BotContext } from "./context";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -41,11 +41,6 @@ export class Bot {
     await this.loader.load(resolve(__dirname, "../commands"));
 
     const ctx: BotContext = { ...this.ctx, client: this.client, commands: this.loader.all };
-
-    // Source of truth every guild's synced command count is compared against.
-    recordGlobalCommandCount(ctx).catch((err) =>
-      ctx.logger.error({ err }, "Failed to record global command count"),
-    );
 
     // Bind Lavalink (via Shoukaku) to the gateway before login so the connector
     // catches the voice state/server updates produced during login.
