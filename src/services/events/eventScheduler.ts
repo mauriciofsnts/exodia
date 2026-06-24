@@ -10,14 +10,18 @@ import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvi
 import { SportsImporter } from "@/services/sports/sportsImporter";
 import type { EventRepository, GuildEvent } from "./eventRepository";
 
-const TICK_PATTERN = "* * * * *"; // every minute
+const TICK_PATTERN = "* * * * *"; // announce / Discord-sync — every minute
+const IMPORT_PATTERN = "*/15 * * * *"; // fetch fixtures + prune — every 15 minutes
 const DEFAULT_DURATION_MS = 2 * 60 * 60_000; // External events need an end time
 const EXTERNAL_LOCATION = "Online";
 
 // Polls guild_events and, per guild config, mirrors events into Discord and
-// announces them in the configured channel when they start.
+// announces them in the configured channel when they start. Fetching fixture
+// data is a separate, slower job (importEvents) so the timely announce/sync work
+// isn't coupled to provider calls.
 export class EventScheduler {
   private job: Cron | null = null;
+  private importJob: Cron | null = null;
   private readonly sportsImporter: SportsImporter | null;
 
   constructor(private readonly ctx: BotContext) {
@@ -35,29 +39,71 @@ export class EventScheduler {
   start(): void {
     if (!this.ctx.events || this.job) return;
     // `protect` skips a tick if the previous one is still running (no overlap).
-    this.job = new Cron(TICK_PATTERN, { protect: true }, async () => {
-      try {
-        await this.tick();
-      } catch (err) {
-        this.ctx.logger.error({ err }, "Event scheduler tick failed");
-      }
-    });
+    this.job = new Cron(TICK_PATTERN, { protect: true }, () => this.runTick());
+    this.importJob = new Cron(IMPORT_PATTERN, { protect: true }, () => this.runImport());
     this.ctx.logger.info("Event scheduler started");
+
+    // Cold start: if the DB has no upcoming fixture data, import now instead of
+    // waiting up to a full IMPORT_PATTERN interval for the first scheduled run.
+    void this.bootstrapImport();
   }
 
   stop(): void {
     this.job?.stop();
+    this.importJob?.stop();
     this.job = null;
+    this.importJob = null;
+  }
+
+  private async runTick(): Promise<void> {
+    try {
+      await this.tick();
+    } catch (err) {
+      this.ctx.logger.error({ err }, "Event scheduler tick failed");
+    }
+  }
+
+  private async runImport(): Promise<void> {
+    try {
+      await this.importEvents();
+    } catch (err) {
+      this.ctx.logger.error({ err }, "Event import failed");
+    }
   }
 
   private async tick(): Promise<void> {
     const events = this.ctx.events;
     if (!events) return;
-    // The fetch itself is cache-throttled (30 min) — running this every tick
-    // just lets newly-subscribed guilds pick up fixtures within a minute.
-    await this.sportsImporter?.run(this.ctx.client.guilds.cache.keys());
     await this.syncDiscordEvents(events);
     await this.announceDueEvents(events);
+  }
+
+  // The dedicated data job: prune aged-out events, then pull fresh fixtures for
+  // every guild's subscriptions. Provider fetches are themselves cache-throttled
+  // (30 min), so the schedule just bounds how often we refresh and reconcile.
+  private async importEvents(): Promise<void> {
+    const events = this.ctx.events;
+    if (!events) return;
+
+    const pruned = await events.deleteStale();
+    if (pruned > 0) this.ctx.logger.info({ pruned }, "Pruned aged-out events");
+
+    await this.sportsImporter?.run(this.ctx.client.guilds.cache.keys());
+  }
+
+  // Runs once at startup. Only does work when there's no upcoming fixture data,
+  // so a warm DB doesn't pay an extra provider round trip on every restart.
+  private async bootstrapImport(): Promise<void> {
+    const events = this.ctx.events;
+    if (!events || !this.sportsImporter) return;
+
+    try {
+      if ((await events.countUpcomingSportsEvents()) > 0) return;
+      this.ctx.logger.info("No upcoming fixture data — importing on bootstrap");
+      await this.importEvents();
+    } catch (err) {
+      this.ctx.logger.error({ err }, "Bootstrap event import failed");
+    }
   }
 
   private async syncDiscordEvents(events: EventRepository): Promise<void> {
