@@ -165,6 +165,9 @@ export interface CommandDefinition {
   name: string;
   description: string;
   prefix: string | null;
+  // When false, the command is not registered as a Discord slash command — it's
+  // reachable only via its prefix. Useful for prefix-only/admin commands.
+  slash: boolean;
   options: OptionDef[];
   middlewares: Middleware[];
   components: ComponentHandlerDef[];
@@ -192,6 +195,7 @@ export class CommandBuilder<TOptions extends OptionDef[] = []> {
   private _name = "";
   private _description = "";
   private _prefix: string | null = null;
+  private _slash = true;
   private _options: OptionDef[] = [];
   private _middlewares: Middleware[] = [];
   private _components: ComponentHandlerDef[] = [];
@@ -211,6 +215,13 @@ export class CommandBuilder<TOptions extends OptionDef[] = []> {
 
   setPrefix(prefix: string): this {
     this._prefix = prefix;
+    return this;
+  }
+
+  // Opt the command out of slash-command registration so it responds only to its
+  // prefix. Call with no argument (or `false`) to disable; pass `true` to re-enable.
+  setSlash(enabled = false): this {
+    this._slash = enabled;
     return this;
   }
 
@@ -250,11 +261,18 @@ export class CommandBuilder<TOptions extends OptionDef[] = []> {
   build(): CommandDefinition {
     if (!this._name) throw new Error("Command must have a name");
     if (!this._description) throw new Error("Command must have a description");
+    // A command with neither slash registration nor a prefix is unreachable.
+    if (!this._slash && !this._prefix) {
+      throw new Error(
+        `Command "${this._name}" has slash disabled but no prefix — it's unreachable`,
+      );
+    }
 
     return {
       name: this._name,
       description: this._description,
       prefix: this._prefix,
+      slash: this._slash,
       options: this._options,
       middlewares: this._middlewares,
       components: this._components,
