@@ -1,11 +1,11 @@
 import { config } from "./config/index";
 import { Bot } from "./core/bot";
 import { I18n } from "./i18n/index";
+import { createCache } from "./infra/cache/index";
+import { createDatabase } from "./infra/db/postgres";
 import { logger } from "./lib/logger";
 import { adminErrorNotifier } from "./middlewares/adminErrorNotifier";
 import { commandCounter } from "./middlewares/commandCounter";
-import { createCache } from "./services/cache/index";
-import { createDatabase } from "./services/db/postgres";
 import { GuildConfigService } from "./services/guild/guildConfig";
 import { createPersistence } from "./services/persistence";
 import { PlayerManager } from "./services/player/playerManager";

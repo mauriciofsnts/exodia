@@ -26,7 +26,7 @@ All files use **camelCase with a lowercase first letter** (e.g. `commandBuilder.
 
 ## Architecture
 
-The bot is built around three layers: **core framework** (`src/core/`), **commands** (`src/commands/`), and **services** (`src/services/`).
+The bot is built around four layers: **core framework** (`src/core/`), **commands** (`src/commands/`), **domain services** (`src/services/`), and **infrastructure** (`src/infra/`). `src/infra/` holds the pure technical adapters — the Redis cache (`src/infra/cache/`) and the Postgres database + migrations (`src/infra/db/`); `src/services/` holds only domain features (music, sports, news, events, …). Keep this split: nothing under `src/infra/` should know about a specific feature.
 
 ### Command lifecycle
 
@@ -69,7 +69,7 @@ To add a new env var:
 
 ### Database interface (`src/core/database.ts`)
 
-Intentionally thin: `query`, `execute`, `transaction`, `close`. Implement this interface and pass the instance as `db` in `src/index.ts`. Currently `null` — nothing in the codebase depends on it yet.
+Intentionally thin: `query`, `execute`, `transaction`, `close`. The Postgres implementation lives in `src/infra/db/postgres.ts`; `src/index.ts` constructs it only when `DATABASE_URL` is set (otherwise `db` is `null` and the bot runs without persistence). Schema is managed by versioned SQL files under `src/infra/db/migrations/`, applied once at startup by `runMigrations` (`src/infra/db/migrate.ts`) — add a new `NNNN_description.sql` file to evolve it; repositories no longer create their own tables.
 
 ### PlayerManager (`src/services/player/playerManager.ts`)
 
