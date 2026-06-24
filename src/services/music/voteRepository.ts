@@ -19,29 +19,6 @@ export const VOTE_EMOJIS: Record<string, VoteType> = {
 export class VoteRepository {
   constructor(private readonly db: Database) {}
 
-  async init(): Promise<void> {
-    // One row per (guild, track, user, vote): reactions are independent toggles,
-    // so a user may both 👍 and ⭐ the same track.
-    await this.db.execute(`
-      CREATE TABLE IF NOT EXISTS track_votes (
-        guild_id   TEXT NOT NULL,
-        url        TEXT NOT NULL,
-        user_id    TEXT NOT NULL,
-        vote       TEXT NOT NULL CHECK (vote IN ('like', 'dislike', 'fav')),
-        created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-        PRIMARY KEY (guild_id, url, user_id, vote)
-      )
-    `);
-    await this.db.execute(`
-      CREATE TABLE IF NOT EXISTS vote_messages (
-        message_id TEXT PRIMARY KEY,
-        guild_id   TEXT NOT NULL,
-        url        TEXT NOT NULL,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-      )
-    `);
-  }
-
   // Marks a play-card message as votable, so reactions on it can be attributed.
   async registerMessage(messageId: string, guildId: string, url: string): Promise<void> {
     await this.db.execute(

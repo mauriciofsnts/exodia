@@ -13,20 +13,6 @@ interface CommandSignatureRow {
 export class CommandSyncRepository {
   constructor(private readonly db: Database) {}
 
-  async init(): Promise<void> {
-    await this.db.execute(`
-      CREATE TABLE IF NOT EXISTS command_signatures (
-        scope        TEXT NOT NULL,
-        command_name TEXT NOT NULL,
-        signature    TEXT NOT NULL,
-        updated_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
-        PRIMARY KEY (scope, command_name)
-      )
-    `);
-    // Legacy count-based table — superseded by per-command signatures above.
-    await this.db.execute(`DROP TABLE IF EXISTS command_sync`);
-  }
-
   // The commands last registered for a scope, as a name→signature map.
   async getSignatures(scope: string): Promise<Map<string, string>> {
     const rows = await this.db.query<CommandSignatureRow>(

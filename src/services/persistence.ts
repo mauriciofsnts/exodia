@@ -1,5 +1,7 @@
 import { CommandSyncRepository } from "@/core/commandSync/repository";
 import type { Database } from "@/core/database";
+import type { Logger } from "@/lib/logger";
+import { runMigrations } from "./db/migrate";
 import { EventRepository } from "./events/eventRepository";
 import { TrackSearchCache } from "./music/searchCache";
 import { VoteRepository } from "./music/voteRepository";
@@ -13,20 +15,22 @@ export interface PersistenceServices {
   commandSync: CommandSyncRepository | null;
 }
 
-// Constructs every DB-backed service and creates its tables in one place. To add
-// a new persisted service: list it in `services` and add its field above —
-// index.ts never changes. Every entry just needs an `init(): Promise<void>`.
-export async function createPersistence(db: Database | null): Promise<PersistenceServices> {
+// Brings the schema up to date (runMigrations) and constructs every DB-backed
+// service in one place. To add a new persisted service: list it in the returned
+// object and add its field above; add a new SQL file under db/migrations/ for its
+// tables — index.ts never changes.
+export async function createPersistence(
+  db: Database | null,
+  logger: Logger,
+): Promise<PersistenceServices> {
   if (!db) return { trackCache: null, votes: null, events: null, commandSync: null };
 
-  const services = {
+  await runMigrations(db, logger);
+
+  return {
     trackCache: new TrackSearchCache(db),
     votes: new VoteRepository(db),
     events: new EventRepository(db),
     commandSync: new CommandSyncRepository(db),
   };
-
-  await Promise.all(Object.values(services).map((service) => service.init()));
-
-  return services;
 }

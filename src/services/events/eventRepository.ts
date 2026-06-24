@@ -48,49 +48,6 @@ const EVENT_RETENTION = ANNOUNCE_BACKFILL; // prune once the event is over
 export class EventRepository {
   constructor(private readonly db: Database) {}
 
-  async init(): Promise<void> {
-    await this.db.execute(`
-      CREATE TABLE IF NOT EXISTS guild_events (
-        id               BIGSERIAL PRIMARY KEY,
-        guild_id         TEXT NOT NULL,
-        name             TEXT NOT NULL,
-        start_at         TIMESTAMPTZ NOT NULL,
-        discord_event_id TEXT,
-        announced        BOOLEAN NOT NULL DEFAULT FALSE,
-        created_at       TIMESTAMPTZ NOT NULL DEFAULT now()
-      )
-    `);
-    // source/external_id identify auto-imported fixtures (e.g. "football:premier" +
-    // the provider's event id) so re-running the importer never creates duplicates.
-    await this.db.execute(`ALTER TABLE guild_events ADD COLUMN IF NOT EXISTS source TEXT`);
-    await this.db.execute(`ALTER TABLE guild_events ADD COLUMN IF NOT EXISTS external_id TEXT`);
-    // Not partial: ON CONFLICT can only target an index whose predicate it
-    // repeats verbatim, and Postgres treats NULLs as distinct by default, so
-    // manually-added events (both columns NULL) never collide with each other.
-    await this.db.execute(`DROP INDEX IF EXISTS idx_guild_events_dedup`);
-    await this.db.execute(
-      `CREATE UNIQUE INDEX IF NOT EXISTS idx_guild_events_dedup
-         ON guild_events (guild_id, source, external_id)`,
-    );
-    // listUpcoming: WHERE guild_id = $1 AND start_at >= now() ORDER BY start_at.
-    await this.db.execute(
-      `CREATE INDEX IF NOT EXISTS idx_guild_events_guild_start
-         ON guild_events (guild_id, start_at)`,
-    );
-    // The scheduler scans these every minute — partial indexes keep them tiny by
-    // covering only the rows still pending work.
-    await this.db.execute(
-      `CREATE INDEX IF NOT EXISTS idx_guild_events_pending_discord
-         ON guild_events (start_at)
-         WHERE discord_event_id IS NULL`,
-    );
-    await this.db.execute(
-      `CREATE INDEX IF NOT EXISTS idx_guild_events_unannounced
-         ON guild_events (start_at)
-         WHERE announced = FALSE`,
-    );
-  }
-
   async create(guildId: string, name: string, startAt: Date): Promise<void> {
     await this.db.execute(
       `INSERT INTO guild_events (guild_id, name, start_at) VALUES ($1, $2, $3)`,

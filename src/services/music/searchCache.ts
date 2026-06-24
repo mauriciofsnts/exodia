@@ -21,24 +21,6 @@ function normalizeQuery(query: string): string {
 export class TrackSearchCache {
   constructor(private readonly db: Database) {}
 
-  async init(): Promise<void> {
-    // Scoped per guild: the same query can resolve to different tracks (and have
-    // its own play count) in different servers — hence the composite primary key.
-    await this.db.execute(`
-      CREATE TABLE IF NOT EXISTS track_searches (
-        guild_id   TEXT NOT NULL,
-        query      TEXT NOT NULL,
-        url        TEXT NOT NULL,
-        title      TEXT NOT NULL,
-        duration   INTEGER NOT NULL,
-        hits       INTEGER NOT NULL DEFAULT 1,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-        PRIMARY KEY (guild_id, query)
-      )
-    `);
-  }
-
   // Returns the cached track for a query in a guild (bumping its hit counter) or null.
   async find(guildId: string, query: string): Promise<CachedTrack | null> {
     const rows = await this.db.query<CachedTrack>(
