@@ -17,7 +17,7 @@ import type {
   VoiceBasedChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType, GuildMember, MessageFlags } from "discord.js";
-import type { Locale } from "@/i18n/index";
+import type { Locale, TFunction } from "@/i18n/index";
 import { CommandError, PlayerError } from "@/lib/errors";
 import { notifyAdmin } from "@/middlewares/adminErrorNotifier";
 import type {
@@ -232,7 +232,7 @@ export class CommandLoader {
       if (!command) return;
 
       const locale = await resolveLocale(ctx, message.guildId);
-      const execCtx = buildPrefixContext(ctx, message, tokens, command, locale);
+      const execCtx = buildPrefixContext(ctx, message, tokens, command, locale, prefix);
       await safeExecute(command, execCtx, ctx, this.globalMiddlewares);
     });
   }
@@ -312,7 +312,21 @@ function buildSlashArgs(
   return args;
 }
 
-function buildPrefixArgs(tokens: string[], options: OptionDef[]): Record<string, unknown> {
+// A human-readable invocation hint, e.g. `!play <query>` — required options are
+// shown in <angle> brackets, optional ones in [square] brackets. Surfaced to the
+// user when a required prefix argument is missing.
+function formatUsage(prefix: string, command: CommandDefinition): string {
+  const parts = command.options.map((o) => (o.required ? `<${o.name}>` : `[${o.name}]`));
+  return [`${prefix}${command.prefix ?? command.name}`, ...parts].join(" ");
+}
+
+function buildPrefixArgs(
+  tokens: string[],
+  command: CommandDefinition,
+  usage: string,
+  t: TFunction,
+): Record<string, unknown> {
+  const options = command.options;
   const args: Record<string, unknown> = {};
   for (let i = 0; i < options.length; i++) {
     const opt = options[i];
@@ -325,7 +339,7 @@ function buildPrefixArgs(tokens: string[], options: OptionDef[]): Record<string,
         ? tokens.slice(i).join(" ") || null
         : (tokens[i] ?? null);
     if (opt.required && token === null) {
-      throw new CommandError(`Argumento "${opt.name}" é obrigatório.`);
+      throw new CommandError(t("errors.missingArg", { name: opt.name, usage }));
     }
     switch (opt.type) {
       case ApplicationCommandOptionType.String:
@@ -337,7 +351,7 @@ function buildPrefixArgs(tokens: string[], options: OptionDef[]): Record<string,
           break;
         }
         const n = parseInt(token, 10);
-        if (Number.isNaN(n)) throw new CommandError(`Argumento "${opt.name}" deve ser um número.`);
+        if (Number.isNaN(n)) throw new CommandError(t("errors.invalidNumber", { name: opt.name }));
         args[opt.name] = n;
         break;
       }
@@ -350,7 +364,7 @@ function buildPrefixArgs(tokens: string[], options: OptionDef[]): Record<string,
           break;
         }
         const n = parseFloat(token);
-        if (Number.isNaN(n)) throw new CommandError(`Argumento "${opt.name}" deve ser um número.`);
+        if (Number.isNaN(n)) throw new CommandError(t("errors.invalidNumber", { name: opt.name }));
         args[opt.name] = n;
         break;
       }
@@ -422,17 +436,19 @@ function buildPrefixContext(
   tokens: string[],
   command: CommandDefinition,
   locale: Locale,
+  prefix: string,
 ): CommandExecutionContext {
+  const t = bot.i18n.bind(locale);
   return {
     bot,
     commandName: command.name,
-    args: buildPrefixArgs(tokens, command.options) as never,
+    args: buildPrefixArgs(tokens, command, formatUsage(prefix, command), t) as never,
     raw: tokens,
     interaction: null,
     message,
     source: message.guildId ? "guild" : "dm",
     locale,
-    t: bot.i18n.bind(locale),
+    t,
     guildId: message.guildId,
     channelId: message.channelId,
     userId: message.author.id,

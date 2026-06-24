@@ -7,6 +7,8 @@ export const ptBR = {
     noPermission: "Você não tem permissão para usar esse comando.",
     cooldown: "⏳ Espere {seconds}s antes de usar esse comando de novo.",
     dbRequired: "Esse comando precisa do banco de dados habilitado.",
+    missingArg: "❌ O argumento `{name}` é obrigatório.\nUso: `{usage}`",
+    invalidNumber: "❌ O argumento `{name}` deve ser um número.",
   },
   music: {
     searching: "Procurando...",

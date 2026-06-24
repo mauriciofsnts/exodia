@@ -7,6 +7,8 @@ export const enUS = {
     noPermission: "You don't have permission to use this command.",
     cooldown: "⏳ Wait {seconds}s before using this command again.",
     dbRequired: "This command needs the database to be enabled.",
+    missingArg: "❌ The `{name}` argument is required.\nUsage: `{usage}`",
+    invalidNumber: "❌ The `{name}` argument must be a number.",
   },
   music: {
     searching: "Searching...",
