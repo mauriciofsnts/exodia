@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { createCommand } from "@/core/commandBuilder";
 import { EmbedColor, embed } from "@/lib/embeds";
 import { CommandError } from "@/lib/errors";
-import { cached } from "@/services/cache/cached";
+import { cached } from "@/infra/cache/cached";
 import { LEAGUES } from "@/services/sports/leagues/football";
 import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider";
 

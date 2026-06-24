@@ -9,7 +9,7 @@ import type { BotContext } from "@/core/context";
 import type { TFunction } from "@/i18n/index";
 import { embed } from "@/lib/embeds";
 import { CommandError } from "@/lib/errors";
-import { cached } from "@/services/cache/cached";
+import { cached } from "@/infra/cache/cached";
 import { NEWS_CATEGORIES, newsProviders } from "@/services/news/index";
 import type { NewsItem } from "@/services/news/types";
 
