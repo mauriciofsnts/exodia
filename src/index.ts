@@ -17,7 +17,10 @@ async function main() {
   // Optional persistence: connect only when DATABASE_URL is configured,
   // otherwise the bot runs fine without it (db = null, services = null).
   const db = config.DATABASE_URL ? await createDatabase(config.DATABASE_URL, logger) : null;
-  const { trackCache, votes, events, commandSync } = await createPersistence(db, logger);
+  const { trackCache, votes, events, commandSync, economy, polls } = await createPersistence(
+    db,
+    logger,
+  );
 
   const player = new PlayerManager(logger, config);
   const i18n = new I18n();
@@ -36,6 +39,8 @@ async function main() {
       votes,
       events,
       commandSync,
+      economy,
+      polls,
     },
     [adminErrorNotifier, commandCounter],
   );

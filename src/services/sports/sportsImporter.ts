@@ -1,6 +1,6 @@
 import type { Redis } from "ioredis";
-import type { Logger } from "@/lib/logger";
 import { cached } from "@/infra/cache/cached";
+import type { Logger } from "@/lib/logger";
 import type { EventRepository } from "@/services/events/eventRepository";
 import type { GuildConfigService } from "@/services/guild/guildConfig";
 import { SPORTS_CATALOG } from "./catalog";
