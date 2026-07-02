@@ -175,6 +175,7 @@ export const enUS = {
     listFooter: "{count} event(s)",
     listEmpty: "No upcoming events.",
     listEmptyWeek: "No events this week.",
+    listEmptyHint: "\n💡 Subscribe to sports fixtures with `/sportsub` to auto-fill this list.",
   },
   economy: {
     invalidUser: "❌ Couldn't find that user. Mention them or paste their ID.",

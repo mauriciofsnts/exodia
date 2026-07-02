@@ -177,6 +177,7 @@ export const ptBR = {
     listFooter: "{count} evento(s)",
     listEmpty: "Nenhum evento futuro.",
     listEmptyWeek: "Nenhum evento nesta semana.",
+    listEmptyHint: "\n💡 Assine partidas esportivas com `/sportsub` para preencher esta lista automaticamente.",
   },
   economy: {
     invalidUser: "❌ Não encontrei esse usuário. Mencione ou cole o ID.",

@@ -32,7 +32,10 @@ export default createCommand()
         : await bot.events.listThisWeek(guildId, LIST_LIMIT);
 
     if (upcoming.length === 0) {
-      await reply(scope === "all" ? t("events.listEmpty") : t("events.listEmptyWeek"));
+      const base = scope === "all" ? t("events.listEmpty") : t("events.listEmptyWeek");
+      const subs = (await bot.guildConfig.get(guildId)).sportsSubscriptions ?? [];
+      const hint = subs.length === 0 ? t("events.listEmptyHint") : "";
+      await reply(base + hint);
       return;
     }
 

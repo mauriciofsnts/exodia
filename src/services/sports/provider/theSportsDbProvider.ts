@@ -60,11 +60,14 @@ function formatWhen(event: SdbEvent): string {
   return [event.dateEvent, event.strTime?.slice(0, 5)].filter(Boolean).join(" ");
 }
 
-// TheSportsDB reports times in UTC — strTimestamp is already a full ISO
-// instant; otherwise combine the date + time fields as UTC.
+// TheSportsDB reports times in UTC, but strTimestamp comes without a "Z"
+// (e.g. "2026-07-02T23:00:00"), so new Date() would parse it in server-local
+// time — pin it to UTC. The date + time fallback is combined as UTC too.
 function parseWhen(event: SdbEvent): Date | null {
   const iso = event.strTimestamp
-    ? event.strTimestamp
+    ? event.strTimestamp.endsWith("Z")
+      ? event.strTimestamp
+      : `${event.strTimestamp}Z`
     : event.dateEvent && event.strTime
       ? `${event.dateEvent}T${event.strTime}Z`
       : null;
