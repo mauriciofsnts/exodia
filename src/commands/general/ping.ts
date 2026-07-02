@@ -22,6 +22,7 @@ export default createCommand()
   .setPrefix("ping")
   .execute(async ({ bot, reply, t }) => {
     const dbLabel = bot.db ? t("commands.ping.dbPostgres") : t("commands.ping.dbNone");
+    const audioLabel = bot.config.AUDIO_PROVIDER === "lavalink" ? "Lavalink" : "ytdl";
 
     const card = embed()
       .setTitle(t("commands.ping.title"))
@@ -32,6 +33,7 @@ export default createCommand()
           inline: true,
         },
         { name: t("commands.ping.database"), value: dbLabel, inline: true },
+        { name: t("commands.ping.audio"), value: audioLabel, inline: true },
         { name: t("commands.ping.commit"), value: `\`${getCommitHash()}\``, inline: true },
         {
           name: t("commands.ping.uptime"),

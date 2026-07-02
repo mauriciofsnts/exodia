@@ -48,6 +48,7 @@ export const enUS = {
       title: "🏓 Pong!",
       latency: "Latency",
       database: "Database",
+      audio: "Audio provider",
       commit: "Last commit",
       uptime: "Uptime",
       dbPostgres: "PostgreSQL",

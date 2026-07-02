@@ -48,6 +48,7 @@ export const ptBR = {
       title: "🏓 Pong!",
       latency: "Latência",
       database: "Banco de dados",
+      audio: "Provedor de áudio",
       commit: "Último commit",
       uptime: "No ar há",
       dbPostgres: "PostgreSQL",

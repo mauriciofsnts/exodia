@@ -9,6 +9,7 @@ import { commandCounter } from "./middlewares/commandCounter";
 import { GuildConfigService } from "./services/guild/guildConfig";
 import { createPersistence } from "./services/persistence";
 import { PlayerManager } from "./services/player/playerManager";
+import { createAudioProvider } from "./services/player/provider";
 
 async function main() {
   const cache = createCache(config, logger);
@@ -22,7 +23,7 @@ async function main() {
     logger,
   );
 
-  const player = new PlayerManager(logger, config);
+  const player = new PlayerManager(logger, config, createAudioProvider(config, logger));
   const i18n = new I18n();
   const guildConfig = new GuildConfigService(cache, config.PREFIX);
 

@@ -25,6 +25,11 @@ spec:
               value: info
             - name: PLAYER_IDLE_TIMEOUT_MS
               value: "300000"
+            # Audio backend: "ytdl" (direct YouTube) or "lavalink". ytdl needs
+            # YTDL_COOKIE (a logged-in session) to beat YouTube's bot-check from a
+            # DC IP — add it as an exodia-secret key or music will fail to stream.
+            - name: AUDIO_PROVIDER
+              value: "ytdl"
             - name: SPORTSDB_API_KEY
               value: "3"
             - name: ADMIN_USER_ID

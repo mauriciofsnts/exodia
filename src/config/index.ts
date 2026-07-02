@@ -24,6 +24,18 @@ const schema = z.object({
   SHORTENER_API_KEY: z.string().optional(),
   // TheSportsDB API key — the public test key "3" works for upcoming fixtures.
   SPORTSDB_API_KEY: z.string().default("3"),
+  // Audio backend. "ytdl" (default) streams YouTube directly via
+  // @distube/ytdl-core — needs YTDL_COOKIE to survive YouTube's bot-check off a
+  // datacenter IP (see below). "lavalink" delegates resolution + streaming to a
+  // Lavalink server, the more reliable option from a datacenter IP.
+  AUDIO_PROVIDER: z.enum(["lavalink", "ytdl"]).default("ytdl"),
+  // ytdl provider only. A logged-in YouTube session's cookies, as either a JSON
+  // array ([{ "name": "...", "value": "..." }]) or a raw Cookie header string
+  // ("k=v; k2=v2"). Required for ytdl to stream from a datacenter IP.
+  YTDL_COOKIE: z.string().optional(),
+  // ytdl provider only. Optional comma-separated InnerTube clients to try, e.g.
+  // "WEB_EMBEDDED,TV" — some clients dodge the bot-check better. Unset = library default.
+  YTDL_PLAYER_CLIENTS: z.string().optional(),
   // Lavalink connection. Audio resolution + streaming is delegated to a Lavalink
   // server (with the youtube-source plugin), which sidesteps the datacenter-IP
   // "Sign in to confirm you're not a bot" block that yt-dlp hits from k8s.

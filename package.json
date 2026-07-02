@@ -13,14 +13,19 @@
     "check": "biome check --write ."
   },
   "dependencies": {
+    "@discordjs/voice": "^0.19.2",
+    "@distube/ytdl-core": "^4.16.12",
     "croner": "^10.0.1",
     "discord.js": "^14.16.0",
     "dotenv": "^16.4.5",
     "ioredis": "^5.3.2",
+    "libsodium-wrappers": "^0.8.4",
+    "opusscript": "^0.1.1",
     "pg": "^8.21.0",
     "pino": "^9.3.2",
     "pino-pretty": "^11.2.1",
     "shoukaku": "^4.3.0",
+    "youtube-sr": "^4.3.12",
     "zod": "^3.23.8"
   },
   "devDependencies": {
