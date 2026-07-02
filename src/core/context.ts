@@ -10,6 +10,7 @@ import type { TrackSearchCache } from "@/services/music/searchCache";
 import type { VoteRepository } from "@/services/music/voteRepository";
 import type { PlayerManager } from "@/services/player/playerManager";
 import type { PollRepository } from "@/services/polls/pollRepository";
+import type { SportsImporter } from "@/services/sports/sportsImporter";
 import type { CommandDefinition } from "./commandBuilder";
 import type { CommandSyncRepository } from "./commandSync/repository";
 import type { Database } from "./database";
@@ -26,6 +27,7 @@ export interface BotContext {
   trackCache: TrackSearchCache | null; // query→track persistence; null when db is off
   votes: VoteRepository | null; // play-card reaction votes; null when db is off
   events: EventRepository | null; // scheduled guild events; null when db is off
+  sportsImporter: SportsImporter | null; // imports subscribed leagues' fixtures into events; null when db is off
   commandSync: CommandSyncRepository | null; // per-guild slash command sync state; null when db is off
   economy: EconomyRepository | null; // per-guild points ledger (grants/leaderboard/bets); null when db is off
   polls: PollRepository | null; // per-guild polls + betting/settlement; null when db is off

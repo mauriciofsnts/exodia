@@ -146,6 +146,11 @@ export async function handleSportsubComponent(ctx: ComponentExecutionContext): P
     const next = [...keepOtherSports, ...interaction.values];
     await bot.guildConfig.update(guildId, { sportsSubscriptions: next });
     await interaction.update(sportStep(ctx.t, next));
+    // Populate /events right away instead of waiting for the next scheduled
+    // import tick (up to 15 min). Fire-and-forget so the UI stays responsive.
+    void bot.sportsImporter?.run([guildId]).catch((err) => {
+      bot.logger.error({ err, guildId }, "Immediate sports import after subscribe failed");
+    });
     return;
   }
 

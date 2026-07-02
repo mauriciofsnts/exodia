@@ -6,8 +6,7 @@ import {
 } from "discord.js";
 import type { BotContext } from "@/core/context";
 import { EmbedColor, embed } from "@/lib/embeds";
-import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider";
-import { SportsImporter } from "@/services/sports/sportsImporter";
+import type { SportsImporter } from "@/services/sports/sportsImporter";
 import type { EventRepository, GuildEvent } from "./eventRepository";
 
 const TICK_PATTERN = "* * * * *"; // announce / Discord-sync — every minute
@@ -25,15 +24,7 @@ export class EventScheduler {
   private readonly sportsImporter: SportsImporter | null;
 
   constructor(private readonly ctx: BotContext) {
-    this.sportsImporter = ctx.events
-      ? new SportsImporter(
-          ctx.guildConfig,
-          ctx.events,
-          new TheSportsDbProvider(ctx.config.SPORTSDB_API_KEY),
-          ctx.cache,
-          ctx.logger,
-        )
-      : null;
+    this.sportsImporter = ctx.sportsImporter;
   }
 
   start(): void {

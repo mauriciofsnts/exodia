@@ -10,6 +10,8 @@ import { GuildConfigService } from "./services/guild/guildConfig";
 import { createPersistence } from "./services/persistence";
 import { PlayerManager } from "./services/player/playerManager";
 import { createAudioProvider } from "./services/player/provider";
+import { TheSportsDbProvider } from "./services/sports/provider/theSportsDbProvider";
+import { SportsImporter } from "./services/sports/sportsImporter";
 
 async function main() {
   const cache = createCache(config, logger);
@@ -27,6 +29,18 @@ async function main() {
   const i18n = new I18n();
   const guildConfig = new GuildConfigService(cache, config.PREFIX);
 
+  // Shared by the scheduled import job and the /sportsub wizard (immediate
+  // import on subscribe). Needs persistence — null when the db is off.
+  const sportsImporter = events
+    ? new SportsImporter(
+        guildConfig,
+        events,
+        new TheSportsDbProvider(config.SPORTSDB_API_KEY),
+        cache,
+        logger,
+      )
+    : null;
+
   const bot = new Bot(
     {
       config,
@@ -39,6 +53,7 @@ async function main() {
       trackCache,
       votes,
       events,
+      sportsImporter,
       commandSync,
       economy,
       polls,
