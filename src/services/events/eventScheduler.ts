@@ -5,6 +5,7 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import type { BotContext } from "@/core/context";
+import type { TFunction } from "@/i18n/index";
 import { EmbedColor, embed } from "@/lib/embeds";
 import type { SportsImporter } from "@/services/sports/sportsImporter";
 import type { EventRepository, GuildEvent } from "./eventRepository";
@@ -66,6 +67,7 @@ export class EventScheduler {
     const events = this.ctx.events;
     if (!events) return;
     await this.syncDiscordEvents(events);
+    await this.remindDueEvents(events);
     await this.announceDueEvents(events);
   }
 
@@ -138,12 +140,45 @@ export class EventScheduler {
     }
   }
 
+  private async remindDueEvents(events: EventRepository): Promise<void> {
+    for (const ev of await events.dueForReminder()) {
+      const guild = this.ctx.client.guilds.cache.get(ev.guildId);
+      if (!guild) continue; // retry once the guild is cached
+
+      await this.remind(ev).catch((err) => {
+        this.ctx.logger.error({ err, eventId: ev.id }, "Failed to send event reminder");
+      });
+      await events.markReminded(ev.id);
+    }
+  }
+
   private async announce(ev: GuildEvent): Promise<void> {
+    await this.post(ev, (t) =>
+      embed(EmbedColor.primary)
+        .setTitle(t("events.startingTitle"))
+        .setDescription(t("events.starting", { name: ev.name })),
+    );
+  }
+
+  private async remind(ev: GuildEvent): Promise<void> {
+    const when = `<t:${Math.floor(ev.startAt.getTime() / 1000)}:R>`;
+    await this.post(ev, (t) =>
+      embed(EmbedColor.primary)
+        .setTitle(t("events.reminderTitle"))
+        .setDescription(t("events.reminder", { name: ev.name, when })),
+    );
+  }
+
+  // Shared channel post for both the reminder and the start ping: gated on
+  // "embed" mode + a configured channel ("discord" mode relies on the native
+  // scheduled event to notify people), honouring the guild's @everyone setting.
+  private async post(
+    ev: GuildEvent,
+    build: (t: TFunction) => ReturnType<typeof embed>,
+  ): Promise<void> {
     const cfg = await this.ctx.guildConfig.get(ev.guildId);
-    // "discord" mode relies on the native scheduled event to notify people —
-    // no channel message to send.
     if (cfg.eventsMode === "discord") return;
-    if (!cfg.eventsChannelId) return; // nothing configured — mark announced and move on
+    if (!cfg.eventsChannelId) return; // nothing configured — caller still marks it done
 
     const guild = this.ctx.client.guilds.cache.get(ev.guildId);
     const channel = guild?.channels.cache.get(cfg.eventsChannelId);
@@ -154,13 +189,9 @@ export class EventScheduler {
     );
     const t = this.ctx.i18n.bind(locale);
 
-    const card = embed(EmbedColor.primary)
-      .setTitle(t("events.startingTitle"))
-      .setDescription(t("events.starting", { name: ev.name }));
-
     await channel.send({
       content: cfg.eventsMentionEveryone ? "@everyone" : undefined,
-      embeds: [card],
+      embeds: [build(t)],
       allowedMentions: { parse: cfg.eventsMentionEveryone ? ["everyone"] : [] },
     });
   }

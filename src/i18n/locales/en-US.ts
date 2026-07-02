@@ -166,6 +166,8 @@ export const enUS = {
   events: {
     startingTitle: "📣 Event starting",
     starting: "**{name}** is starting now!",
+    reminderTitle: "⏰ Event soon",
+    reminder: "**{name}** starts {when}.",
     added: "✅ Event **{name}** scheduled for {when}.",
     invalidDate: "❌ Invalid date. Use e.g. `2026-06-20T18:00`.",
     pastDate: "❌ The start time must be in the future.",

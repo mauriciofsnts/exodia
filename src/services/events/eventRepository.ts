@@ -7,6 +7,7 @@ export interface GuildEvent {
   startAt: Date;
   discordEventId: string | null;
   announced: boolean;
+  reminded: boolean;
   source: string | null; // SPORTS_CATALOG key (e.g. "football:premier") when auto-imported, else null
 }
 
@@ -17,6 +18,7 @@ interface EventRow {
   start_at: Date;
   discord_event_id: string | null;
   announced: boolean;
+  reminded: boolean;
   source: string | null;
 }
 
@@ -28,6 +30,7 @@ function toEvent(row: EventRow): GuildEvent {
     startAt: row.start_at,
     discordEventId: row.discord_event_id,
     announced: row.announced,
+    reminded: row.reminded,
     source: row.source,
   };
 }
@@ -36,6 +39,9 @@ function toEvent(row: EventRow): GuildEvent {
 // downtime around the start time) and up to one tick ahead (so it fires on time).
 const ANNOUNCE_BACKFILL = "1 hour";
 const ANNOUNCE_LEAD = "70 seconds";
+// Advance heads-up fired this far ahead of start (before the "starting now"
+// window). Change this one constant to adjust how early the reminder goes out.
+const REMINDER_LEAD = "15 minutes";
 
 // Data aging: an event is kept only until it has occurred. Once its start time
 // is past the announce backfill window (so it has had its chance to fire), it's
@@ -74,7 +80,7 @@ export class EventRepository {
 
   async listUpcoming(guildId: string, limit: number): Promise<GuildEvent[]> {
     const rows = await this.db.query<EventRow>(
-      `SELECT id, guild_id, name, start_at, discord_event_id, announced, source
+      `SELECT id, guild_id, name, start_at, discord_event_id, announced, reminded, source
          FROM guild_events
         WHERE guild_id = $1 AND start_at >= now()
         ORDER BY start_at ASC
@@ -88,7 +94,7 @@ export class EventRepository {
   // auto-imported from sports subscriptions alike).
   async listThisWeek(guildId: string, limit: number): Promise<GuildEvent[]> {
     const rows = await this.db.query<EventRow>(
-      `SELECT id, guild_id, name, start_at, discord_event_id, announced, source
+      `SELECT id, guild_id, name, start_at, discord_event_id, announced, reminded, source
          FROM guild_events
         WHERE guild_id = $1 AND start_at >= now() AND start_at < now() + interval '7 days'
         ORDER BY start_at ASC
@@ -101,7 +107,7 @@ export class EventRepository {
   // Future events not yet mirrored as a Discord scheduled event.
   async pendingDiscordCreation(): Promise<GuildEvent[]> {
     const rows = await this.db.query<EventRow>(
-      `SELECT id, guild_id, name, start_at, discord_event_id, announced, source
+      `SELECT id, guild_id, name, start_at, discord_event_id, announced, reminded, source
          FROM guild_events
         WHERE discord_event_id IS NULL AND start_at > now()`,
     );
@@ -119,7 +125,7 @@ export class EventRepository {
   // haven't been announced yet.
   async dueForAnnouncement(): Promise<GuildEvent[]> {
     const rows = await this.db.query<EventRow>(
-      `SELECT id, guild_id, name, start_at, discord_event_id, announced, source
+      `SELECT id, guild_id, name, start_at, discord_event_id, announced, reminded, source
          FROM guild_events
         WHERE announced = FALSE
           AND start_at <= now() + interval '${ANNOUNCE_LEAD}'
@@ -130,6 +136,24 @@ export class EventRepository {
 
   async markAnnounced(id: string): Promise<void> {
     await this.db.execute(`UPDATE guild_events SET announced = TRUE WHERE id = $1`, [id]);
+  }
+
+  // Upcoming events entering the heads-up window: more than ANNOUNCE_LEAD away
+  // (so this stays distinct from the "starting now" ping) but within
+  // REMINDER_LEAD of start, and not yet reminded. Fires the advance reminder.
+  async dueForReminder(): Promise<GuildEvent[]> {
+    const rows = await this.db.query<EventRow>(
+      `SELECT id, guild_id, name, start_at, discord_event_id, announced, reminded, source
+         FROM guild_events
+        WHERE reminded = FALSE
+          AND start_at > now() + interval '${ANNOUNCE_LEAD}'
+          AND start_at <= now() + interval '${REMINDER_LEAD}'`,
+    );
+    return rows.map(toEvent);
+  }
+
+  async markReminded(id: string): Promise<void> {
+    await this.db.execute(`UPDATE guild_events SET reminded = TRUE WHERE id = $1`, [id]);
   }
 
   // Number of auto-imported (sports) fixtures still upcoming. Zero means we have

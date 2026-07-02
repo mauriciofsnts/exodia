@@ -168,6 +168,8 @@ export const ptBR = {
   events: {
     startingTitle: "📣 Evento começando",
     starting: "**{name}** está começando agora!",
+    reminderTitle: "⏰ Evento em breve",
+    reminder: "**{name}** começa {when}.",
     added: "✅ Evento **{name}** agendado para {when}.",
     invalidDate: "❌ Data inválida. Use, por ex.: `2026-06-20T18:00`.",
     pastDate: "❌ O horário de início deve estar no futuro.",
