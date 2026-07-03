@@ -114,6 +114,11 @@ export const ptBR = {
         leagueTitle: "{sport} — escolha os campeonatos",
         leagueDesc:
           "Selecione todos os campeonatos que devem ser importados. Desmarcar remove a inscrição.",
+        modeTitle: "{sport} — modo de anúncio",
+        modeDesc:
+          "Escolha as ligas que devem anunciar **todos** os jogos. As demais ficam no modo follow: os novos jogos são postados em lista e só os jogos que alguém seguir são marcados.",
+        modePlaceholder: "Ligas anunciando todos os jogos",
+        followTag: "só seguidos",
         back: "⬅️ Voltar",
         done: "Concluir",
         doneTitle: "✅ Inscrições em esportes salvas",
@@ -181,6 +186,18 @@ export const ptBR = {
     listEmptyWeek: "Nenhum evento nesta semana.",
     listEmptyHint:
       "\n💡 Assine partidas esportivas com `/sportsub` para preencher esta lista automaticamente.",
+    venueField: "📍 Local",
+    watchField: "📺 Onde assistir",
+    followButton: "Seguir",
+    followPrompt: "🔔 Siga um evento para ser marcado",
+    followed: "🔔 Você está seguindo **{name}** — será marcado quando começar.",
+    unfollowed: "🔕 Você deixou de seguir **{name}**.",
+    followGone: "❌ Esse evento não está mais disponível.",
+    digestTitle: "🗓️ Próximos jogos: {league}",
+    digestHint: "Siga um jogo abaixo para ser marcado quando começar.",
+    detailWhen: "🗓️ Começa {when}",
+    followersField: "🔔 Seguidores",
+    notFound: "❌ Nenhum evento futuro encontrado.",
   },
   economy: {
     invalidUser: "❌ Não encontrei esse usuário. Mencione ou cole o ID.",

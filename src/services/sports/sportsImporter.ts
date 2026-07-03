@@ -1,13 +1,16 @@
 import type { Redis } from "ioredis";
 import { cached } from "@/infra/cache/cached";
 import type { Logger } from "@/lib/logger";
-import type { EventRepository } from "@/services/events/eventRepository";
+import type { EventDetails, EventRepository } from "@/services/events/eventRepository";
 import type { GuildConfigService } from "@/services/guild/guildConfig";
 import { SPORTS_CATALOG } from "./catalog";
 import type { Match, MatchProvider } from "./provider/types";
 
 const FIXTURES_PER_LEAGUE = 20; // headroom over the /matches display limit
 const FETCH_CACHE_TTL = 1800; // 30 min — how often each league is actually fetched
+// TV data changes rarely and the reminder + start announcement land ~15 min
+// apart — one fetch covers both.
+const TV_CACHE_TTL = 3 * 3600;
 
 // Fetches upcoming fixtures for every league guilds subscribed to (via
 // `/sportsub`) and inserts them as guild_events, deduped by provider event id.
@@ -50,6 +53,23 @@ export class SportsImporter {
     }
   }
 
+  // "Where to watch" channels for one fixture, by the provider's event id.
+  // Best-effort: cached, and any failure degrades to "no channels" — a TV
+  // lookup problem must never block an announcement.
+  async whereToWatch(externalId: string): Promise<string[]> {
+    const tvChannels = this.provider.tvChannels?.bind(this.provider);
+    if (!tvChannels) return [];
+
+    try {
+      return await cached(this.cache, `cache:sportstv:${externalId}`, TV_CACHE_TTL, () =>
+        tvChannels(externalId),
+      );
+    } catch (err) {
+      this.logger.warn({ err, externalId }, "Failed to fetch TV channels for fixture");
+      return [];
+    }
+  }
+
   private async fetchUpcoming(catalogKey: string): Promise<Match[] | null> {
     const league = SPORTS_CATALOG[catalogKey];
     if (!league) return null;
@@ -74,8 +94,26 @@ export class SportsImporter {
     const startAt = fixture.startsAtDate ? new Date(fixture.startsAtDate) : null;
     if (!startAt || startAt.getTime() <= Date.now()) return;
 
+    const details: EventDetails = {
+      home: fixture.home,
+      away: fixture.away,
+      competition: fixture.competition || undefined,
+      venue: fixture.venue,
+      homeBadge: fixture.homeBadge,
+      awayBadge: fixture.awayBadge,
+      leagueBadge: fixture.leagueBadge,
+      thumb: fixture.thumb,
+    };
+
     await this.events
-      .createIfNew(guildId, `${fixture.home} vs ${fixture.away}`, startAt, catalogKey, fixture.id)
+      .createIfNew(
+        guildId,
+        `${fixture.home} vs ${fixture.away}`,
+        startAt,
+        catalogKey,
+        fixture.id,
+        details,
+      )
       .catch((err) => {
         this.logger.error(
           { err, guildId, catalogKey, fixtureId: fixture.id },

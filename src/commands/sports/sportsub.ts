@@ -7,7 +7,7 @@ import { handleSportsubComponent, sportStep } from "@/services/sports/sportsubWi
 
 export default createCommand()
   .setName("sportsub")
-  .setDescription("Subscribe this server to auto-import sports fixtures as events")
+  .setDescription("Subscribe to sports leagues and choose how their matches are announced")
   .setPrefix("sportsub")
   .use(guildOnly)
   .use(requirePermission(PermissionFlagsBits.ManageGuild))
@@ -16,7 +16,7 @@ export default createCommand()
     if (!guildId) throw new CommandError(t("errors.guildOnly"));
     if (!bot.events) throw new CommandError(t("errors.dbRequired"));
 
-    const subs = (await bot.guildConfig.get(guildId)).sportsSubscriptions ?? [];
-    await respond(sportStep(t, subs));
+    const cfg = await bot.guildConfig.get(guildId);
+    await respond(sportStep(t, cfg.sportsSubscriptions ?? [], cfg.sportsSubscriptionModes ?? {}));
   })
   .build();

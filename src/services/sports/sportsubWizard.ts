@@ -11,9 +11,18 @@ import {
 import type { ComponentExecutionContext } from "@/core/commandBuilder";
 import type { TFunction } from "@/i18n/index";
 import { EmbedColor, embed } from "@/lib/embeds";
+import type { SportsSubMode } from "@/services/guild/guildConfig";
 import { SPORTS_CATALOG, type Sport } from "./catalog";
 
 const SPORTS: Sport[] = ["football", "basketball", "f1"];
+
+type SubModes = Record<string, SportsSubMode>;
+
+// Missing entry = "all" — subscriptions made before modes existed announce
+// every match, exactly as they always did.
+function modeOf(modes: SubModes, key: string): SportsSubMode {
+  return modes[key] ?? "all";
+}
 
 interface WizardPayload {
   embeds: ReturnType<typeof embed>[];
@@ -36,14 +45,21 @@ function leaguesBySport(sport: Sport): Array<{ key: string; label: string }> {
     .map(([key, league]) => ({ key, label: league.label }));
 }
 
-function summarize(t: TFunction, subs: string[]): string {
+function summarize(t: TFunction, subs: string[], modes: SubModes): string {
   if (subs.length === 0) return t("commands.sportsub.wizard.none");
-  return subs.map((key) => SPORTS_CATALOG[key]?.label ?? key).join(", ");
+  return subs
+    .map((key) => {
+      const label = SPORTS_CATALOG[key]?.label ?? key;
+      return modeOf(modes, key) === "follow"
+        ? `${label} (${t("commands.sportsub.wizard.followTag")})`
+        : label;
+    })
+    .join(", ");
 }
 
 // Step 1: pick a sport. Shows the current subscriptions across every sport so
 // the wizard doubles as a "list" view.
-export function sportStep(t: TFunction, subs: string[]): WizardPayload {
+export function sportStep(t: TFunction, subs: string[], modes: SubModes): WizardPayload {
   const buttons = SPORTS.map((sport) =>
     new ButtonBuilder()
       .setCustomId(`sportsub:sport:${sport}`)
@@ -60,7 +76,10 @@ export function sportStep(t: TFunction, subs: string[]): WizardPayload {
       embed(EmbedColor.sports)
         .setTitle(t("commands.sportsub.wizard.sportTitle"))
         .setDescription(t("commands.sportsub.wizard.sportDesc"))
-        .addFields({ name: t("commands.sportsub.wizard.current"), value: summarize(t, subs) }),
+        .addFields({
+          name: t("commands.sportsub.wizard.current"),
+          value: summarize(t, subs, modes),
+        }),
     ],
     components: [row(...buttons), row(done)],
   };
@@ -100,13 +119,51 @@ export function leagueStep(t: TFunction, sport: Sport, subs: string[]): WizardPa
   };
 }
 
+// Step 3: per-league announcement mode for the sport just configured. Leagues
+// selected in the multi-select announce every match ("all"); the rest go
+// follow-only — new fixtures are posted as a digest and only followed matches
+// get the reminder/start pings.
+export function modeStep(
+  t: TFunction,
+  sport: Sport,
+  subs: string[],
+  modes: SubModes,
+): WizardPayload {
+  const leagues = leaguesBySport(sport).filter(({ key }) => subs.includes(key));
+
+  const menu = new StringSelectMenuBuilder()
+    .setCustomId(`sportsub:modes:${sport}`)
+    .setPlaceholder(t("commands.sportsub.wizard.modePlaceholder"))
+    .setMinValues(0)
+    .setMaxValues(leagues.length)
+    .addOptions(
+      leagues.map((league) => ({
+        label: league.label,
+        value: league.key,
+        default: modeOf(modes, league.key) === "all",
+      })),
+    );
+
+  return {
+    embeds: [
+      embed(EmbedColor.sports)
+        .setTitle(t("commands.sportsub.wizard.modeTitle", { sport: sportLabel(t, sport) }))
+        .setDescription(t("commands.sportsub.wizard.modeDesc")),
+    ],
+    components: [row(menu)],
+  };
+}
+
 // Final screen: just the summary, no components — closes the wizard.
-export function doneStep(t: TFunction, subs: string[]): WizardPayload {
+export function doneStep(t: TFunction, subs: string[], modes: SubModes): WizardPayload {
   return {
     embeds: [
       embed(EmbedColor.success)
         .setTitle(t("commands.sportsub.wizard.doneTitle"))
-        .addFields({ name: t("commands.sportsub.wizard.current"), value: summarize(t, subs) }),
+        .addFields({
+          name: t("commands.sportsub.wizard.current"),
+          value: summarize(t, subs, modes),
+        }),
     ],
     components: [],
   };
@@ -132,7 +189,9 @@ export async function handleSportsubComponent(ctx: ComponentExecutionContext): P
   }
 
   const [step, value] = args;
-  const subs = (await bot.guildConfig.get(guildId)).sportsSubscriptions ?? [];
+  const cfg = await bot.guildConfig.get(guildId);
+  const subs = cfg.sportsSubscriptions ?? [];
+  const modes = cfg.sportsSubscriptionModes ?? {};
 
   if (step === "sport") {
     await interaction.update(leagueStep(ctx.t, value as Sport, subs));
@@ -144,8 +203,21 @@ export async function handleSportsubComponent(ctx: ComponentExecutionContext): P
     const sport = value as Sport;
     const keepOtherSports = subs.filter((key) => SPORTS_CATALOG[key]?.sport !== sport);
     const next = [...keepOtherSports, ...interaction.values];
-    await bot.guildConfig.update(guildId, { sportsSubscriptions: next });
-    await interaction.update(sportStep(ctx.t, next));
+    // Drop mode entries for leagues no longer subscribed anywhere.
+    const nextModes = Object.fromEntries(
+      Object.entries(modes).filter(([key]) => next.includes(key)),
+    );
+    await bot.guildConfig.update(guildId, {
+      sportsSubscriptions: next,
+      sportsSubscriptionModes: nextModes,
+    });
+    // With leagues picked, choose their announcement mode; nothing subscribed
+    // for this sport → straight back to the sport list.
+    await interaction.update(
+      interaction.values.length > 0
+        ? modeStep(ctx.t, sport, next, nextModes)
+        : sportStep(ctx.t, next, nextModes),
+    );
     // Populate /events right away instead of waiting for the next scheduled
     // import tick (up to 15 min). Fire-and-forget so the UI stays responsive.
     void bot.sportsImporter?.run([guildId]).catch((err) => {
@@ -154,12 +226,40 @@ export async function handleSportsubComponent(ctx: ComponentExecutionContext): P
     return;
   }
 
+  if (step === "modes") {
+    if (!interaction.isStringSelectMenu()) return;
+    const sport = value as Sport;
+    const announceAll = new Set(interaction.values);
+    const nextModes: typeof modes = { ...modes };
+    const flippedToFollow: string[] = [];
+    for (const key of subs) {
+      if (SPORTS_CATALOG[key]?.sport !== sport) continue;
+      if (announceAll.has(key)) {
+        delete nextModes[key]; // "all" is the default — keep config lean
+      } else {
+        if (modeOf(modes, key) === "all") flippedToFollow.push(key);
+        nextModes[key] = "follow";
+      }
+    }
+    await bot.guildConfig.update(guildId, { sportsSubscriptionModes: nextModes });
+    // Fixtures already imported under "all" (including the immediate import
+    // right after the league step) were digest-marked silently — re-list them
+    // so the follow list actually gets posted.
+    for (const key of flippedToFollow) {
+      await bot.events?.relistUpcoming(guildId, key).catch((err) => {
+        bot.logger.error({ err, guildId, key }, "Failed to re-list fixtures after mode change");
+      });
+    }
+    await interaction.update(sportStep(ctx.t, subs, nextModes));
+    return;
+  }
+
   if (step === "back") {
-    await interaction.update(sportStep(ctx.t, subs));
+    await interaction.update(sportStep(ctx.t, subs, modes));
     return;
   }
 
   if (step === "done") {
-    await interaction.update(doneStep(ctx.t, subs));
+    await interaction.update(doneStep(ctx.t, subs, modes));
   }
 }

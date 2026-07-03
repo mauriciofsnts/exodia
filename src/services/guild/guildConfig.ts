@@ -6,6 +6,12 @@ import type { Locale } from "@/i18n/index";
 // Discord scheduled event instead and skips the channel message entirely.
 export type EventsMode = "embed" | "discord";
 
+// Per-league announcement policy for sports subscriptions:
+// "all" announces every imported fixture (reminder + start ping);
+// "follow" only lists new fixtures in a digest — a fixture is announced only
+// when at least one user followed it.
+export type SportsSubMode = "all" | "follow";
+
 export interface GuildConfig {
   prefix?: string;
   locale?: Locale;
@@ -15,6 +21,7 @@ export interface GuildConfig {
   eventsChannelId?: string; // where to post the embed when eventsMode is "embed"
   eventsMentionEveryone?: boolean; // prefix the embed announcement with @everyone
   sportsSubscriptions?: string[]; // SPORTS_CATALOG keys (e.g. "football:premier") to auto-import as events
+  sportsSubscriptionModes?: Record<string, SportsSubMode>; // per-league policy; missing key = "all"
 }
 
 const configKey = (guildId: string) => `guild:${guildId}:config`;
