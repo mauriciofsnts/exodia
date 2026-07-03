@@ -4,6 +4,7 @@ import { Client, GatewayIntentBits, Partials } from "discord.js";
 import { getCommitHash } from "@/lib/version";
 import { notifyAdmin } from "@/middlewares/adminErrorNotifier";
 import { EventScheduler } from "@/services/events/eventScheduler";
+import { FreeGamesScheduler } from "@/services/freegames/freeGamesScheduler";
 import { onboardGuild } from "@/services/guild/onboarding";
 import type { Middleware } from "./commandBuilder";
 import { CommandLoader } from "./commandLoader";
@@ -16,6 +17,7 @@ export class Bot {
   private client: Client;
   private loader = new CommandLoader();
   private scheduler: EventScheduler | null = null;
+  private freeGamesScheduler: FreeGamesScheduler | null = null;
 
   constructor(
     private ctx: Omit<BotContext, "client" | "commands">,
@@ -83,6 +85,11 @@ export class Bot {
       this.scheduler = new EventScheduler(ctx);
       this.scheduler.start();
 
+      // Poll free-game providers and fan new offers out to subscribed guilds
+      // (no-op without a db).
+      this.freeGamesScheduler = new FreeGamesScheduler(ctx);
+      this.freeGamesScheduler.start();
+
       // Catch up guilds that already finished setup but fell behind on synced
       // commands (e.g. a command was added after they ran setup). Guilds that
       // haven't finished setup get synced when their wizard completes instead.
@@ -110,6 +117,7 @@ export class Bot {
       ctx.logger.info(`${signal} received — shutting down`);
 
       this.scheduler?.stop();
+      this.freeGamesScheduler?.stop();
       ctx.player.destroyAll();
       this.client.destroy();
       ctx.cache.disconnect();

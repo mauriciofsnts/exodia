@@ -8,6 +8,7 @@ export const EmbedColor = {
   danger: 0xed4245,
   music: 0x5865f2,
   sports: 0x2ecc71,
+  freegames: 0x9b59b6,
 } as const;
 
 // Base embed factory — pick a palette color and start building.

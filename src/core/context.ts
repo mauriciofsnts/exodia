@@ -5,6 +5,7 @@ import type { I18n } from "@/i18n/index";
 import type { Logger } from "@/lib/logger";
 import type { EconomyRepository } from "@/services/economy/economyRepository";
 import type { EventRepository } from "@/services/events/eventRepository";
+import type { FreeGamesRepository } from "@/services/freegames/freeGamesRepository";
 import type { GuildConfigService } from "@/services/guild/guildConfig";
 import type { TrackSearchCache } from "@/services/music/searchCache";
 import type { VoteRepository } from "@/services/music/voteRepository";
@@ -31,5 +32,6 @@ export interface BotContext {
   commandSync: CommandSyncRepository | null; // per-guild slash command sync state; null when db is off
   economy: EconomyRepository | null; // per-guild points ledger (grants/leaderboard/bets); null when db is off
   polls: PollRepository | null; // per-guild polls + betting/settlement; null when db is off
+  freeGames: FreeGamesRepository | null; // free-game catalog + per-guild posted tracking; null when db is off
   commands: CommandDefinition[]; // all loaded commands — populated by Bot after load (for /help)
 }

@@ -1,5 +1,6 @@
 import type { Redis } from "ioredis";
 import type { Locale } from "@/i18n/index";
+import type { FreeGameStore } from "@/services/freegames/types";
 
 // How a guild wants to be notified when a guild_events row starts:
 // "embed" posts a rich embed in `eventsChannelId`; "discord" creates a native
@@ -22,6 +23,10 @@ export interface GuildConfig {
   eventsMentionEveryone?: boolean; // prefix the embed announcement with @everyone
   sportsSubscriptions?: string[]; // SPORTS_CATALOG keys (e.g. "football:premier") to auto-import as events
   sportsSubscriptionModes?: Record<string, SportsSubMode>; // per-league policy; missing key = "all"
+  freeGamesEnabled?: boolean; // post new free games to freeGamesChannelId
+  freeGamesChannelId?: string; // deliberately separate from eventsChannelId
+  freeGamesStores?: FreeGameStore[]; // store filter; missing = all stores
+  freeGamesMentionEveryone?: boolean; // prefix free-game posts with @everyone
 }
 
 const configKey = (guildId: string) => `guild:${guildId}:config`;

@@ -4,6 +4,7 @@ import { runMigrations } from "@/infra/db/migrate";
 import type { Logger } from "@/lib/logger";
 import { EconomyRepository } from "./economy/economyRepository";
 import { EventRepository } from "./events/eventRepository";
+import { FreeGamesRepository } from "./freegames/freeGamesRepository";
 import { TrackSearchCache } from "./music/searchCache";
 import { VoteRepository } from "./music/voteRepository";
 import { PollRepository } from "./polls/pollRepository";
@@ -17,6 +18,7 @@ export interface PersistenceServices {
   commandSync: CommandSyncRepository | null;
   economy: EconomyRepository | null;
   polls: PollRepository | null;
+  freeGames: FreeGamesRepository | null;
 }
 
 // Brings the schema up to date (runMigrations) and constructs every DB-backed
@@ -35,6 +37,7 @@ export async function createPersistence(
       commandSync: null,
       economy: null,
       polls: null,
+      freeGames: null,
     };
 
   await runMigrations(db, logger);
@@ -47,5 +50,6 @@ export async function createPersistence(
     commandSync: new CommandSyncRepository(db),
     economy,
     polls: new PollRepository(db, economy),
+    freeGames: new FreeGamesRepository(db),
   };
 }
