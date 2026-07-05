@@ -51,6 +51,8 @@ export class GamerPowerProvider implements FreeGameProvider {
       // skipping them here is the cross-provider dedup.
       const platforms = item.platforms ?? "";
       if (platforms.includes("Epic Games Store")) continue;
+      // itch.io giveaways are mostly tiny indie/asset freebies — skip them.
+      if (platforms.toLowerCase().includes("itch.io")) continue;
 
       const url = item.open_giveaway_url ?? item.gamerpower_url;
       if (!url) continue;
