@@ -26,6 +26,8 @@ export interface GuildEvent {
   externalId: string | null; // provider's event id when auto-imported, else null
   details: EventDetails | null;
   listed: boolean; // been through the follow-only digest pass (see dueForListing)
+  cardChannelId: string | null; // channel of the posted reminder/announcement card, if any
+  cardMessageId: string | null; // the card message itself — the "starting now" ping edits it instead of posting anew
 }
 
 interface EventRow {
@@ -40,11 +42,13 @@ interface EventRow {
   external_id: string | null;
   details: EventDetails | null;
   listed: boolean;
+  card_channel_id: string | null;
+  card_message_id: string | null;
 }
 
 // Shared column list so every SELECT returns a complete EventRow.
 const COLUMNS =
-  "id, guild_id, name, start_at, discord_event_id, announced, reminded, source, external_id, details, listed";
+  "id, guild_id, name, start_at, discord_event_id, announced, reminded, source, external_id, details, listed, card_channel_id, card_message_id";
 
 function toEvent(row: EventRow): GuildEvent {
   return {
@@ -59,6 +63,8 @@ function toEvent(row: EventRow): GuildEvent {
     externalId: row.external_id,
     details: row.details,
     listed: row.listed,
+    cardChannelId: row.card_channel_id,
+    cardMessageId: row.card_message_id,
   };
 }
 
@@ -209,6 +215,16 @@ export class EventRepository {
 
   async markReminded(id: string): Promise<void> {
     await this.db.execute(`UPDATE guild_events SET reminded = TRUE WHERE id = $1`, [id]);
+  }
+
+  // Remembers the channel message a reminder/announcement card was posted as,
+  // so a later post for the same event (the "starting now" ping) can edit it
+  // in place instead of sending a second message.
+  async markCardMessage(id: string, channelId: string, messageId: string): Promise<void> {
+    await this.db.execute(
+      `UPDATE guild_events SET card_channel_id = $2, card_message_id = $3 WHERE id = $1`,
+      [id, channelId, messageId],
+    );
   }
 
   // Freshly imported fixtures that haven't been through the digest pass yet.

@@ -1,6 +1,3 @@
-// Generators for fake-but-structurally-valid Brazilian documents and a test
-// card. For test data only — the check digits are valid, the data is not real.
-
 function randomDigits(length: number): number[] {
   return Array.from({ length }, () => Math.floor(Math.random() * 10));
 }
@@ -26,7 +23,6 @@ export function generateCpf(): string {
 }
 
 export function generateCnpj(): string {
-  // 8 random digits + "0001" headquarters branch + 2 check digits.
   const base = [...randomDigits(8), 0, 0, 0, 1];
   const d1 = mod11(base, 5);
   const d2 = mod11([...base, d1], 6);
@@ -34,13 +30,10 @@ export function generateCnpj(): string {
   return all.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
 }
 
-// Luhn check digit for a number missing its final digit.
 function luhnCheckDigit(digits: number[]): number {
   let sum = 0;
   const reversed = [...digits].reverse();
   for (let i = 0; i < reversed.length; i++) {
-    // In the full number the check digit sits at the rightmost position, so each
-    // existing digit shifts one left — double those at even reversed indices.
     let d = reversed[i];
     if (i % 2 === 0) {
       d *= 2;
@@ -52,7 +45,6 @@ function luhnCheckDigit(digits: number[]): number {
 }
 
 export function generateCard(): string {
-  // Mastercard: 16 digits starting 51–55, last digit Luhn-valid.
   const base = [5, 1 + Math.floor(Math.random() * 5), ...randomDigits(13)];
   const check = luhnCheckDigit(base);
   const all = [...base, check].join("");
@@ -60,7 +52,6 @@ export function generateCard(): string {
 }
 
 export function generateRg(): string {
-  // SP-style RG: 8 digits + a mod-11 check digit (which may be X).
   const base = randomDigits(8);
   const sum = base.reduce((acc, digit, i) => acc + digit * (i + 2), 0);
   const dvNum = 11 - (sum % 11);
@@ -69,7 +60,6 @@ export function generateRg(): string {
 }
 
 export function generateCep(): string {
-  // CEP has no check digit — just a plausible 8-digit code.
   return randomDigits(8)
     .join("")
     .replace(/(\d{5})(\d{3})/, "$1-$2");
