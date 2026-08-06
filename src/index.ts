@@ -10,6 +10,7 @@ import { GuildConfigService } from "./services/guild/guildConfig";
 import { createPersistence } from "./services/persistence";
 import { PlayerManager } from "./services/player/playerManager";
 import { createAudioProvider } from "./services/player/provider";
+import { FootballDataProvider } from "./services/sports/provider/footballDataProvider";
 import { TheSportsDbProvider } from "./services/sports/provider/theSportsDbProvider";
 import { SportsImporter } from "./services/sports/sportsImporter";
 
@@ -27,6 +28,12 @@ async function main() {
   const i18n = new I18n();
   const guildConfig = new GuildConfigService(cache, config.PREFIX);
 
+  // Preferred source for football leagues (see leagues/football.ts) — unset
+  // FOOTBALL_DATA_API_KEY falls back to TheSportsDB for every sport, as before.
+  const footballData = config.FOOTBALL_DATA_API_KEY
+    ? new FootballDataProvider(config.FOOTBALL_DATA_API_KEY)
+    : null;
+
   // Shared by the scheduled import job and the /sportsub wizard (immediate
   // import on subscribe). Needs persistence — null when the db is off.
   const sportsImporter = events
@@ -34,6 +41,7 @@ async function main() {
         guildConfig,
         events,
         new TheSportsDbProvider(config.SPORTSDB_API_KEY),
+        footballData,
         cache,
         logger,
       )

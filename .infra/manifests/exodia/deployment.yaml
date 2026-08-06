@@ -32,6 +32,15 @@ spec:
               value: "ytdl"
             - name: SPORTSDB_API_KEY
               value: "3"
+            # Optional: unlocks the full weekly football schedule instead of
+            # TheSportsDB's 1-fixture cap. Add football-data-api-key to
+            # exodia-secret to enable (register free at football-data.org).
+            - name: FOOTBALL_DATA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exodia-secret
+                  key: football-data-api-key
+                  optional: true
             - name: ADMIN_USER_ID
               valueFrom:
                 secretKeyRef:

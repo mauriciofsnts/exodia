@@ -8,9 +8,16 @@ export interface SportLeague {
   sport: Sport;
   id: string; // TheSportsDB league id
   label: string;
+  // football-data.org competition code — only football's free-tier leagues
+  // have one (see leagues/football.ts). When set and FOOTBALL_DATA_API_KEY is
+  // configured, the importer prefers it over TheSportsDB for this league.
+  footballDataCode?: string;
 }
 
-const BY_SPORT: Record<Sport, Record<string, { id: string; label: string }>> = {
+const BY_SPORT: Record<
+  Sport,
+  Record<string, { id: string; label: string; footballDataCode?: string }>
+> = {
   football: FOOTBALL_LEAGUES,
   basketball: BASKETBALL_LEAGUES,
   f1: F1_LEAGUES,
@@ -23,7 +30,12 @@ export const SPORTS_CATALOG: Record<string, SportLeague> = Object.fromEntries(
   Object.entries(BY_SPORT).flatMap(([sport, leagues]) =>
     Object.entries(leagues).map(([key, league]) => [
       `${sport}:${key}`,
-      { sport: sport as Sport, id: league.id, label: league.label },
+      {
+        sport: sport as Sport,
+        id: league.id,
+        label: league.label,
+        footballDataCode: league.footballDataCode,
+      },
     ]),
   ),
 );

@@ -22,8 +22,15 @@ const schema = z.object({
   // Optional: when set, the shortener uses the Shurl provider (JSON/POST, API key
   // auth) pointed at SHORTENER_ENDPOINT instead of the GET-based provider.
   SHORTENER_API_KEY: z.string().optional(),
-  // TheSportsDB API key — the public test key "3" works for upcoming fixtures.
+  // TheSportsDB API key — the public test key "3" works for upcoming fixtures,
+  // but caps them at 1 per league. Used for basketball/F1, and as football's
+  // fallback when FOOTBALL_DATA_API_KEY is unset.
   SPORTSDB_API_KEY: z.string().default("3"),
+  // Optional: football-data.org API token (free — register at
+  // https://www.football-data.org/client/register). When set, football
+  // fixtures for its 8 free-tier competitions (see leagues/football.ts) come
+  // from there instead of TheSportsDB, unlocking the full upcoming schedule.
+  FOOTBALL_DATA_API_KEY: z.string().optional(),
   // Audio backend. "ytdl" (default) streams YouTube directly via
   // @distube/ytdl-core — needs YTDL_COOKIE to survive YouTube's bot-check off a
   // datacenter IP (see below). "lavalink" delegates resolution + streaming to a

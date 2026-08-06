@@ -97,6 +97,10 @@ export const enUS = {
       failed: "❌ Couldn't fetch matches right now.",
       unknown: "❌ Unknown championship.",
     },
+    importFootball: {
+      noSubs: "This server has no football subscriptions — use `/sportsub` first.",
+      done: "⚽ Refreshed {leagues} competition(s), found {fixtures} fixture(s). Check `/events`.",
+    },
     freegames: {
       empty: "No free games right now — check back later.",
       listTitle: "🎁 Free games right now",

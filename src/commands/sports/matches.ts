@@ -4,6 +4,7 @@ import { cached } from "@/infra/cache/cached";
 import { EmbedColor, embed } from "@/lib/embeds";
 import { CommandError } from "@/lib/errors";
 import { LEAGUES } from "@/services/sports/leagues/football";
+import { FootballDataProvider } from "@/services/sports/provider/footballDataProvider";
 import { TheSportsDbProvider } from "@/services/sports/provider/theSportsDbProvider";
 
 const LIMIT = 8;
@@ -32,8 +33,16 @@ export default createCommand()
 
     await defer();
 
-    const { kind, matches } = await cached(bot.cache, `cache:matches:${league.id}`, CACHE_TTL, () =>
-      new TheSportsDbProvider(bot.config.SPORTSDB_API_KEY).matches(league.id, LIMIT),
+    // Prefer football-data.org when configured — TheSportsDB's free test key
+    // caps upcoming fixtures at 1 per league.
+    const useFootballData = Boolean(league.footballDataCode && bot.config.FOOTBALL_DATA_API_KEY);
+    const provider = useFootballData
+      ? new FootballDataProvider(bot.config.FOOTBALL_DATA_API_KEY as string)
+      : new TheSportsDbProvider(bot.config.SPORTSDB_API_KEY);
+    const leagueRef = useFootballData ? (league.footballDataCode as string) : league.id;
+
+    const { kind, matches } = await cached(bot.cache, `cache:matches:${leagueRef}`, CACHE_TTL, () =>
+      provider.matches(leagueRef, LIMIT),
     ).catch(() => {
       throw new CommandError(t("commands.matches.failed"));
     });

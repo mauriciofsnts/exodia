@@ -97,6 +97,10 @@ export const ptBR = {
       failed: "❌ Não consegui buscar as partidas agora.",
       unknown: "❌ Campeonato desconhecido.",
     },
+    importFootball: {
+      noSubs: "Esse servidor não tem inscrições de futebol — use `/sportsub` primeiro.",
+      done: "⚽ Atualizei {leagues} competição(ões), encontrei {fixtures} jogo(s). Confira `/events`.",
+    },
     freegames: {
       empty: "Nenhum jogo grátis no momento — volte mais tarde.",
       listTitle: "🎁 Jogos grátis agora",

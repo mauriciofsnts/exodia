@@ -44,7 +44,7 @@ export default createCommand()
 
     const watchOn =
       ev.externalId && bot.sportsImporter
-        ? await bot.sportsImporter.whereToWatch(ev.externalId)
+        ? await bot.sportsImporter.whereToWatch(ev.source, ev.externalId)
         : [];
 
     const start = Math.floor(ev.startAt.getTime() / 1000);

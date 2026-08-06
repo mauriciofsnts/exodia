@@ -20,7 +20,11 @@ export class SportsImporter {
   constructor(
     private readonly guildConfig: GuildConfigService,
     private readonly events: EventRepository,
-    private readonly provider: MatchProvider,
+    private readonly theSportsDb: MatchProvider,
+    // Preferred source for football leagues that have a footballDataCode —
+    // null when FOOTBALL_DATA_API_KEY isn't configured, falling back to
+    // theSportsDb for every sport as before.
+    private readonly footballData: MatchProvider | null,
     private readonly cache: Redis,
     private readonly logger: Logger,
   ) {}
@@ -53,11 +57,43 @@ export class SportsImporter {
     }
   }
 
+  // Manual re-fetch of this guild's football subscriptions, bypassing the
+  // 30-min fetch cache — backs the `!importfootball` admin command so a fresh
+  // fixture list shows up immediately instead of waiting for the next
+  // scheduled import (or the cache to expire).
+  async forceFootballImport(guildId: string): Promise<{ leagues: number; fixtures: number }> {
+    const subs = ((await this.guildConfig.get(guildId)).sportsSubscriptions ?? []).filter(
+      (key) => SPORTS_CATALOG[key]?.sport === "football",
+    );
+    if (subs.length === 0) return { leagues: 0, fixtures: 0 };
+
+    await Promise.all(
+      subs.map((key) => this.cache.del(`cache:sportsimport:${key}`).catch(() => {})),
+    );
+
+    let fixtures = 0;
+    for (const key of subs) {
+      const matches = await this.fetchUpcoming(key);
+      if (!matches) continue;
+      fixtures += matches.length;
+      for (const fixture of matches) {
+        await this.importFixture(guildId, key, fixture);
+      }
+    }
+    return { leagues: subs.length, fixtures };
+  }
+
   // "Where to watch" channels for one fixture, by the provider's event id.
   // Best-effort: cached, and any failure degrades to "no channels" — a TV
-  // lookup problem must never block an announcement.
-  async whereToWatch(externalId: string): Promise<string[]> {
-    const tvChannels = this.provider.tvChannels?.bind(this.provider);
+  // lookup problem must never block an announcement. `source` (the catalog
+  // key) is needed to tell whether this fixture actually came from
+  // TheSportsDB — football-data.org has no TV data, and its event ids share
+  // no namespace with TheSportsDB's, so a football-data fixture must never be
+  // looked up there.
+  async whereToWatch(source: string | null, externalId: string): Promise<string[]> {
+    if (source && this.usesFootballData(source)) return [];
+
+    const tvChannels = this.theSportsDb.tvChannels?.bind(this.theSportsDb);
     if (!tvChannels) return [];
 
     try {
@@ -70,16 +106,25 @@ export class SportsImporter {
     }
   }
 
+  private usesFootballData(catalogKey: string): boolean {
+    return !!this.footballData && !!SPORTS_CATALOG[catalogKey]?.footballDataCode;
+  }
+
   private async fetchUpcoming(catalogKey: string): Promise<Match[] | null> {
     const league = SPORTS_CATALOG[catalogKey];
     if (!league) return null;
+
+    const [provider, leagueRef] =
+      this.footballData && league.footballDataCode
+        ? [this.footballData, league.footballDataCode]
+        : [this.theSportsDb, league.id];
 
     try {
       const { matches } = await cached(
         this.cache,
         `cache:sportsimport:${catalogKey}`,
         FETCH_CACHE_TTL,
-        () => this.provider.matches(league.id, FIXTURES_PER_LEAGUE),
+        () => provider.matches(leagueRef, FIXTURES_PER_LEAGUE),
       );
       return matches;
     } catch (err) {
