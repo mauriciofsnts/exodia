@@ -2,7 +2,7 @@
 # The bot itself runs on the host (pnpm dev) and connects via the URLs in .env.
 services:
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: exodia-redis
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes"] # persist guild config/cache across restarts
