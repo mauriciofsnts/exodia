@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@discordjs/voice": "^0.19.2",
-    "@distube/ytdl-core": "^4.16.12",
+    "@distube/ytdl-core": "^5.2.1",
     "croner": "^11.0.0",
     "discord.js": "^14.28.1",
     "dotenv": "^18.0.9",
