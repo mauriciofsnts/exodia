@@ -7,7 +7,7 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN npm install -g pnpm@9 && pnpm install --frozen-lockfile
+RUN npm install -g pnpm@11.3.0 && pnpm install --frozen-lockfile
 
 FROM base AS runner
 ENV NODE_ENV=production
